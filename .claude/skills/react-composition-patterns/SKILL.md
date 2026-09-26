@@ -1,9 +1,9 @@
----
+﻿---
 name: react-composition-patterns
-description: Coordinated skill for the Bali villa Awwwards workflow: React Composition Patterns.
+description: "Coordinated skill for the Bali villa Awwwards workflow: React Composition Patterns."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — REACT ARCHITECTURE
+ROLE IN THIS SYSTEM вЂ” REACT ARCHITECTURE
 Owns: reusable component composition, state boundaries, explicit variants, compound components, and maintainable React APIs.
 Does NOT own: visual styling, motion art direction, or design decisions.
 Apply React 19-specific guidance only after confirming the project actually uses React 19.
@@ -57,7 +57,7 @@ state-lift-state - Move state into provider components for sibling access
 patterns-explicit-variants - Create explicit variant components instead of boolean modes
 patterns-children-over-render-props - Use children for composition instead of renderX props
 4. React 19 APIs (MEDIUM)
-⚠️ React 19+ only. Skip this section if using React 18 or earlier.
+вљ пёЏ React 19+ only. Skip this section if using React 18 or earlier.
 
 react19-no-forwardref - Don't use forwardRef; use use() instead of useContext()
 How to Use
@@ -73,3 +73,4 @@ Correct code example with explanation
 Additional context and references
 Full Compiled Document
 For the complete guide with all rules expanded: AGENTS.md
+

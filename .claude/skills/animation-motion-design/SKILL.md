@@ -1,9 +1,9 @@
----
+﻿---
 name: animation-motion-design
-description: Coordinated skill for the Bali villa Awwwards workflow: Animation & Motion Design.
+description: "Coordinated skill for the Bali villa Awwwards workflow: Animation & Motion Design."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — MOTION ENGINEERING / PERFORMANCE GUARDRAIL
+ROLE IN THIS SYSTEM вЂ” MOTION ENGINEERING / PERFORMANCE GUARDRAIL
 Owns: animation performance, compositor-safe properties, Motion/View Transitions implementation details, cleanup, reduced-motion behavior, and technical quality.
 Does NOT own: choosing the site's visual motion concept or scroll storytelling. Those belong to Awwwards Animations.
 If Awwwards Animations specifies a motion idea, this skill validates and implements it safely.
@@ -42,7 +42,7 @@ Motion Accessibility	rules/motion-accessibility.md	CRITICAL	prefers-reduced-moti
 Motion Performance	rules/motion-performance.md	HIGH	60fps, GPU compositing, layout thrash
 Total: 6 rules across 3 categories
 
-Decision Table — Motion vs View Transitions API
+Decision Table вЂ” Motion vs View Transitions API
 Scenario	Recommendation	Why
 Component mount/unmount	Motion	AnimatePresence handles lifecycle
 Page navigation transitions	View Transitions API	Built-in browser support, works with any router
@@ -53,7 +53,7 @@ Shared element across routes	View Transitions API	viewTransitionName CSS propert
 Scroll-triggered animations	Motion	useInView, useScroll hooks
 Multi-step orchestrated sequences	Motion	staggerChildren, variants
 Quick Start
-Motion — Component Animation
+Motion вЂ” Component Animation
 import { motion, AnimatePresence } from "motion/react"
 
 const fadeInUp = {
@@ -80,7 +80,7 @@ function CardList({ items }: { items: Item[] }) {
     </AnimatePresence>
   )
 }
-View Transitions API — Page Navigation
+View Transitions API вЂ” Page Navigation
 // React Router v7+ with View Transitions
 import { Link, useNavigate } from "react-router"
 
@@ -91,7 +91,7 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
 // CSS for the transition
 // ::view-transition-old(root) { animation: fade-out 200ms ease; }
 // ::view-transition-new(root) { animation: fade-in 200ms ease; }
-Motion — Accessible by Default
+Motion вЂ” Accessible by Default
 import { useReducedMotion } from "motion/react"
 
 function AnimatedComponent() {
@@ -139,11 +139,11 @@ GPU compositing, avoiding layout thrash, and keeping animations at 60fps.
 Load: rules/motion-performance.md
 
 Key Principles
-60fps or nothing — Only animate transform and opacity (composite properties). Never animate width, height, top, or left.
-Centralized presets — Define animation variants in a shared file, not inline on every component.
-AnimatePresence for exits — React unmounts instantly; wrap with AnimatePresence to animate out.
-Spring over duration — Springs feel natural and are interruptible. Use stiffness/damping, not duration.
-Respect user preferences — Always check prefers-reduced-motion and provide instant alternatives.
+60fps or nothing вЂ” Only animate transform and opacity (composite properties). Never animate width, height, top, or left.
+Centralized presets вЂ” Define animation variants in a shared file, not inline on every component.
+AnimatePresence for exits вЂ” React unmounts instantly; wrap with AnimatePresence to animate out.
+Spring over duration вЂ” Springs feel natural and are interruptible. Use stiffness/damping, not duration.
+Respect user preferences вЂ” Always check prefers-reduced-motion and provide instant alternatives.
 Performance Budget
 Metric	Target	Measurement
 Transition duration	< 400ms	User perception threshold
@@ -152,19 +152,20 @@ JS bundle (Motion)	~16KB gzipped	Import only what you use
 First paint delay	0ms	Animations must not block render
 Frame drops	< 5% of frames	Performance API: PerformanceObserver
 Anti-Patterns (FORBIDDEN)
-Animating layout properties — Never animate width, height, margin, padding directly. Use transform: scale() instead.
-Missing AnimatePresence — Components unmount instantly without it; exit animations are silently lost.
-Ignoring prefers-reduced-motion — Causes vestibular disorders for ~35% of users with motion sensitivity.
-Inline transition objects — Creates new objects every render, breaking React memoization.
-duration-based springs — Motion springs use stiffness/damping, not duration. Mixing causes unexpected behavior.
-Synchronous startViewTransition — Always await or handle the promise from document.startViewTransition().
+Animating layout properties вЂ” Never animate width, height, margin, padding directly. Use transform: scale() instead.
+Missing AnimatePresence вЂ” Components unmount instantly without it; exit animations are silently lost.
+Ignoring prefers-reduced-motion вЂ” Causes vestibular disorders for ~35% of users with motion sensitivity.
+Inline transition objects вЂ” Creates new objects every render, breaking React memoization.
+duration-based springs вЂ” Motion springs use stiffness/damping, not duration. Mixing causes unexpected behavior.
+Synchronous startViewTransition вЂ” Always await or handle the promise from document.startViewTransition().
 Detailed Documentation
 Resource	Description
 references/motion-vs-view-transitions.md	Comparison table, browser support, limitations
 references/animation-presets-library.md	Copy-paste preset variants for common patterns
 references/micro-interactions-catalog.md	Button press, toggle, checkbox, loading, success/error
 Related Skills
-ork:ui-components — shadcn/ui component patterns and CVA variants
-ork:responsive-patterns — Responsive layout and container query patterns
-ork:performance — Core Web Vitals and runtime performance optimization
-ork:accessibility — WCAG compliance, ARIA patterns, screen reader support
+ork:ui-components вЂ” shadcn/ui component patterns and CVA variants
+ork:responsive-patterns вЂ” Responsive layout and container query patterns
+ork:performance вЂ” Core Web Vitals and runtime performance optimization
+ork:accessibility вЂ” WCAG compliance, ARIA patterns, screen reader support
+

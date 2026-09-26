@@ -1,9 +1,9 @@
----
+﻿---
 name: interaction-design
-description: Coordinated skill for the Bali villa Awwwards workflow: Interaction Design.
+description: "Coordinated skill for the Bali villa Awwwards workflow: Interaction Design."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — INTERACTION & STATE BEHAVIOR
+ROLE IN THIS SYSTEM вЂ” INTERACTION & STATE BEHAVIOR
 Owns: hover, focus, press, tap, menu behavior, feedback, loading states, forms, gestures, and component/page state transitions.
 Does NOT own: cinematic scroll storytelling or global motion art direction.
 For React motion examples, prefer the project's installed package/API. If the project uses Motion, use `motion/react`; do not add legacy `framer-motion` solely because an example below uses it.
@@ -284,3 +284,4 @@ Over-animation: Too much motion causes fatigue
 Blocking Interactions: Never prevent user input during animations
 Memory Leaks: Clean up animation listeners on unmount
 Flash of Content: Use will-change sparingly for optimization
+

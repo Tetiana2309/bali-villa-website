@@ -1,9 +1,9 @@
----
+﻿---
 name: web-design-guidelines-wcag-audit
-description: Coordinated skill for the Bali villa Awwwards workflow: Web Design Guidelines & WCAG Audit.
+description: "Coordinated skill for the Bali villa Awwwards workflow: Web Design Guidelines & WCAG Audit."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — FINAL ACCESSIBILITY AUTHORITY
+ROLE IN THIS SYSTEM вЂ” FINAL ACCESSIBILITY AUTHORITY
 Owns: semantic HTML, keyboard navigation, focus management, ARIA, forms, contrast, reduced motion, media accessibility, and WCAG-oriented audit reporting.
 When this skill conflicts with another skill on accessibility or inclusive interaction, this skill wins unless the user explicitly requires a different standard.
 Does NOT redesign the visual identity. Fix compliance with the smallest change that preserves the approved Figma design whenever possible.
@@ -36,7 +36,7 @@ Version: 2.1.0
 Rule Count: 23 rules across 4 categories
 License: MIT
 How to Audit
-When the user asks to "audit accessibility", "check WCAG compliance", or "review accessibility" — run the checklist below against their codebase.
+When the user asks to "audit accessibility", "check WCAG compliance", or "review accessibility" вЂ” run the checklist below against their codebase.
 
 Step 1: Determine Scope
 If arguments provided ($ARGUMENTS): audit only those files or components
@@ -44,19 +44,19 @@ If no arguments: audit all UI components and pages in the codebase
 Step 2: Detect Stack
 Check the project for:
 
-.tsx/.jsx files → React
-.vue files → Vue
-.blade.php files → Laravel Blade
-.html files → Static HTML
+.tsx/.jsx files в†’ React
+.vue files в†’ Vue
+.blade.php files в†’ Laravel Blade
+.html files в†’ Static HTML
 Step 3: Run Accessibility Checklist
 Work through every item below. For each, output:
 
-PASS — brief confirmation of what was verified
-FAIL — exact file:line, description of the issue, and fix recommendation
-N/A — if the check does not apply to this project
+PASS вЂ” brief confirmation of what was verified
+FAIL вЂ” exact file:line, description of the issue, and fix recommendation
+N/A вЂ” if the check does not apply to this project
 Semantic HTML & Structure
- Pages use semantic elements (<header>, <main>, <nav>, <footer>, <article>, <section>) — not <div> soup
- Heading hierarchy is sequential (h1 → h2 → h3) — no skipped levels
+ Pages use semantic elements (<header>, <main>, <nav>, <footer>, <article>, <section>) вЂ” not <div> soup
+ Heading hierarchy is sequential (h1 в†’ h2 в†’ h3) вЂ” no skipped levels
  One <h1> per page
  Skip link exists to bypass navigation (<a href="#main-content">Skip to content</a>)
  Landmark regions are labelled when duplicated (aria-label on multiple <nav> elements)
@@ -67,7 +67,7 @@ Keyboard Navigation
  Modal dialogs trap focus and return focus on close
  Custom components (dropdowns, tabs, accordions) support expected keyboard patterns (Arrow keys, Escape, Enter)
 Images & Media
- All <img> elements have alt attributes — descriptive for content images, empty (alt="") for decorative
+ All <img> elements have alt attributes вЂ” descriptive for content images, empty (alt="") for decorative
  Complex images (charts, diagrams) have extended descriptions
  Video content has captions or transcripts
 Color & Contrast
@@ -87,7 +87,7 @@ ARIA & Screen Readers
  Loading states announced to screen readers (aria-busy="true", status messages)
  Decorative elements hidden from screen readers (aria-hidden="true")
 Motion & Animation
- prefers-reduced-motion respected — animations disabled or reduced
+ prefers-reduced-motion respected вЂ” animations disabled or reduced
  No auto-playing video or audio without user control
  No content that flashes more than 3 times per second
 Step 4: Summary
@@ -144,10 +144,10 @@ perf-image-loading - Optimize image loading for UX
 perf-layout-stability - Prevent cumulative layout shift
 Essential Guidelines
 Semantic HTML
-// ❌ Div soup
+// вќЊ Div soup
 <div className="header"><div className="nav"><div onClick={handleClick}>Home</div></div></div>
 
-// ✅ Semantic HTML
+// вњ… Semantic HTML
 <header><nav aria-label="Main"><a href="/">Home</a></nav></header>
 <main><article><h1>Title</h1><p>Content</p></article></main>
 Form Accessibility
@@ -176,3 +176,4 @@ MDN Accessibility
 The A11Y Project
 Full Compiled Document
 For the complete guide with all rules expanded: AGENTS.md
+

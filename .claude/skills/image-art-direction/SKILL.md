@@ -1,9 +1,9 @@
----
+﻿---
 name: image-art-direction
-description: Coordinated skill for the Bali villa Awwwards workflow: Image Art Direction.
+description: "Coordinated skill for the Bali villa Awwwards workflow: Image Art Direction."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — IMAGE / VIDEO ART DIRECTION
+ROLE IN THIS SYSTEM вЂ” IMAGE / VIDEO ART DIRECTION
 Owns: image inventory, focal points, crop strategy, responsive variants, resolution checks, consistency, hero/gallery media treatment, and media replacement flags.
 For this project, architecture and interior imagery are primary design material. Protect architectural lines, spatial composition, horizon, furniture, lighting, and premium visual continuity.
 Also apply the same focal/crop/quality logic to short website video and poster frames when relevant.
@@ -76,3 +76,4 @@ Example invocations
 "Find duplicate hero images and flag weak replacements."
 Adjacent skills
 Supply approved variants to publication and presentation; use SVG illustration for non-photographic explanation and visual QA for placed-image inspection.
+

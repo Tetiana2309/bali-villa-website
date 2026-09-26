@@ -1,9 +1,9 @@
----
+﻿---
 name: awwwards-animations
-description: Coordinated skill for the Bali villa Awwwards workflow: Awwwards Animations.
+description: "Coordinated skill for the Bali villa Awwwards workflow: Awwwards Animations."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — PREMIUM MOTION DIRECTOR
+ROLE IN THIS SYSTEM вЂ” PREMIUM MOTION DIRECTOR
 Owns: high-level motion language, scroll choreography, GSAP/ScrollTrigger sequences, Lenis integration when justified, premium reveals, timelines, and Awwwards/FWA-level motion concepts.
 Defers to Animation & Motion Design for technical motion safety/performance and reduced-motion behavior.
 Defers to Interaction Design for button/menu/form feedback and everyday component states.
@@ -370,7 +370,7 @@ export function GeometricDissection() {
       <svg ref={svg} viewBox="-10 -10 220 200" className="w-64 h-64">
         {P.map(p => <path key={p.id} id={`d-${p.id}`} d={p.tri} fill={p.c} stroke="#000" strokeWidth="1.5" />)}
       </svg>
-      <button onClick={morph} className="px-6 py-2 bg-white text-black font-mono text-sm">{isSq ? '△' : '□'}</button>
+      <button onClick={morph} className="px-6 py-2 bg-white text-black font-mono text-sm">{isSq ? 'в–і' : 'в–Ў'}</button>
     </div>
   )
 }
@@ -415,7 +415,7 @@ UI transitions: 300-500ms
 Page transitions: 500-800ms
 Stagger: 0.02-0.1s per item
 Accessibility
-// Motion: useReducedMotion() → conditionally disable/reduce animations
+// Motion: useReducedMotion() в†’ conditionally disable/reduce animations
 import { useReducedMotion } from 'motion/react'
 const reduced = useReducedMotion() // true if prefers-reduced-motion: reduce
 @media (prefers-reduced-motion: reduce) {
@@ -445,3 +445,4 @@ Testing Checklist
  No memory leaks on unmount
 Inspiration
 Active Theory, Studio Freight, Locomotive, Resn, Aristide Benoist, Immersive Garden
+

@@ -1,9 +1,9 @@
----
+﻿---
 name: gsap-awwwards-website
-description: Coordinated skill for the Bali villa Awwwards workflow: GSAP Awwwards Website.
+description: "Coordinated skill for the Bali villa Awwwards workflow: GSAP Awwwards Website."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — GSAP IMPLEMENTATION PLAYBOOK
+ROLE IN THIS SYSTEM вЂ” GSAP IMPLEMENTATION PLAYBOOK
 Owns: practical GSAP setup and implementation inside the existing project.
 Does NOT own: visual direction, component architecture, or the decision to redesign the site.
 CRITICAL PROJECT RULE:
@@ -45,11 +45,11 @@ Output: dist directory
 Dev Port: 5173
 Setup
 1. Template Reference (ONLY for a new empty project when explicitly requested)
-# REFERENCE ONLY — do not run in an existing project
+# REFERENCE ONLY вЂ” do not run in an existing project
 # git clone --depth 1 https://github.com/Eng0AI/gsap-awwwards-website-template.git .
 If the directory is not empty:
 
-# REFERENCE ONLY — do not run in an existing project
+# REFERENCE ONLY вЂ” do not run in an existing project
 # git clone --depth 1 https://github.com/Eng0AI/gsap-awwwards-website-template.git _temp_template
 mv _temp_template/* _temp_template/.* . 2>/dev/null || true
 rm -rf _temp_template
@@ -80,3 +80,4 @@ Opens at http://localhost:5173
 Notes
 Static React site - no environment variables needed
 Never run npm run dev in VM environment
+

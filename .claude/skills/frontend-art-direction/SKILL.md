@@ -1,9 +1,9 @@
----
+﻿---
 name: frontend-art-direction
-description: Coordinated skill for the Bali villa Awwwards workflow: Frontend Art Direction.
+description: "Coordinated skill for the Bali villa Awwwards workflow: Frontend Art Direction."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — PRIMARY VISUAL COORDINATOR
+ROLE IN THIS SYSTEM вЂ” PRIMARY VISUAL COORDINATOR
 Owns: art direction, Figma fidelity, visual hierarchy, premium coherence, reference translation, cross-device visual quality, and final visual verification.
 Defers to:
 - Awwwards Animations for complex cinematic/scroll motion direction.
@@ -178,4 +178,5 @@ one self-iteration when the first visible result has obvious hierarchy, spacing,
 When feedback says the result has no beauty, no coordination, poor interaction, poor visuals, no components, samey components, wrong font, no reference-site influence, or a one-font/square-block look, treat it as an execution failure, not a subjective disagreement. Re-run the Design Read, Reference Website Pass, Component Context Decisions, and Component Adoption Plan before continuing, replace weak freehand primitives with mature components or stronger local primitives, and verify where references/components/motion are visible in the rendered result.
 
 Feedback Loop
-When the user says the result is ugly, generic, bland, lifeless, static, gimmicky, "食之无味", or the direction is wrong, treat it as art-direction calibration. Do not defend the previous aesthetic. Quickly identify whether the problem is taste stance, product character, reference choice, proportion, expressive composition, visual language, motion/spatial language, color/material, density, type scale, component language, or interaction feel, then revise or roll back the affected surface with a clear scope.
+When the user says the result is ugly, generic, bland, lifeless, static, gimmicky, "йЈџд№‹ж— е‘і", or the direction is wrong, treat it as art-direction calibration. Do not defend the previous aesthetic. Quickly identify whether the problem is taste stance, product character, reference choice, proportion, expressive composition, visual language, motion/spatial language, color/material, density, type scale, component language, or interaction feel, then revise or roll back the affected surface with a clear scope.
+

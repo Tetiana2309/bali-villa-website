@@ -1,9 +1,9 @@
----
+﻿---
 name: tailwind-design-system
-description: Coordinated skill for the Bali villa Awwwards workflow: Tailwind Design System.
+description: "Coordinated skill for the Bali villa Awwwards workflow: Tailwind Design System."
 ---
 
-PROJECT INTEGRATION LAYER — BALI VILLA / AWWWARDS WORKFLOW
+PROJECT INTEGRATION LAYER вЂ” BALI VILLA / AWWWARDS WORKFLOW
 
 This skill is part of a coordinated skill set for implementing an already approved Figma design for a premium Bali villa website.
 
@@ -21,7 +21,7 @@ GLOBAL NON-CONFLICT RULE
 - Do not install or introduce a library unless the current task actually needs it and it fits the detected project stack.
 - When another skill owns a neighboring concern, defer to that skill instead of duplicating its job.
 
-ROLE IN THIS SYSTEM — FIGMA-TO-TAILWIND SYSTEMIZATION
+ROLE IN THIS SYSTEM вЂ” FIGMA-TO-TAILWIND SYSTEMIZATION
 Owns: turning approved Figma decisions into reusable design tokens, responsive utilities, component variants, and consistent implementation patterns.
 Do NOT generate a new visual design system when Figma already defines one.
 Derive tokens from the approved design first: colors, typography, spacing, radii, widths, shadows, and relevant motion values.
@@ -53,3 +53,4 @@ Limitations
 Use this skill only when the task clearly matches the scope described above.
 Do not treat the output as a substitute for environment-specific validation, testing, or expert review.
 Stop and ask for clarification if required inputs, permissions, safety boundaries, or success criteria are missing.
+
