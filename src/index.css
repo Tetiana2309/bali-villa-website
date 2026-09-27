@@ -6,22 +6,23 @@
  * public/fonts/ and uncomment the @font-face rules below to activate it.
  * Until then, "font-neue" falls back to the system UI sans-serif stack.
  */
-/*
+
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/NeueMontreal-Regular.woff2') format('woff2');
+  src: url('/fonts/NeueMontreal-Regular.otf') format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
+
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/NeueMontreal-Medium.woff2') format('woff2');
+  src: url('/fonts/NeueMontreal-Medium.otf') format('opentype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
-*/
+
 
 @theme {
   --color-sage: #7b978a;
