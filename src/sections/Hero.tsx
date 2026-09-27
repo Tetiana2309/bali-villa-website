@@ -4,15 +4,16 @@ import { NAV_ITEMS } from '../data/site'
 interface UtilityLinkProps {
   label: string
   targetId: string
+  opacity: number
 }
 
-function UtilityLink({ label, targetId }: UtilityLinkProps) {
+function UtilityLink({ label, targetId, opacity }: UtilityLinkProps) {
   return (
-    <a href={targetId} className="group flex w-[240px] flex-col gap-1 text-left text-white">
-      <span className="h-px w-full bg-white/70" />
-      <span className="flex items-center justify-between py-1">
-        <span className="text-heading-two">{label}</span>
-        <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
+    <a href={targetId} className="flex w-[364px] flex-col text-ice" style={{ opacity }}>
+      <span className="h-[2px] w-full bg-ice" />
+      <span className="mt-[6px] flex items-center justify-between">
+        <span className="text-button-label capitalize">{label}</span>
+        <ArrowIcon />
       </span>
     </a>
   )
@@ -39,23 +40,20 @@ export function Hero() {
           gradient is a necessary implementation assumption, not a Figma value. */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
 
-      <div className="absolute top-10 left-10">
+      <div className="absolute top-10 left-[404px]">
         <span className="text-logo">luc.id</span>
       </div>
 
-      <div className="absolute top-10 right-10 flex flex-col gap-4">
-        <UtilityLink label="Get Advice" targetId="#contact-form" />
-        <UtilityLink label="View Gallery" targetId="#gallery" />
+      <div className="absolute top-10 right-[404px] flex w-[364px] flex-col gap-[34px]">
+        <UtilityLink label="Get Advice" targetId="#contact-form" opacity={1} />
+        <UtilityLink label="View Gallery" targetId="#gallery" opacity={0.5} />
       </div>
 
-      <nav aria-label="Primary" className="absolute top-[600px] right-10">
-        <ul className="flex flex-col gap-2 text-right">
+      <nav aria-label="Primary" className="absolute top-[589px] right-[404px]">
+        <ul className="flex flex-col gap-[10px] text-right">
           {NAV_ITEMS.map((item) => (
             <li key={item.href}>
-              <a
-                href={item.href}
-                className="text-heading-two text-white/90 transition-colors duration-300 hover:text-white"
-              >
+              <a href={item.href} className="text-footnote text-ice/90 capitalize">
                 {item.label}
               </a>
             </li>
@@ -63,9 +61,9 @@ export function Hero() {
         </ul>
       </nav>
 
-      <h1 className="text-hero-title absolute bottom-[190px] left-10 m-0">vill.bali</h1>
+      <h1 className="text-hero-title absolute top-[504px] left-[404px] m-0 w-[997px]">vill.bali</h1>
 
-      <p className="text-footnote absolute bottom-[110px] left-1/2 w-[380px] -translate-x-1/2 text-center text-white/90">
+      <p className="text-footnote absolute bottom-[165px] left-[907px] w-[290px] text-ice/90 lowercase">
         this is not a place to look for housing -<br />
         this is a place to find your home.
       </p>

@@ -69,7 +69,7 @@
   .text-hero-title {
     font-family: var(--font-anton);
     font-weight: 400;
-    font-size: clamp(120px, 18.2vw, 350px);
+    font-size: 350px;
     line-height: 1.1;
     letter-spacing: -0.01em;
     text-transform: lowercase;
