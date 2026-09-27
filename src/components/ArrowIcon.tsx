@@ -19,7 +19,7 @@ export function ArrowIcon({ className, style }: ArrowIconProps) {
       <path
         d="M0.5 6H19M19 6L14 1M19 6L14 11"
         stroke="currentColor"
-        strokeWidth="1.2"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

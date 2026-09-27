@@ -105,7 +105,7 @@
   /* Neue Montreal utility text styles */
   .text-heading-two {
     font-family: var(--font-neue);
-    font-weight: 500;
+    font-weight: 400;
     font-size: 18px;
     line-height: 1.2;
   }

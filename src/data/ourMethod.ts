@@ -1,40 +1,47 @@
 export interface OurMethodState {
   image: string
+  title: string
   stat: string
   subtitle: string
   description: string
+  supportingText: [string, string]
 }
 
-/**
- * State 1 copy is verified against the Figma screenshot of "Our Method Card"
- * (node 71:274). States 2–3 reuse the confirmed stat values ("200+", "3 pros")
- * that Figma's own font-usage list reports for this section, but their
- * subtitle/description copy was not visible in any inspected frame — Figma
- * MCP hit its rate limit before those alternate-state frames could be
- * screenshotted. Marked PLACEHOLDER; replace with the real copy once Figma
- * access is available again.
- */
 export const OUR_METHOD_STATES: OurMethodState[] = [
   {
     image: '/images/our-method-image-1.webp',
+    title: 'Our Method',
     stat: '12 years',
     subtitle: 'Of Impeccable Reputation',
-    description: "we don't delegate trust. every step is personally led — start to finish.",
+    description:
+      "we don't delegate trust. every step is personally led — start to finish.",
+    supportingText: [
+      "we don't follow rigid stages.",
+      'we move at your pace.',
+    ],
   },
   {
     image: '/images/our-method-image-2.webp',
+    title: 'Our Delivery',
     stat: '200+',
-    // PLACEHOLDER — pending Figma verification
-    subtitle: 'Villas Personally Vetted',
-    // PLACEHOLDER — pending Figma verification
-    description: 'content pending Figma verification.',
+    subtitle: 'Villas Handed Over',
+    description:
+      'we handle every step — from concept to keys.',
+    supportingText: [
+      "we don’t just build villas.",
+      'we deliver them complete.',
+    ],
   },
   {
     image: '/images/our-method-image-3.webp',
+    title: 'We Handle It',
     stat: '3 pros',
-    // PLACEHOLDER — pending Figma verification
-    subtitle: 'A Small Team, Fully Accountable',
-    // PLACEHOLDER — pending Figma verification
-    description: 'content pending Figma verification.',
+    subtitle: 'One Team For Every Deal',
+    description:
+      'a lawyer, a manager, and an analyst — ready to act as yours from day one.',
+    supportingText: [
+      "you don’t coordinate people.",
+      'you focus on decisions.',
+    ],
   },
 ]
