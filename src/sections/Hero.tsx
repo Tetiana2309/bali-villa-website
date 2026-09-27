@@ -49,13 +49,16 @@ export function Hero() {
         <UtilityLink label="View Gallery" targetId="#gallery" opacity={0.5} />
       </div>
 
-      <nav aria-label="Primary" className="absolute top-[589px] right-[404px]">
-  <ul className="flex flex-col items-end gap-[10px]">
+      <nav
+  aria-label="Primary"
+  className="absolute top-[589px] right-[404px] w-[140px]"
+>
+  <ul className="flex flex-col gap-[10px] items-start">
     {NAV_ITEMS.map((item) => (
       <li key={item.href}>
         <a
           href={item.href}
-          className="block text-right text-footnote text-ice/60 capitalize"
+          className="block text-left text-footnote text-ice/60 capitalize"
         >
           {item.label}
         </a>
