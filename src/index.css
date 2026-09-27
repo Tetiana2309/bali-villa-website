@@ -1,12 +1,5 @@
 @import 'tailwindcss';
 
-/*
- * Neue Montreal is a commercial typeface (Pangram Pangram) and its font
- * files are not present in this repository. Add the licensed woff2 files to
- * public/fonts/ and uncomment the @font-face rules below to activate it.
- * Until then, "font-neue" falls back to the system UI sans-serif stack.
- */
-
 @font-face {
   font-family: 'Neue Montreal';
   src: url('/fonts/NeueMontreal-Regular.otf') format('opentype');
@@ -23,7 +16,6 @@
   font-display: swap;
 }
 
-
 @theme {
   --color-sage: #7b978a;
   --color-ice: #dde4ee;
@@ -39,6 +31,7 @@
 @layer base {
   html {
     scroll-behavior: auto;
+    overflow-x: hidden;
   }
 
   body {
@@ -46,6 +39,7 @@
     color: var(--color-espresso);
     font-family: var(--font-neue);
     font-weight: 400;
+    overflow-x: hidden;
   }
 
   @media (prefers-reduced-motion: reduce) {

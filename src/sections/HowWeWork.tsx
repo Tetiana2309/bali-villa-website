@@ -1,48 +1,13 @@
-import { useRef } from 'react'
-import { useGSAP } from '@gsap/react'
-import { gsap } from '../lib/gsap'
 import { SectionHeader } from '../components/SectionHeader'
 import { GetAdviceButton } from '../components/GetAdviceButton'
 import { HOW_WE_WORK_STEPS } from '../data/howWeWork'
 
-const STEP_SCROLL_DISTANCE = 600
+const STEP_TOP_OFFSETS = [0, 264, 528, 792]
+const STEP_HEIGHT = 184
 
 export function HowWeWork() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const stepRefs = useRef<Array<HTMLDivElement | null>>([])
-
-  useGSAP(
-    () => {
-      const steps = stepRefs.current.filter((el): el is HTMLDivElement => el !== null)
-      if (steps.length < 2) return
-
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-      gsap.set(steps[0], { yPercent: 0 })
-      gsap.set(steps.slice(1), { yPercent: 100 })
-
-      if (prefersReducedMotion) return
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: `+=${(steps.length - 1) * STEP_SCROLL_DISTANCE}`,
-          scrub: 1,
-          pin: true,
-        },
-      })
-
-      steps.slice(1).forEach((step, i) => {
-        tl.to(step, { yPercent: 0, duration: 1, ease: 'power2.inOut' }, i)
-      })
-    },
-    { scope: sectionRef },
-  )
-
   return (
     <section
-      ref={sectionRef}
       id="how-we-work"
       aria-label="How We Work"
       className="relative h-[1312px] w-[1920px] bg-ice"
@@ -54,15 +19,12 @@ export function HowWeWork() {
         right="Maximum - From Ours."
       />
 
-      <div className="absolute top-[152px] left-0 h-[184px] w-[1920px] overflow-hidden">
+      <div className="absolute top-[152px] left-0 h-[976px] w-[1920px]">
         {HOW_WE_WORK_STEPS.map((step, i) => (
           <div
             key={step.title}
-            ref={(el) => {
-              stepRefs.current[i] = el
-            }}
-            className="absolute inset-0 bg-ice"
-            style={{ zIndex: i + 1 }}
+            className="absolute left-0 h-[184px] w-[1920px]"
+            style={{ top: STEP_TOP_OFFSETS[i] }}
           >
             <div className="absolute top-0 left-10 h-[124px] w-[1840px]">
               <span className="text-wordmark absolute top-0 left-0">{step.title}</span>
@@ -72,7 +34,10 @@ export function HowWeWork() {
                 <p className="text-body-copy mt-[10px] text-espresso/70">{step.description}</p>
               </div>
             </div>
-            <span className="absolute bottom-0 left-0 h-px w-full bg-espresso/30" />
+            <span
+              className="absolute left-0 h-px w-full bg-espresso/30"
+              style={{ top: STEP_HEIGHT }}
+            />
           </div>
         ))}
       </div>

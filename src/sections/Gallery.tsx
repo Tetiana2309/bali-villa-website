@@ -1,48 +1,18 @@
-import { useRef } from 'react'
-import { useGSAP } from '@gsap/react'
-import { gsap } from '../lib/gsap'
 import { SectionHeader } from '../components/SectionHeader'
 import { GALLERY_STATES } from '../data/gallery'
 
-const STATE_SCROLL_DISTANCE = 900
-
+/**
+ * Static-fidelity pass: only the first approved Gallery state (Sundar House)
+ * is shown. Figma's own composition uses this section as one pinned,
+ * scroll-driven 3-state sequence (see GALLERY_STATES for the other two
+ * states and their placeholder-marked copy) — that scroll interaction is
+ * intentionally not implemented in this pass.
+ */
 export function Gallery() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const layerRefs = useRef<Array<HTMLDivElement | null>>([])
-
-  useGSAP(
-    () => {
-      const layers = layerRefs.current.filter((el): el is HTMLDivElement => el !== null)
-      if (layers.length < 2) return
-
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-      gsap.set(layers[0], { opacity: 1 })
-      gsap.set(layers.slice(1), { opacity: 0 })
-
-      if (prefersReducedMotion) return
-
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: `+=${(layers.length - 1) * STATE_SCROLL_DISTANCE}`,
-          scrub: 1,
-          pin: true,
-        },
-      })
-
-      layers.slice(0, -1).forEach((layer, i) => {
-        tl.to(layer, { opacity: 0, duration: 1, ease: 'power1.inOut' }, i)
-        tl.to(layers[i + 1], { opacity: 1, duration: 1, ease: 'power1.inOut' }, i)
-      })
-    },
-    { scope: sectionRef },
-  )
+  const state = GALLERY_STATES[0]
 
   return (
     <section
-      ref={sectionRef}
       id="gallery"
       aria-label="Gallery"
       className="relative h-[1080px] w-[1920px] overflow-hidden bg-espresso"
@@ -62,35 +32,25 @@ export function Gallery() {
         taken from Figma metadata directly, unlike the rest of this section.
       */}
       <div className="absolute top-[100px] left-0 h-[980px] w-[1920px]">
-        {GALLERY_STATES.map((state, i) => (
-          <div
-            key={state.title}
-            ref={(el) => {
-              layerRefs.current[i] = el
-            }}
-            className="absolute inset-0"
-          >
-            <video
-              className="absolute inset-0 h-full w-full object-cover"
-              src={state.video}
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-            <div className="absolute inset-0 bg-black/25" />
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src={state.video}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <div className="absolute inset-0 bg-black/25" />
 
-            <div className="absolute bottom-[36px] left-10 flex flex-col gap-[10px]">
-              <h3 className="text-card-heading m-0 text-white">{state.title}</h3>
-              <p className="text-footnote text-white/80">{state.location}</p>
-            </div>
+        <div className="absolute bottom-[36px] left-10 flex flex-col gap-[10px]">
+          <h3 className="text-card-heading m-0 text-white">{state.title}</h3>
+          <p className="text-footnote text-white/80">{state.location}</p>
+        </div>
 
-            <div className="absolute bottom-[36px] left-[950px] flex w-[380px] flex-col gap-[18px]">
-              <p className="text-body-copy text-white">{state.specs}</p>
-              <p className="text-body-copy text-white/85">{state.description}</p>
-            </div>
-          </div>
-        ))}
+        <div className="absolute bottom-[36px] left-[950px] flex w-[380px] flex-col gap-[18px]">
+          <p className="text-body-copy text-white">{state.specs}</p>
+          <p className="text-body-copy text-white/85">{state.description}</p>
+        </div>
       </div>
     </section>
   )
