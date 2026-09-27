@@ -50,16 +50,19 @@ export function Hero() {
       </div>
 
       <nav aria-label="Primary" className="absolute top-[589px] right-[404px]">
-        <ul className="flex flex-col gap-[10px] text-right">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <a href={item.href} className="text-footnote text-ice/90 capitalize">
-                {item.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+  <ul className="flex flex-col items-end gap-[10px]">
+    {NAV_ITEMS.map((item) => (
+      <li key={item.href}>
+        <a
+          href={item.href}
+          className="block text-right text-footnote text-ice/60 capitalize"
+        >
+          {item.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
 
       <h1 className="text-hero-title absolute top-[504px] left-[404px] m-0 w-[997px]">vill.bali</h1>
 
