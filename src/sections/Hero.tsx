@@ -58,7 +58,7 @@ export function Hero() {
       <li key={item.href}>
         <a
           href={item.href}
-          className="block text-left text-footnote text-ice/60 capitalize"
+          className="block text-left text-footnote text-ice/70 capitalize"
         >
           {item.label}
         </a>
@@ -69,7 +69,7 @@ export function Hero() {
 
       <h1 className="text-hero-title absolute top-[504px] left-[404px] m-0 w-[997px]">vill.bali</h1>
 
-      <p className="text-footnote absolute bottom-[165px] left-[907px] w-[290px] text-ice/90 lowercase">
+      <p className="text-footnote absolute bottom-[165px] left-[907px] w-[290px] text-ice/70 lowercase">
         this is not a place to look for housing -<br />
         this is a place to find your home.
       </p>
