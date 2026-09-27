@@ -1,5 +1,4 @@
 import { ArrowIcon } from '../components/ArrowIcon'
-import { useScrollToSection } from '../hooks/useScrollToSection'
 import { NAV_ITEMS } from '../data/site'
 
 interface UtilityLinkProps {
@@ -8,26 +7,18 @@ interface UtilityLinkProps {
 }
 
 function UtilityLink({ label, targetId }: UtilityLinkProps) {
-  const scrollToSection = useScrollToSection()
-
   return (
-    <button
-      type="button"
-      onClick={() => scrollToSection(targetId)}
-      className="group flex w-[240px] flex-col gap-1 text-left text-white"
-    >
+    <a href={targetId} className="group flex w-[240px] flex-col gap-1 text-left text-white">
       <span className="h-px w-full bg-white/70" />
       <span className="flex items-center justify-between py-1">
         <span className="text-heading-two">{label}</span>
         <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
       </span>
-    </button>
+    </a>
   )
 }
 
 export function Hero() {
-  const scrollToSection = useScrollToSection()
-
   return (
     <section
       id="hero"
@@ -61,13 +52,12 @@ export function Hero() {
         <ul className="flex flex-col gap-2 text-right">
           {NAV_ITEMS.map((item) => (
             <li key={item.href}>
-              <button
-                type="button"
-                onClick={() => scrollToSection(item.href)}
+              <a
+                href={item.href}
                 className="text-heading-two text-white/90 transition-colors duration-300 hover:text-white"
               >
                 {item.label}
-              </button>
+              </a>
             </li>
           ))}
         </ul>

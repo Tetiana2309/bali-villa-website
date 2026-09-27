@@ -7,9 +7,13 @@ interface DesktopCanvasProps {
 
 /**
  * Hosts every section on a fixed 1920px-wide canvas (the Figma Desktop
- * frame's own coordinate system) and scales it to the viewport width.
- * The outer element reserves the scaled height in normal document flow so
- * native scroll and GSAP ScrollTrigger measurements stay accurate.
+ * frame's own coordinate system) and scales it uniformly to the viewport
+ * width, so every proportion, spacing and alignment value matches Figma
+ * exactly (a uniform scale never distorts relative proportions, unlike a
+ * fluid reflow). The outer wrapper clips to the viewport and reserves the
+ * scaled height in normal document flow, so the page never grows a
+ * horizontal scrollbar even though the inner canvas is wider than most
+ * viewports before it is scaled down.
  */
 export function DesktopCanvas({ children }: DesktopCanvasProps) {
   const scale = useFigmaScale()
@@ -28,7 +32,14 @@ export function DesktopCanvas({ children }: DesktopCanvasProps) {
   }, [])
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: canvasHeight * scale }}>
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: canvasHeight * scale,
+        overflow: 'hidden',
+      }}
+    >
       <div
         ref={innerRef}
         style={{

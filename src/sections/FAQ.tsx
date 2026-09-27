@@ -1,11 +1,14 @@
-import { useState } from 'react'
 import { SectionHeader } from '../components/SectionHeader'
 import { ArrowIcon } from '../components/ArrowIcon'
 import { FAQ_ITEMS, FAQ_DIVIDER_POSITIONS } from '../data/faq'
 
+/**
+ * Static-fidelity pass: renders Figma's default FAQ state exactly as
+ * captured (item 1 answer at full opacity with its arrow in the active
+ * orientation, items 2-5 dimmed to 15% with arrows in the default
+ * orientation) with no click interaction or animation for now.
+ */
 export function FAQ() {
-  const [activeIndex, setActiveIndex] = useState(0)
-
   return (
     <section
       id="faq"
@@ -37,7 +40,7 @@ export function FAQ() {
         ))}
 
         {FAQ_ITEMS.map((item, i) => {
-          const isActive = activeIndex === i
+          const isActive = i === 0
 
           return (
             <div
@@ -47,26 +50,14 @@ export function FAQ() {
             >
               <div className="flex h-full w-[845px] items-center justify-between gap-10">
                 <p className="text-heading-two w-[348px] shrink-0">{item.question}</p>
-                <p
-                  className="text-body-copy w-[365px] transition-opacity duration-500 ease-out"
-                  style={{ opacity: isActive ? 1 : 0.15 }}
-                >
+                <p className="text-body-copy w-[365px]" style={{ opacity: isActive ? 1 : 0.15 }}>
                   {item.answer}
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={() => setActiveIndex(i)}
-                aria-expanded={isActive}
-                aria-label={`${isActive ? 'Collapse' : 'Expand'} answer: ${item.question}`}
-                className="absolute top-1/2 right-[20px] -translate-y-1/2 text-espresso"
-              >
-                <ArrowIcon
-                  className="transition-transform duration-500 ease-out"
-                  style={{ transform: isActive ? 'rotate(-45deg)' : 'rotate(0deg)' }}
-                />
-              </button>
+              <span className="absolute top-1/2 right-[20px] -translate-y-1/2 text-espresso">
+                <ArrowIcon style={{ transform: isActive ? 'rotate(-45deg)' : 'rotate(0deg)' }} />
+              </span>
             </div>
           )
         })}
