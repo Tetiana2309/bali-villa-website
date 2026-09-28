@@ -34,8 +34,13 @@
     overflow-x: hidden;
   }
 
+  #root {
+  min-height: 100%;
+  background-color: #dde4ee;
+}
+
   body {
-    background-color: var(--color-ice);
+    
     color: var(--color-espresso);
     font-family: var(--font-neue);
     font-weight: 400;

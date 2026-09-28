@@ -24,11 +24,12 @@ export function Hero() {
     <section
       id="hero"
       aria-label="Hero"
-      className="relative h-[1080px] w-[1920px] overflow-hidden bg-espresso"
+      className="relative h-[1080px] w-[1920px] overflow-hidden"
     >
       <video
         className="absolute inset-0 h-full w-full object-cover"
         src="/videos/hero-setion.mp4"
+        poster="/images/hero-poster.webp"
         autoPlay
         muted
         loop
@@ -38,7 +39,7 @@ export function Hero() {
           exact overlay color/opacity for the Hero background (the frame's
           children were not resolvable via the design tool), so this darkening
           gradient is a necessary implementation assumption, not a Figma value. */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/50" />
+     
 
       <div className="absolute top-10 left-[404px]">
         <span className="text-logo">luc.id</span>
