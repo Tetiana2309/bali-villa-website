@@ -76,7 +76,7 @@ export function OurMethod() {
       aria-label="Our Method"
       className="relative mt-[220px] h-[1080px] w-[1920px] bg-ice"
     >
-      <div className="absolute top-10 left-0 w-[1920px]">
+      <div className="absolute top-10 left-0 w-[1920px] opacity-70">
         <span className="text-heading-two absolute top-0 left-10">
           Facts That Speak For Us
         </span>
@@ -132,7 +132,7 @@ export function OurMethod() {
 
         <span className="flex items-center justify-between">
           <span className="text-button-label">
-            Get advice
+            Get Advice
           </span>
 
           <ArrowIcon className="text-espresso transition-transform duration-300 group-hover:translate-x-1" />

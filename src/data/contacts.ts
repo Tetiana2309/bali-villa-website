@@ -19,8 +19,8 @@ export const SOCIAL_LINKS: { label: string; href: string }[] = [
  * copy once Figma access is available again.
  */
 export const CONTACTS_COPY = {
-  headingLines: ['Every villa', 'starts with', 'one message', 'to us.'],
-  formDescription: 'Leave a request — we will get back to you shortly.',
-  address: 'Bali, Indonesia',
+  headingLines: ['Leave', 'A Request', 'We Will', 'Find A Villa'],
+  formDescription: 'leave a contact and we will get back to you',
+  address: 'Jl. Sunset Road No.88, Seminyak, Kuta, Badung, Bali 80361, Indonesia',
   phoneNumbers: ['+62 000 000 000', '+62 000 000 001'],
 }

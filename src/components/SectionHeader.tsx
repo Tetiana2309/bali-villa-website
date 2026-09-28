@@ -15,7 +15,7 @@ interface SectionHeaderProps {
 export function SectionHeader({ left, center, right, className = '' }: SectionHeaderProps) {
   return (
     <div className={`absolute left-0 h-8 w-[1920px] ${className}`}>
-      <div className="absolute bottom-0 left-0 h-px w-full bg-espresso" />
+      <div className="absolute bottom-0 left-0 h-[1.6px] w-full bg-[#392919]/70" />
       <span className="text-heading-two absolute top-0 left-10">{left}</span>
       <span className="text-heading-two absolute top-0 left-[1413px]">{center}</span>
       <span className="text-heading-two absolute top-0 right-10">{right}</span>
