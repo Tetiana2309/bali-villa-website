@@ -1,3 +1,5 @@
+const BASE_URL = import.meta.env.BASE_URL
+
 export interface GalleryState {
   video: string
   title: string
@@ -8,7 +10,7 @@ export interface GalleryState {
 
 export const GALLERY_STATES: GalleryState[] = [
   {
-    video: '/videos/gallery-villa-1.mp4',
+    video: `${BASE_URL}videos/gallery-villa-1.mp4`,
     title: 'Sundar House',
     location: 'ubud, private jungle area',
     specs:
@@ -17,7 +19,7 @@ export const GALLERY_STATES: GalleryState[] = [
       'for quiet living in the midst of nature. a bright, thoughtfully designed space with character',
   },
   {
-    video: '/videos/gallery-villa-2.mp4',
+    video: `${BASE_URL}videos/gallery-villa-2.mp4`,
     title: 'Lunara Villa',
     location: 'canggu, private hillside location',
     specs:
@@ -26,7 +28,7 @@ export const GALLERY_STATES: GalleryState[] = [
       'for slow mornings and golden evenings in the treetops. a luminous, refined space open to nature and sky',
   },
   {
-    video: '/videos/gallery-villa-3.mp4',
+    video: `${BASE_URL}videos/gallery-villa-3.mp4`,
     title: 'Casa Vireya',
     location: 'uluwatu, elevated jungle-view location',
     specs:

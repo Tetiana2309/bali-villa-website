@@ -1,3 +1,5 @@
+const BASE_URL = import.meta.env.BASE_URL
+
 export interface TestimonialState {
   video: string
   reviewerName: string
@@ -8,7 +10,7 @@ export interface TestimonialState {
 
 export const TESTIMONIAL_STATES: TestimonialState[] = [
   {
-    video: '/videos/review-1.mp4',
+    video: `${BASE_URL}videos/review-1.mp4`,
     reviewerName: 'Oleksandr',
     reviewerRole: 'is an entrepreneur, constantly on the road',
     reviewText:
@@ -17,7 +19,7 @@ export const TESTIMONIAL_STATES: TestimonialState[] = [
       'ubud - 420 m² - private area - villa with terrace overlooking the valley',
   },
   {
-    video: '/videos/review-2.mp4',
+    video: `${BASE_URL}videos/review-2.mp4`,
     reviewerName: 'Elena',
     reviewerRole: 'is a marketer, works online',
     reviewText:
@@ -26,7 +28,7 @@ export const TESTIMONIAL_STATES: TestimonialState[] = [
       'changgu, bali - 400 m² - family villa - secured complex near international school',
   },
   {
-    video: '/videos/review-3.mp4',
+    video: `${BASE_URL}videos/review-3.mp4`,
     reviewerName: 'Nikita, Lena',
     reviewerRole: 'both work in tech, remotely',
     reviewText:

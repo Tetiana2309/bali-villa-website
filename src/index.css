@@ -2,7 +2,10 @@
 
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/NeueMontreal-Regular.otf') format('opentype');
+  src:
+    url('/fonts/NeueMontreal-Regular.otf') format('opentype'),
+    url('/bali-villa-website/fonts/NeueMontreal-Regular.otf')
+      format('opentype');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -10,7 +13,10 @@
 
 @font-face {
   font-family: 'Neue Montreal';
-  src: url('/fonts/NeueMontreal-Medium.otf') format('opentype');
+  src:
+    url('/fonts/NeueMontreal-Medium.otf') format('opentype'),
+    url('/bali-villa-website/fonts/NeueMontreal-Medium.otf')
+      format('opentype');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
