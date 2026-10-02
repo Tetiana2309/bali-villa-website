@@ -29,8 +29,7 @@ export function HowWeWork() {
     const ctx = gsap.context(() => {
       /*
        * ==========================================
-       * STEP BASE STATES
-       * Everything is visible from the start.
+       * STEPS
        * ==========================================
        */
 
@@ -42,14 +41,17 @@ export function HowWeWork() {
 
         if (!step || !title || !content || !dot) return
 
+        /*
+         * Base state
+         */
+
         gsap.set(title, {
-          opacity: 0.4,
+          opacity: 0.32,
           x: 0,
         })
 
         gsap.set(content, {
           opacity: 0.55,
-          y: 0,
         })
 
         gsap.set(dot, {
@@ -60,31 +62,28 @@ export function HowWeWork() {
 
         /*
          * ==========================================
-         * ACTIVE STEP
+         * ACTIVE STEP ANIMATION
          * ==========================================
-         *
-         * The step becomes more expressive while
-         * passing through the main reading area.
          */
 
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: step,
-            start: 'top 72%',
-            end: 'bottom 28%',
-            scrub: 1.2,
+            start: 'top 75%',
+            end: 'bottom 35%',
+            scrub: 1.8,
           },
         })
 
         /*
-         * STEP → ACTIVE
+         * BASE → ACTIVE
          */
 
         timeline.to(
           title,
           {
-            opacity: 0.72,
-            x: 10,
+            opacity: 0.68,
+            x: 8,
             duration: 1,
             ease: 'none',
           },
@@ -95,7 +94,6 @@ export function HowWeWork() {
           content,
           {
             opacity: 1,
-            y: -6,
             duration: 1,
             ease: 'none',
           },
@@ -106,7 +104,7 @@ export function HowWeWork() {
           dot,
           {
             opacity: 1,
-            scale: 1.35,
+            scale: 1.12,
             duration: 1,
             ease: 'none',
           },
@@ -114,10 +112,10 @@ export function HowWeWork() {
         )
 
         /*
-         * Small hold in the active state.
+         * Active hold
          */
 
-        timeline.to({}, { duration: 0.35 })
+        timeline.to({}, { duration: 0.55 })
 
         /*
          * ACTIVE → BASE
@@ -126,7 +124,7 @@ export function HowWeWork() {
         timeline.to(
           title,
           {
-            opacity: 0.4,
+            opacity: 0.32,
             x: 0,
             duration: 1,
             ease: 'none',
@@ -137,7 +135,6 @@ export function HowWeWork() {
           content,
           {
             opacity: 0.55,
-            y: 0,
             duration: 1,
             ease: 'none',
           },
@@ -167,12 +164,12 @@ export function HowWeWork() {
           footerTextRef.current,
           {
             opacity: 0,
-            y: 18,
+            y: 14,
           },
           {
             opacity: 0.9,
             y: 0,
-            duration: 0.8,
+            duration: 0.9,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: footerTextRef.current,
@@ -194,7 +191,7 @@ export function HowWeWork() {
           ctaRef.current,
           {
             opacity: 0,
-            y: 18,
+            y: 14,
           },
           {
             opacity: 1,
