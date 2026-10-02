@@ -35,9 +35,20 @@
 }
 
 @layer base {
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-height: 100%;
+  }
+
   html {
     scroll-behavior: auto;
     overflow-x: hidden;
+    overflow-y: auto;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   body {
@@ -45,12 +56,26 @@
     color: var(--color-espresso);
     font-family: var(--font-neue);
     font-weight: 400;
+
     overflow-x: hidden;
+    overflow-y: visible;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   #root {
     min-height: 100%;
     background-color: #dde4ee;
+    overflow: visible;
+  }
+
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
+  #root::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
