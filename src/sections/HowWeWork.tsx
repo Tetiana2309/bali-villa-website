@@ -36,6 +36,12 @@ export function HowWeWork() {
     if (!sectionRef.current) return
 
     const ctx = gsap.context(() => {
+      /*
+       * ==========================================
+       * HOW WE WORK STEPS
+       * ==========================================
+       */
+
       HOW_WE_WORK_STEPS.forEach((_, index) => {
         const step = stepRefs.current[index]
         const image = imageRefs.current[index]
@@ -48,52 +54,48 @@ export function HowWeWork() {
          * ==========================================
          * INITIAL STATE
          * ==========================================
+         *
+         * No translate.
+         * No scale.
+         * Only opacity.
          */
 
         gsap.set(image, {
           opacity: 0,
-          y: 16,
-          scale: 1.02,
         })
 
         gsap.set(content, {
           opacity: 0,
-          y: 14,
         })
 
         gsap.set(dot, {
           opacity: 0.25,
-          backgroundColor: '#7B978A',
         })
 
         /*
          * ==========================================
-         * ACTIVE
+         * ACTIVE STATE
          * ==========================================
          */
 
         const activateStep = () => {
           gsap.to(image, {
             opacity: 1,
-            y: 0,
-            scale: 1,
-            duration: 0.85,
-            ease: 'power3.out',
+            duration: 0.9,
+            ease: 'power2.out',
             overwrite: 'auto',
           })
 
           gsap.to(content, {
             opacity: 1,
-            y: 0,
-            duration: 0.9,
-            ease: 'power3.out',
+            duration: 1,
+            ease: 'power2.out',
             overwrite: 'auto',
           })
 
           gsap.to(dot, {
             opacity: 1,
-            backgroundColor: '#7B978A',
-            duration: 0.6,
+            duration: 0.55,
             ease: 'power2.out',
             overwrite: 'auto',
           })
@@ -101,36 +103,42 @@ export function HowWeWork() {
 
         /*
          * ==========================================
-         * INACTIVE
+         * INACTIVE STATE
          * ==========================================
          */
 
         const deactivateStep = () => {
           gsap.to(image, {
             opacity: 0,
-            y: 12,
-            scale: 1.015,
-            duration: 0.65,
+            duration: 0.7,
             ease: 'power2.out',
             overwrite: 'auto',
           })
 
           gsap.to(content, {
             opacity: 0,
-            y: 10,
-            duration: 0.6,
+            duration: 0.7,
             ease: 'power2.out',
             overwrite: 'auto',
           })
 
           gsap.to(dot, {
             opacity: 0.25,
-            backgroundColor: '#7B978A',
-            duration: 0.45,
+            duration: 0.5,
             ease: 'power2.out',
             overwrite: 'auto',
           })
         }
+
+        /*
+         * ==========================================
+         * SCROLL TRIGGER
+         * ==========================================
+         *
+         * No scrub.
+         * Animation fires only when the row
+         * enters / leaves the reading area.
+         */
 
         ScrollTrigger.create({
           trigger: step,
@@ -156,13 +164,11 @@ export function HowWeWork() {
           footerTextRef.current,
           {
             opacity: 0,
-            y: 12,
           },
           {
             opacity: 0.9,
-            y: 0,
-            duration: 0.85,
-            ease: 'power3.out',
+            duration: 0.9,
+            ease: 'power2.out',
             scrollTrigger: {
               trigger: footerTextRef.current,
               start: 'top 92%',
@@ -183,13 +189,11 @@ export function HowWeWork() {
           ctaRef.current,
           {
             opacity: 0,
-            y: 12,
           },
           {
             opacity: 1,
-            y: 0,
-            duration: 0.85,
-            ease: 'power3.out',
+            duration: 0.9,
+            ease: 'power2.out',
             scrollTrigger: {
               trigger: ctaRef.current,
               start: 'top 92%',
@@ -259,54 +263,54 @@ export function HowWeWork() {
               top: STEP_TOP_OFFSETS[i],
             }}
           >
-            <div className="absolute top-0 left-10 h-[124px] w-[1840px]">
-              {/* Large title — always static */}
-              <span className="text-wordmark absolute top-0 left-0 opacity-40">
-                {step.title}
-              </span>
+            {/* Large title */}
+            <span className="text-wordmark absolute top-0 left-10 opacity-40">
+              {step.title}
+            </span>
 
-              {/* Image */}
-              <div
-                ref={(element) => {
-                  imageRefs.current[i] = element
-                }}
-                className="absolute top-0 left-[830px] h-[164px] w-[324px] overflow-hidden rounded-[1px]"
-              >
-                <img
-                  src={STEP_IMAGES[i]}
-                  alt=""
-                  aria-hidden="true"
-                  className="h-full w-full object-cover"
-                />
-
-                <div className="pointer-events-none absolute inset-0 bg-black/30" />
-              </div>
-
-              {/* Dot */}
-              <span
-                ref={(element) => {
-                  dotRefs.current[i] = element
-                }}
-                className="absolute top-0 right-0 h-4 w-4 rounded-full bg-[#7B978A]"
+            {/* Villa image */}
+            <div
+              ref={(element) => {
+                imageRefs.current[i] = element
+              }}
+              className="absolute top-[60px] left-[870px] h-[164px] w-[324px] overflow-hidden rounded-[1px]"
+            >
+              <img
+                src={STEP_IMAGES[i]}
+                alt=""
+                aria-hidden="true"
+                draggable={false}
+                className="block h-full w-full object-cover"
               />
 
-              {/* Right content */}
-              <div
-                ref={(element) => {
-                  contentRefs.current[i] = element
-                }}
-                className="absolute top-0 right-[133px] w-[335px]"
-              >
-                <p className="text-heading-two">
-                  {step.subtitle}
-                </p>
-
-                <p className="text-body-copy mt-[10px] text-espresso/70">
-                  {step.description}
-                </p>
-              </div>
+              <div className="pointer-events-none absolute inset-0 bg-black/30" />
             </div>
 
+            {/* Right content */}
+            <div
+              ref={(element) => {
+                contentRefs.current[i] = element
+              }}
+              className="absolute top-0 right-[173px] w-[335px]"
+            >
+              <p className="text-heading-two">
+                {step.subtitle}
+              </p>
+
+              <p className="text-body-copy mt-[10px] text-espresso/70">
+                {step.description}
+              </p>
+            </div>
+
+            {/* Dot */}
+            <span
+              ref={(element) => {
+                dotRefs.current[i] = element
+              }}
+              className="absolute top-0 right-10 h-4 w-4 rounded-full bg-[#7B978A]"
+            />
+
+            {/* Divider */}
             <span
               className="absolute left-0 h-[1.6px] w-full bg-espresso/30"
               style={{
