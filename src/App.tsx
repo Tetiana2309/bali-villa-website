@@ -1,74 +1,77 @@
-import { useEffect, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+
 import Lenis from 'lenis'
+
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-import { gsap } from './lib/gsap'
 import { DesktopCanvas } from './components/DesktopCanvas'
 import { Preloader } from './components/Preloader'
 
-import { Hero } from './sections/Hero'
-import { OurMethod } from './sections/OurMethod'
-import { HowWeWork } from './sections/HowWeWork'
-import { Gallery } from './sections/Gallery'
-import { Testimonials } from './sections/Testimonials'
-import { FAQ } from './sections/FAQ'
+import { gsap } from './lib/gsap'
+
 import { Contacts } from './sections/Contacts'
+import { FAQ } from './sections/FAQ'
+import { Gallery } from './sections/Gallery'
+import { Hero } from './sections/Hero'
+import { HowWeWork } from './sections/HowWeWork'
+import { OurMethod } from './sections/OurMethod'
+import { Testimonials } from './sections/Testimonials'
 
 gsap.registerPlugin(ScrollTrigger)
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] =
+    useState(true)
+
+  const lenisRef =
+    useRef<Lenis | null>(null)
 
   useEffect(() => {
-    /*
-     * ==========================================
-     * SCROLL RESTORATION
-     * ==========================================
-     */
+    window.history.scrollRestoration =
+      'manual'
 
-    window.history.scrollRestoration = 'manual'
     window.scrollTo(0, 0)
-
-    /*
-     * ==========================================
-     * LENIS
-     * ==========================================
-     */
 
     const lenis = new Lenis({
       lerp: 0.08,
       smoothWheel: true,
     })
 
-    /*
-     * Always start from the top.
-     */
+    lenisRef.current = lenis
 
     lenis.scrollTo(0, {
       immediate: true,
     })
 
     /*
-     * Keep ScrollTrigger synchronized
-     * with Lenis.
+     * ==========================================
+     * LOCK SCROLL DURING PRELOADER
+     * ==========================================
      */
 
-    lenis.on('scroll', ScrollTrigger.update)
+    lenis.stop()
 
-    const updateLenis = (time: number) => {
+    lenis.on(
+      'scroll',
+      ScrollTrigger.update,
+    )
+
+    const updateLenis = (
+      time: number,
+    ) => {
       lenis.raf(time * 1000)
     }
 
     gsap.ticker.add(updateLenis)
+
     gsap.ticker.lagSmoothing(0)
 
-    /*
-     * ==========================================
-     * FIRST REFRESH
-     * ==========================================
-     */
-
-    const refreshFrame = requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
       window.scrollTo(0, 0)
 
       lenis.scrollTo(0, {
@@ -78,18 +81,14 @@ function App() {
       ScrollTrigger.refresh()
     })
 
-    /*
-     * ==========================================
-     * CLEANUP
-     * ==========================================
-     */
-
     return () => {
-      cancelAnimationFrame(refreshFrame)
-
-      gsap.ticker.remove(updateLenis)
+      gsap.ticker.remove(
+        updateLenis,
+      )
 
       lenis.destroy()
+
+      lenisRef.current = null
     }
   }, [])
 
@@ -99,40 +98,67 @@ function App() {
    * ==========================================
    */
 
-  const handlePreloaderComplete = () => {
-    setIsLoading(false)
+  const handlePreloaderComplete =
+    useCallback(() => {
+      /*
+       * Unlock Hero UI first.
+       */
 
-    /*
-     * Wait until React removes the preloader,
-     * then refresh all ScrollTrigger positions.
-     */
+      setIsLoading(false)
 
-    requestAnimationFrame(() => {
-      window.scrollTo(0, 0)
+      /*
+       * Then unlock scrolling.
+       */
 
-      ScrollTrigger.refresh()
-    })
-  }
+      const lenis =
+        lenisRef.current
+
+      if (lenis) {
+        lenis.scrollTo(0, {
+          immediate: true,
+        })
+
+        lenis.start()
+      }
+
+      /*
+       * Recalculate ScrollTrigger only after
+       * React has removed the Preloader.
+       */
+
+      requestAnimationFrame(() => {
+        window.scrollTo(0, 0)
+
+        if (lenis) {
+          lenis.scrollTo(0, {
+            immediate: true,
+          })
+        }
+
+        ScrollTrigger.refresh()
+      })
+    }, [])
 
   return (
     <>
       {/*
        * ========================================
-       * MAIN WEBSITE
+       * WEBSITE
        * ========================================
        *
-       * The site is already mounted behind
-       * the preloader.
+       * IMPORTANT:
        *
-       * This is important because videos,
-       * images and ScrollTrigger sections
-       * can initialize while the loader
-       * is visible.
+       * Hero is rendered immediately.
+       *
+       * Its video is already playing
+       * underneath the Preloader.
        * ========================================
        */}
 
       <DesktopCanvas>
-        <Hero />
+        <Hero
+          heroReady={!isLoading}
+        />
 
         <OurMethod />
 
@@ -152,13 +178,17 @@ function App() {
        * PRELOADER
        * ========================================
        *
-       * Fixed above the whole website.
+       * Preloader is only a visual cover.
+       *
+       * It does NOT contain another video.
        * ========================================
        */}
 
       {isLoading && (
         <Preloader
-          onComplete={handlePreloaderComplete}
+          onComplete={
+            handlePreloaderComplete
+          }
         />
       )}
     </>
