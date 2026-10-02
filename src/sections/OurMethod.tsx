@@ -7,10 +7,12 @@ import { OUR_METHOD_STATES } from '../data/ourMethod'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const BASE_URL = import.meta.env.BASE_URL
+
 const WIDE_IMAGES = [
-  '/images/our-method-image-1-wide.webp',
-  '/images/our-method-image-2-wide.webp',
-  '/images/our-method-image-3-wide.webp',
+  `${BASE_URL}images/our-method-image-1-wide.webp`,
+  `${BASE_URL}images/our-method-image-2-wide.webp`,
+  `${BASE_URL}images/our-method-image-3-wide.webp`,
 ]
 
 const ICE = '#DDE4EE'
@@ -219,16 +221,13 @@ export function OurMethod() {
        * ==========================================
        */
 
-      timeline.to(
-        small1,
-        {
-          opacity: 0,
-          x: 45,
-          y: 45,
-          duration: 0.8,
-          ease: 'sine.inOut',
-        },
-      )
+      timeline.to(small1, {
+        opacity: 0,
+        x: 45,
+        y: 45,
+        duration: 0.8,
+        ease: 'sine.inOut',
+      })
 
       timeline.to(
         full1,
@@ -434,16 +433,13 @@ export function OurMethod() {
        * ==========================================
        */
 
-      timeline.to(
-        small2,
-        {
-          opacity: 0,
-          x: 45,
-          y: 45,
-          duration: 0.8,
-          ease: 'sine.inOut',
-        },
-      )
+      timeline.to(small2, {
+        opacity: 0,
+        x: 45,
+        y: 45,
+        duration: 0.8,
+        ease: 'sine.inOut',
+      })
 
       timeline.to(
         full2,
@@ -634,16 +630,13 @@ export function OurMethod() {
        * ==========================================
        */
 
-      timeline.to(
-        small3,
-        {
-          opacity: 0,
-          x: 45,
-          y: 45,
-          duration: 0.8,
-          ease: 'sine.inOut',
-        },
-      )
+      timeline.to(small3, {
+        opacity: 0,
+        x: 45,
+        y: 45,
+        duration: 0.8,
+        ease: 'sine.inOut',
+      })
 
       timeline.to(
         full3,
@@ -944,9 +937,7 @@ export function OurMethod() {
           />
 
           <span className="flex items-center justify-between">
-            <span className="text-button-label">
-              Get Advice
-            </span>
+            <span className="text-button-label">Get Advice</span>
 
             <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
           </span>
