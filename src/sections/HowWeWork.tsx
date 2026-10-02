@@ -14,13 +14,10 @@ const STEP_HEIGHT = 184
 export function HowWeWork() {
   const sectionRef = useRef<HTMLElement>(null)
 
-  const headerRef = useRef<HTMLDivElement>(null)
-
   const stepRefs = useRef<(HTMLDivElement | null)[]>([])
   const titleRefs = useRef<(HTMLSpanElement | null)[]>([])
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const dotRefs = useRef<(HTMLSpanElement | null)[]>([])
-  const lineRefs = useRef<(HTMLSpanElement | null)[]>([])
 
   const footerTextRef = useRef<HTMLParagraphElement>(null)
   const ctaRef = useRef<HTMLAnchorElement>(null)
@@ -32,34 +29,8 @@ export function HowWeWork() {
     const ctx = gsap.context(() => {
       /*
        * ==========================================
-       * HEADER
-       * ==========================================
-       */
-
-      if (headerRef.current) {
-        gsap.fromTo(
-          headerRef.current,
-          {
-            opacity: 0,
-            y: 18,
-          },
-          {
-            opacity: 0.7,
-            y: 0,
-            duration: 0.8,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 82%',
-              once: true,
-            },
-          },
-        )
-      }
-
-      /*
-       * ==========================================
-       * STEPS
+       * STEP BASE STATES
+       * Everything is visible from the start.
        * ==========================================
        */
 
@@ -68,53 +39,52 @@ export function HowWeWork() {
         const title = titleRefs.current[index]
         const content = contentRefs.current[index]
         const dot = dotRefs.current[index]
-        const line = lineRefs.current[index]
 
-        if (!step || !title || !content || !dot || !line) return
-
-        /*
-         * Initial state
-         */
+        if (!step || !title || !content || !dot) return
 
         gsap.set(title, {
-          opacity: 0.18,
-          y: 28,
+          opacity: 0.4,
+          x: 0,
         })
 
         gsap.set(content, {
-          opacity: 0,
-          y: 24,
+          opacity: 0.55,
+          y: 0,
         })
 
         gsap.set(dot, {
           opacity: 0.25,
-          scale: 0.7,
+          scale: 1,
           transformOrigin: '50% 50%',
         })
 
-        gsap.set(line, {
-          scaleX: 0,
-          transformOrigin: 'left center',
-        })
-
         /*
-         * Step animation
+         * ==========================================
+         * ACTIVE STEP
+         * ==========================================
+         *
+         * The step becomes more expressive while
+         * passing through the main reading area.
          */
 
         const timeline = gsap.timeline({
           scrollTrigger: {
             trigger: step,
-            start: 'top 78%',
-            end: 'top 42%',
-            scrub: 1.15,
+            start: 'top 72%',
+            end: 'bottom 28%',
+            scrub: 1.2,
           },
         })
+
+        /*
+         * STEP → ACTIVE
+         */
 
         timeline.to(
           title,
           {
-            opacity: 0.4,
-            y: 0,
+            opacity: 0.72,
+            x: 10,
             duration: 1,
             ease: 'none',
           },
@@ -125,69 +95,65 @@ export function HowWeWork() {
           content,
           {
             opacity: 1,
-            y: 0,
-            duration: 0.8,
+            y: -6,
+            duration: 1,
             ease: 'none',
           },
-          0.1,
+          0,
         )
 
         timeline.to(
           dot,
           {
             opacity: 1,
-            scale: 1,
-            duration: 0.7,
-            ease: 'none',
-          },
-          0.15,
-        )
-
-        timeline.to(
-          line,
-          {
-            scaleX: 1,
+            scale: 1.35,
             duration: 1,
             ease: 'none',
           },
-          0.05,
+          0,
         )
 
         /*
-         * Slight fade once the step
-         * moves further above the viewport.
+         * Small hold in the active state.
          */
 
-        gsap.to(title, {
-          opacity: 0.22,
-          scrollTrigger: {
-            trigger: step,
-            start: 'bottom 38%',
-            end: 'bottom 10%',
-            scrub: 1,
-          },
-        })
+        timeline.to({}, { duration: 0.35 })
 
-        gsap.to(content, {
-          opacity: 0.55,
-          scrollTrigger: {
-            trigger: step,
-            start: 'bottom 38%',
-            end: 'bottom 10%',
-            scrub: 1,
-          },
-        })
+        /*
+         * ACTIVE → BASE
+         */
 
-        gsap.to(dot, {
-          opacity: 0.3,
-          scale: 0.8,
-          scrollTrigger: {
-            trigger: step,
-            start: 'bottom 38%',
-            end: 'bottom 10%',
-            scrub: 1,
+        timeline.to(
+          title,
+          {
+            opacity: 0.4,
+            x: 0,
+            duration: 1,
+            ease: 'none',
           },
-        })
+        )
+
+        timeline.to(
+          content,
+          {
+            opacity: 0.55,
+            y: 0,
+            duration: 1,
+            ease: 'none',
+          },
+          '<',
+        )
+
+        timeline.to(
+          dot,
+          {
+            opacity: 0.25,
+            scale: 1,
+            duration: 1,
+            ease: 'none',
+          },
+          '<',
+        )
       })
 
       /*
@@ -201,7 +167,7 @@ export function HowWeWork() {
           footerTextRef.current,
           {
             opacity: 0,
-            y: 22,
+            y: 18,
           },
           {
             opacity: 0.9,
@@ -210,7 +176,7 @@ export function HowWeWork() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: footerTextRef.current,
-              start: 'top 90%',
+              start: 'top 92%',
               once: true,
             },
           },
@@ -228,7 +194,7 @@ export function HowWeWork() {
           ctaRef.current,
           {
             opacity: 0,
-            y: 22,
+            y: 18,
           },
           {
             opacity: 1,
@@ -237,7 +203,7 @@ export function HowWeWork() {
             ease: 'power2.out',
             scrollTrigger: {
               trigger: ctaRef.current,
-              start: 'top 90%',
+              start: 'top 92%',
               once: true,
             },
           },
@@ -245,7 +211,7 @@ export function HowWeWork() {
       }
 
       /*
-       * CTA line draws from left to right.
+       * CTA line
        */
 
       if (ctaLineRef.current) {
@@ -261,7 +227,7 @@ export function HowWeWork() {
             ease: 'power2.inOut',
             scrollTrigger: {
               trigger: ctaRef.current,
-              start: 'top 90%',
+              start: 'top 92%',
               once: true,
             },
           },
@@ -283,14 +249,12 @@ export function HowWeWork() {
       aria-label="How We Work"
       className="relative mt-[220px] h-[1312px] w-[1920px] bg-ice"
     >
-      <div ref={headerRef}>
-        <SectionHeader
-          className="top-10 opacity-70"
-          left="A Minimum Of Actions On Your Part."
-          center="How We Work"
-          right="Maximum - From Ours."
-        />
-      </div>
+      <SectionHeader
+        className="top-10 opacity-70"
+        left="A Minimum Of Actions On Your Part."
+        center="How We Work"
+        right="Maximum - From Ours."
+      />
 
       <div className="absolute top-[152px] left-0 h-[976px] w-[1920px]">
         {HOW_WE_WORK_STEPS.map((step, i) => (
@@ -338,9 +302,6 @@ export function HowWeWork() {
             </div>
 
             <span
-              ref={(element) => {
-                lineRefs.current[i] = element
-              }}
               className="absolute left-0 h-[1.6px] w-full bg-espresso/30"
               style={{
                 top: STEP_HEIGHT,
