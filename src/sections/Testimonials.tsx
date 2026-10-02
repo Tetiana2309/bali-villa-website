@@ -1,198 +1,404 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
 import { gsap } from '../lib/gsap'
 import { SectionHeader } from '../components/SectionHeader'
-import { ArrowIcon } from '../components/ArrowIcon'
 import { TESTIMONIAL_STATES } from '../data/testimonials'
 
+gsap.registerPlugin(ScrollTrigger)
+
+const SECTION_HEIGHT = 899
+
 export function Testimonials() {
-  const [index, setIndex] = useState(0)
-  const cardRef = useRef<HTMLDivElement>(null)
-  const isAnimating = useRef(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
-  const goToNext = () => {
-    if (isAnimating.current) return
-    if (index >= TESTIMONIAL_STATES.length - 1) return
+  const activeIndexRef = useRef(0)
+  const isAnimatingRef = useRef(false)
 
-    isAnimating.current = true
+  useEffect(() => {
+    if (!sectionRef.current) return
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        isAnimating.current = false
-      },
-    })
+    const section = sectionRef.current
 
-    tl.to(cardRef.current, {
-      opacity: 0,
-      y: 12,
-      duration: 0.45,
-      ease: 'power2.in',
-    })
-      .call(() => {
-        setIndex((current) => current + 1)
+    const card1 = cardRefs.current[0]
+    const card2 = cardRefs.current[1]
+    const card3 = cardRefs.current[2]
+
+    if (!card1 || !card2 || !card3) return
+
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
+
+    const ctx = gsap.context(() => {
+      /*
+       * ==========================================
+       * INITIAL STATES
+       * ==========================================
+       */
+
+      gsap.set(card1, {
+        yPercent: 0,
       })
-      .set(cardRef.current, { y: -12 })
-      .to(cardRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
+
+      gsap.set(card2, {
+        yPercent: 100,
       })
-  }
 
-  const goToPrevious = () => {
-    if (isAnimating.current) return
-    if (index <= 0) return
-
-    isAnimating.current = true
-
-    const tl = gsap.timeline({
-      onComplete: () => {
-        isAnimating.current = false
-      },
-    })
-
-    tl.to(cardRef.current, {
-      opacity: 0,
-      y: -12,
-      duration: 0.45,
-      ease: 'power2.in',
-    })
-      .call(() => {
-        setIndex((current) => current - 1)
+      gsap.set(card3, {
+        yPercent: 100,
       })
-      .set(cardRef.current, { y: 12 })
-      .to(cardRef.current, {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: 'power3.out',
-      })
-  }
 
-  const state = TESTIMONIAL_STATES[index]
+      activeIndexRef.current = 0
+      isAnimatingRef.current = false
+
+      if (prefersReducedMotion) return
+
+      /*
+       * ==========================================
+       * REVIEW 1 → REVIEW 2
+       * SCROLL DOWN
+       * ==========================================
+       */
+
+      const showSecondReview = () => {
+        if (isAnimatingRef.current) return
+        if (activeIndexRef.current !== 0) return
+
+        isAnimatingRef.current = true
+        activeIndexRef.current = 1
+
+        gsap.killTweensOf(card2)
+
+        gsap.set(card2, {
+          yPercent: 100,
+        })
+
+        gsap.to(card2, {
+          yPercent: 0,
+          duration: 0.9,
+          ease: 'power2.inOut',
+          overwrite: 'auto',
+
+          onComplete: () => {
+            isAnimatingRef.current = false
+          },
+        })
+      }
+
+      /*
+       * ==========================================
+       * REVIEW 2 → REVIEW 3
+       * SCROLL DOWN
+       * ==========================================
+       */
+
+      const showThirdReview = () => {
+        if (isAnimatingRef.current) return
+        if (activeIndexRef.current !== 1) return
+
+        isAnimatingRef.current = true
+        activeIndexRef.current = 2
+
+        gsap.killTweensOf(card3)
+
+        gsap.set(card3, {
+          yPercent: 100,
+        })
+
+        gsap.to(card3, {
+          yPercent: 0,
+          duration: 0.9,
+          ease: 'power2.inOut',
+          overwrite: 'auto',
+
+          onComplete: () => {
+            isAnimatingRef.current = false
+          },
+        })
+      }
+
+      /*
+       * ==========================================
+       * REVIEW 3 → REVIEW 2
+       * SCROLL UP
+       * ==========================================
+       */
+
+      const hideThirdReviewUp = () => {
+        if (isAnimatingRef.current) return
+        if (activeIndexRef.current !== 2) return
+
+        isAnimatingRef.current = true
+        activeIndexRef.current = 1
+
+        gsap.killTweensOf(card3)
+
+        gsap.to(card3, {
+          yPercent: -100,
+          duration: 0.85,
+          ease: 'power2.inOut',
+          overwrite: 'auto',
+
+          onComplete: () => {
+            gsap.set(card3, {
+              yPercent: 100,
+            })
+
+            isAnimatingRef.current = false
+          },
+        })
+      }
+
+      /*
+       * ==========================================
+       * REVIEW 2 → REVIEW 1
+       * SCROLL UP
+       * ==========================================
+       */
+
+      const hideSecondReviewUp = () => {
+        if (isAnimatingRef.current) return
+        if (activeIndexRef.current !== 1) return
+
+        isAnimatingRef.current = true
+        activeIndexRef.current = 0
+
+        gsap.killTweensOf(card2)
+
+        gsap.to(card2, {
+          yPercent: -100,
+          duration: 0.85,
+          ease: 'power2.inOut',
+          overwrite: 'auto',
+
+          onComplete: () => {
+            gsap.set(card2, {
+              yPercent: 100,
+            })
+
+            isAnimatingRef.current = false
+          },
+        })
+      }
+
+      /*
+       * ==========================================
+       * SCROLLTRIGGER
+       * ==========================================
+       *
+       * Testimonials stops at the top.
+       *
+       * pinSpacing: true keeps the following
+       * section in the correct document flow.
+       *
+       * This prevents FAQ from disappearing
+       * underneath Testimonials.
+       * ==========================================
+       */
+
+      ScrollTrigger.create({
+        trigger: section,
+
+        start: 'top top',
+
+        end: `+=${SECTION_HEIGHT}`,
+
+        pin: section,
+        pinSpacing: true,
+        anticipatePin: 1,
+
+        onUpdate: (self) => {
+          if (isAnimatingRef.current) return
+
+          const progress = self.progress
+          const direction = self.direction
+          const activeIndex = activeIndexRef.current
+
+          /*
+           * ======================================
+           * SCROLL DOWN
+           * ======================================
+           */
+
+          if (direction === 1) {
+            /*
+             * REVIEW 1 → REVIEW 2
+             */
+
+            if (progress >= 0.33 && activeIndex === 0) {
+              showSecondReview()
+              return
+            }
+
+            /*
+             * REVIEW 2 → REVIEW 3
+             */
+
+            if (progress >= 0.66 && activeIndex === 1) {
+              showThirdReview()
+            }
+          }
+
+          /*
+           * ======================================
+           * SCROLL UP
+           * ======================================
+           */
+
+          if (direction === -1) {
+            /*
+             * REVIEW 3 → REVIEW 2
+             */
+
+            if (progress < 0.66 && activeIndex === 2) {
+              hideThirdReviewUp()
+              return
+            }
+
+            /*
+             * REVIEW 2 → REVIEW 1
+             */
+
+            if (progress < 0.33 && activeIndex === 1) {
+              hideSecondReviewUp()
+            }
+          }
+        },
+
+        invalidateOnRefresh: true,
+      })
+    }, section)
+
+    ScrollTrigger.refresh()
+
+    return () => {
+      ctx.revert()
+    }
+  }, [])
 
   return (
     <section
+      ref={sectionRef}
       id="testimonials"
       aria-label="Testimonials"
-      className="relative mt-[220px] h-[620px] w-[1920px] bg-ice"
+      className="relative z-20 h-[899px] w-[1920px] overflow-hidden bg-ice"
     >
-      <SectionHeader
-        className="top-[80px] opacity-70"
-        left="Words From Those Who Found Their Villa"
-        center="Feedback"
-        right="A Place They Now Call Home."
-      />
+      {/*
+       * ==========================================
+       * CONTENT AREA
+       * ==========================================
+       *
+       * 220px top spacing
+       * 459px content
+       * 220px bottom spacing
+       *
+       * 220 + 459 + 220 = 899
+       * ==========================================
+       */}
 
-      <h2 className="text-wordmark absolute top-[132px] left-10 m-0 w-[379px] opacity-40">
-        Review
-      </h2>
+      <div className="absolute top-[220px] left-0 h-[459px] w-[1920px]">
+        {/*
+         * ========================================
+         * SECTION HEADER
+         * ========================================
+         */}
 
-      <p className="text-footnote absolute top-[491px] left-10 w-[172px] text-[#999999]/90">
-        they found their place.
-        <br />
-        now it's your turn.
-      </p>
-
-      <div ref={cardRef} className="absolute inset-0">
-        <video
-          key={state.video}
-          className="absolute top-[132px] left-[724px] h-[403px] w-[560px] object-cover"
-          src={state.video}
-          autoPlay
-          muted
-          loop
-          playsInline
+        <SectionHeader
+          className="top-0 opacity-70"
+          left="Words From Those Who Found Their Villa"
+          center="Feedback"
+          right="A Place They Now Call Home."
         />
 
-        <div className="absolute top-[132px] left-[1413px] w-[340px]">
-          <p className="text-heading-two text-[24px] font-medium">
-            {state.reviewerName}
-          </p>
+        {/*
+         * ========================================
+         * STATIC TITLE
+         * ========================================
+         */}
 
-          <p className="text-footnote mt-[8px] text-[#666666]">
-            {state.reviewerRole}
-          </p>
+        <h2 className="text-wordmark absolute top-[52px] left-10 z-40 m-0 w-[379px] opacity-40">
+          Review
+        </h2>
 
-          <p className="text-body-copy mt-[18px] text-[#666666]">
-            {state.reviewText}
-          </p>
-        </div>
+        {/*
+         * ========================================
+         * STATIC SUPPORTING COPY
+         * ========================================
+         */}
 
-        <p className="text-body-copy absolute top-[329px] left-[1413px] w-[340px] text-espresso/85">
-          {state.villaLocation}
+        <p className="text-footnote absolute top-[411px] left-10 z-40 w-[172px] text-[#999999]/90">
+          they found their place.
+          <br />
+          now it's your turn.
         </p>
-      </div>
 
-      <div className="absolute top-[491px] left-[1413px] w-[127px]">
-        {index === 0 && (
-          <div className="flex w-full items-center justify-between">
-            <span className="text-heading-two">
-              1/
-              <span className="opacity-45">
-                {TESTIMONIAL_STATES.length}
-              </span>
-            </span>
+        {/*
+         * ========================================
+         * TESTIMONIAL WINDOW
+         * ========================================
+         */}
 
-            <button
-              type="button"
-              onClick={goToNext}
-              aria-label="Show next testimonial"
-              className="group text-espresso/45"
+        <div className="absolute top-[52px] left-[724px] h-[403px] w-[1156px] overflow-hidden">
+          {TESTIMONIAL_STATES.map((state, index) => (
+            <div
+              key={state.reviewerName}
+              ref={(element) => {
+                cardRefs.current[index] = element
+              }}
+              className="absolute inset-0 h-[403px] w-[1156px] bg-ice"
+              style={{
+                zIndex: 10 + index * 10,
+              }}
             >
-              <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
-          </div>
-        )}
+              {/*
+               * ==================================
+               * VIDEO
+               * ==================================
+               */}
 
-        {index === 1 && (
-          <div className="flex w-full items-center justify-between">
-            <button
-              type="button"
-              onClick={goToPrevious}
-              aria-label="Show previous testimonial"
-              className="group text-espresso/45"
-            >
-              <ArrowIcon className="rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
-            </button>
+              <video
+                className="absolute top-0 left-0 h-[403px] w-[560px] object-cover"
+                src={state.video}
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
 
-            <span className="text-heading-two">
-              2/
-              <span className="opacity-45">
-                {TESTIMONIAL_STATES.length}
-              </span>
-            </span>
+              {/*
+               * ==================================
+               * REVIEWER INFORMATION
+               * ==================================
+               */}
 
-            <button
-              type="button"
-              onClick={goToNext}
-              aria-label="Show next testimonial"
-              className="group text-espresso/45"
-            >
-              <ArrowIcon className="transition-transform duration-300 group-hover:translate-x-1" />
-            </button>
-          </div>
-        )}
+              <div className="absolute top-0 left-[689px] w-[340px]">
+                <p className="text-heading-two text-[24px] font-medium">
+                  {state.reviewerName}
+                </p>
 
-        {index === 2 && (
-          <div className="flex w-full items-center justify-between">
-            <button
-              type="button"
-              onClick={goToPrevious}
-              aria-label="Show previous testimonial"
-              className="group text-espresso/45"
-            >
-              <ArrowIcon className="rotate-180 transition-transform duration-300 group-hover:-translate-x-1" />
-            </button>
+                <p className="text-footnote mt-[8px] text-[#666666]">
+                  {state.reviewerRole}
+                </p>
 
-            <span className="text-heading-two">
-              3/
-              <span className="opacity-45">
-                {TESTIMONIAL_STATES.length}
-              </span>
-            </span>
-          </div>
-        )}
+                <p className="text-body-copy mt-[18px] text-[#666666]">
+                  {state.reviewText}
+                </p>
+              </div>
+
+              {/*
+               * ==================================
+               * VILLA LOCATION
+               * ==================================
+               */}
+
+              <p className="text-body-copy absolute top-[197px] left-[689px] w-[340px] text-espresso/85">
+                {state.villaLocation}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

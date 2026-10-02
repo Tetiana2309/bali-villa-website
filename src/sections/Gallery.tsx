@@ -19,14 +19,6 @@ const SMALL_VIDEO_HEIGHT = 862
 const VIDEO_INSET_X =
   (CANVAS_WIDTH - SMALL_VIDEO_WIDTH) / 2
 
-const VIDEO_INSET_Y =
-  (CANVAS_HEIGHT - SMALL_VIDEO_HEIGHT) / 2
-
-/*
- * One fixed Gallery screen.
- *
- * All three villas animate inside it.
- */
 const PIN_DISTANCE = 5200
 
 export function Gallery() {
@@ -67,29 +59,15 @@ export function Gallery() {
       return
     }
 
-    const scene =
-      sceneRef.current
+    const scene = sceneRef.current
+    const header = headerRef.current
+    const line = lineRef.current
 
-    const header =
-      headerRef.current
-
-    const line =
-      lineRef.current
-
-    const frames =
-      frameRefs.current
-
-    const titles =
-      titleRefs.current
-
-    const locations =
-      locationRefs.current
-
-    const specs =
-      specsRefs.current
-
-    const descriptions =
-      descriptionRefs.current
+    const frames = frameRefs.current
+    const titles = titleRefs.current
+    const locations = locationRefs.current
+    const specs = specsRefs.current
+    const descriptions = descriptionRefs.current
 
     if (
       frames.some((item) => !item) ||
@@ -109,32 +87,22 @@ export function Gallery() {
     const ctx = gsap.context(() => {
       /*
        * ==========================================
-       * CLIP
+       * INITIAL VIDEO STATES
        * ==========================================
-       */
-
-      const applyCenteredClip = (
-        frame: HTMLDivElement,
-        x: number,
-        y: number,
-      ) => {
-        const clipPathValue =
-          `inset(${y}px ${x}px ${y}px ${x}px)`
-
-        frame.style.setProperty(
-          '-webkit-clip-path',
-          clipPathValue,
-        )
-
-        frame.style.setProperty(
-          'clip-path',
-          clipPathValue,
-        )
-      }
-
-      /*
-       * ==========================================
-       * INITIAL STATE FOR ALL 3 VILLAS
+       *
+       * Every video WINDOW is physically centered.
+       *
+       * No clip-path.
+       * No scale.
+       * No transform-origin problems.
+       *
+       * The window itself starts:
+       *
+       * 1482 × 862
+       *
+       * and later becomes:
+       *
+       * 1920 × 1080
        * ==========================================
        */
 
@@ -156,31 +124,26 @@ export function Gallery() {
             descriptions[index]!
 
           /*
-           * Every video starts SMALL.
-           */
-
-          applyCenteredClip(
-            frame,
-            VIDEO_INSET_X,
-            VIDEO_INSET_Y,
-          )
-
-          /*
-           * Only first villa is visible
-           * at the beginning.
+           * ======================================
+           * FRAME
+           * ======================================
            */
 
           gsap.set(frame, {
+            width:
+              SMALL_VIDEO_WIDTH,
+
+            height:
+              SMALL_VIDEO_HEIGHT,
+
             opacity:
               index === 0 ? 1 : 0,
           })
 
           /*
-           * Title:
-           *
-           * base top = 614
-           * +120 transform
-           * = visual top 734
+           * ======================================
+           * TITLE
+           * ======================================
            */
 
           gsap.set(title, {
@@ -192,8 +155,9 @@ export function Gallery() {
           })
 
           /*
-           * Extra information hidden
-           * while villa is small.
+           * ======================================
+           * EXTRA INFO
+           * ======================================
            */
 
           gsap.set(
@@ -224,9 +188,6 @@ export function Gallery() {
       /*
        * ==========================================
        * LINE INITIAL STATE
-       *
-       * 1.6px
-       * opacity .7
        * ==========================================
        */
 
@@ -261,13 +222,13 @@ export function Gallery() {
             const description =
               descriptions[index]!
 
-            applyCenteredClip(
-              frame,
-              0,
-              0,
-            )
-
             gsap.set(frame, {
+              width:
+                CANVAS_WIDTH,
+
+              height:
+                CANVAS_HEIGHT,
+
               opacity:
                 index === lastIndex
                   ? 1
@@ -316,11 +277,7 @@ export function Gallery() {
 
       /*
        * ==========================================
-       * ONE MASTER TIMELINE
-       *
-       * ONE SCREEN
-       * ONE PIN
-       * THREE VILLAS
+       * MASTER TIMELINE
        * ==========================================
        */
 
@@ -348,18 +305,9 @@ export function Gallery() {
           const description =
             descriptions[index]!
 
-          const reveal = {
-            x: VIDEO_INSET_X,
-            y: VIDEO_INSET_Y,
-          }
-
           /*
            * ======================================
-           * TRANSITION:
-           *
-           * PREVIOUS BIG VILLA
-           * →
-           * NEXT SMALL VILLA
+           * NEXT VILLA
            * ======================================
            */
 
@@ -381,73 +329,8 @@ export function Gallery() {
 
             /*
              * ====================================
-             * PREPARE NEXT SMALL VILLA
+             * OLD FULLSCREEN VILLA FADES
              * ====================================
-             *
-             * The villa is already clipped
-             * to 1482 × 862.
-             *
-             * It stays invisible until
-             * the dissolve begins.
-             */
-
-            applyCenteredClip(
-              frame,
-              VIDEO_INSET_X,
-              VIDEO_INSET_Y,
-            )
-
-            timeline.set(frame, {
-              opacity: 0,
-              zIndex: 20,
-            })
-
-            timeline.set(
-              previousFrame,
-              {
-                zIndex: 10,
-              },
-            )
-
-            /*
-             * Prepare next title:
-             *
-             * visual top = 734px
-             */
-
-            timeline.set(title, {
-              x: VIDEO_INSET_X,
-              y: 120,
-              opacity: 0,
-            })
-
-            /*
-             * Next villa info stays hidden
-             * until it expands.
-             */
-
-            timeline.set(
-              [
-                location,
-                spec,
-                description,
-              ],
-              {
-                opacity: 0,
-                y: 18,
-              },
-            )
-
-            /*
-             * ====================================
-             * SMOOTH DISSOLVE
-             * ====================================
-             *
-             * Previous fullscreen villa
-             * fades away.
-             *
-             * Next SMALL villa fades in
-             * at the same time.
              */
 
             timeline.to(
@@ -455,27 +338,62 @@ export function Gallery() {
               {
                 opacity: 0,
 
-                duration: 0.8,
+                duration: 0.85,
 
-                ease: 'power2.inOut',
+                ease:
+                  'power2.inOut',
               },
             )
 
-            timeline.to(
+            /*
+             * ====================================
+             * NEXT SMALL CENTERED VILLA
+             * ====================================
+             *
+             * Important:
+             *
+             * width and height are already
+             * centered by CSS.
+             *
+             * So it cannot appear from a corner.
+             * ====================================
+             */
+
+            timeline.fromTo(
               frame,
               {
+                width:
+                  SMALL_VIDEO_WIDTH,
+
+                height:
+                  SMALL_VIDEO_HEIGHT,
+
+                opacity: 0,
+              },
+              {
+                width:
+                  SMALL_VIDEO_WIDTH,
+
+                height:
+                  SMALL_VIDEO_HEIGHT,
+
                 opacity: 1,
 
-                duration: 0.8,
+                duration: 0.85,
 
-                ease: 'power2.inOut',
+                ease:
+                  'power2.inOut',
+
+                immediateRender:
+                  false,
               },
               '<',
             )
 
             /*
-             * Previous content dissolves
-             * together with the villa.
+             * ====================================
+             * OLD CONTENT FADES
+             * ====================================
              */
 
             timeline.to(
@@ -490,56 +408,72 @@ export function Gallery() {
 
                 duration: 0.55,
 
-                ease: 'power1.inOut',
+                ease:
+                  'power1.inOut',
               },
               '<',
             )
 
             /*
              * ====================================
-             * NEXT TITLE APPEARS
+             * NEXT TITLE
              * ====================================
              */
 
-            timeline.to(
+            timeline.fromTo(
               title,
               {
+                x:
+                  VIDEO_INSET_X,
+
+                y: 120,
+
+                opacity: 0,
+              },
+              {
+                x:
+                  VIDEO_INSET_X,
+
+                y: 120,
+
                 opacity: 1,
 
-                duration: 0.6,
+                duration: 0.65,
 
-                ease: 'power1.inOut',
+                ease:
+                  'power1.inOut',
+
+                immediateRender:
+                  false,
               },
               '<+=0.12',
             )
 
             /*
              * ====================================
-             * HEADER RETURNS TO SMALL STATE
+             * HEADER BACK TO SMALL STATE
              * ====================================
-             *
-             * ice → espresso
              */
 
             timeline.to(
               header,
               {
                 y: 40,
-                color: ESPRESSO,
+                color:
+                  ESPRESSO,
 
-                duration: 0.6,
+                duration: 0.65,
 
-                ease: 'power1.inOut',
+                ease:
+                  'power1.inOut',
               },
               '<',
             )
 
             /*
              * ====================================
-             * LINE RETURNS
+             * LINE BACK
              * ====================================
-             *
-             * 0 → 0.7
              */
 
             timeline.to(
@@ -547,66 +481,83 @@ export function Gallery() {
               {
                 opacity: 0.7,
 
-                duration: 0.6,
+                duration: 0.65,
 
-                ease: 'power1.inOut',
+                ease:
+                  'power1.inOut',
               },
               '<',
             )
 
             /*
              * ====================================
-             * SMALL VILLA HOLD
-             *
-             * Now the user clearly sees
-             * the new villa in small state
-             * before it starts expanding.
+             * SMALL HOLD
              * ====================================
              */
 
-            timeline.to({}, {
-              duration: 0.32,
-            })
+            timeline.to(
+              {},
+              {
+                duration: 0.34,
+              },
+            )
           } else {
             /*
-             * First villa starts small.
+             * ====================================
+             * FIRST SMALL HOLD
+             * ====================================
              */
 
-            timeline.to({}, {
-              duration: 0.28,
-            })
+            timeline.to(
+              {},
+              {
+                duration: 0.3,
+              },
+            )
           }
 
           /*
            * ======================================
-           * SMALL → FULLSCREEN
+           * CENTER EXPANSION
+           * ======================================
+           *
+           * THIS is the main fix.
+           *
+           * The window grows:
+           *
+           * 1482 × 862
+           *
+           * →
+           *
+           * 1920 × 1080
+           *
+           * while its center NEVER moves.
+           *
+           * No scale.
+           * No x.
+           * No y.
+           * No clip-path.
            * ======================================
            */
 
-          timeline.to(reveal, {
-            x: 0,
-            y: 0,
+          timeline.to(
+            frame,
+            {
+              width:
+                CANVAS_WIDTH,
 
-            duration: 1.45,
+              height:
+                CANVAS_HEIGHT,
 
-            ease: 'none',
+              duration: 1.55,
 
-            onUpdate: () => {
-              applyCenteredClip(
-                frame,
-                reveal.x,
-                reveal.y,
-              )
+              ease: 'none',
             },
-          })
+          )
 
           /*
            * ======================================
            * HEADER
-           *
-           * stays 40px from top
-           *
-           * espresso → ice
            * ======================================
            */
 
@@ -614,20 +565,20 @@ export function Gallery() {
             header,
             {
               y: 40,
+
               color: ICE,
 
-              duration: 0.5,
+              duration: 0.55,
 
-              ease: 'power1.inOut',
+              ease:
+                'power1.inOut',
             },
-            '-=0.5',
+            '-=0.58',
           )
 
           /*
            * ======================================
            * LINE
-           *
-           * .7 → 0
            * ======================================
            */
 
@@ -636,22 +587,16 @@ export function Gallery() {
             {
               opacity: 0,
 
-              duration: 0.2,
+              duration: 0.28,
 
               ease: 'none',
             },
-            '-=0.55',
+            '-=0.6',
           )
 
           /*
            * ======================================
            * TITLE
-           *
-           * SMALL:
-           * top = 734
-           *
-           * FULLSCREEN:
-           * top = 614
            * ======================================
            */
 
@@ -661,11 +606,12 @@ export function Gallery() {
               x: 0,
               y: 0,
 
-              duration: 0.55,
+              duration: 0.62,
 
-              ease: 'power1.inOut',
+              ease:
+                'power1.inOut',
             },
-            '-=0.32',
+            '-=0.36',
           )
 
           /*
@@ -680,11 +626,12 @@ export function Gallery() {
               opacity: 0.7,
               y: 0,
 
-              duration: 0.35,
+              duration: 0.4,
 
-              ease: 'power1.out',
+              ease:
+                'power1.out',
             },
-            '-=0.18',
+            '-=0.2',
           )
 
           /*
@@ -699,9 +646,10 @@ export function Gallery() {
               opacity: 0.7,
               y: 0,
 
-              duration: 0.35,
+              duration: 0.4,
 
-              ease: 'power1.out',
+              ease:
+                'power1.out',
             },
             '<+=0.04',
           )
@@ -718,9 +666,10 @@ export function Gallery() {
               opacity: 0.7,
               y: 0,
 
-              duration: 0.35,
+              duration: 0.4,
 
-              ease: 'power1.out',
+              ease:
+                'power1.out',
             },
             '<+=0.04',
           )
@@ -731,22 +680,22 @@ export function Gallery() {
            * ======================================
            */
 
-          timeline.to({}, {
-            duration:
-              index ===
-              GALLERY_STATES.length - 1
-                ? 0.65
-                : 0.45,
-          })
+          timeline.to(
+            {},
+            {
+              duration:
+                index ===
+                GALLERY_STATES.length - 1
+                  ? 0.7
+                  : 0.48,
+            },
+          )
         },
       )
 
       /*
        * ==========================================
        * ONE SCROLLTRIGGER
-       *
-       * THE ENTIRE GALLERY SCREEN
-       * STAYS FIXED
        * ==========================================
        */
 
@@ -765,7 +714,7 @@ export function Gallery() {
 
         animation: timeline,
 
-        scrub: true,
+        scrub: 1,
 
         invalidateOnRefresh: true,
       })
@@ -797,11 +746,11 @@ export function Gallery() {
         bg-[#DDE4EE]
       "
     >
-      {/* =========================================
-          ONE FIXED SCREEN
-
-          1920 × 1080
-      ========================================= */}
+      {/*
+       * ==========================================
+       * FIXED SCENE
+       * ==========================================
+       */}
 
       <div
         ref={sceneRef}
@@ -813,10 +762,22 @@ export function Gallery() {
           bg-[#DDE4EE]
         "
       >
-        {/* =======================================
-            ALL THREE VIDEOS
-            INSIDE ONE FIXED SCREEN
-        ======================================= */}
+        {/*
+         * ========================================
+         * VIDEO WINDOWS
+         * ========================================
+         *
+         * Each frame is centered using:
+         *
+         * left: 50%
+         * top: 50%
+         * translate(-50%, -50%)
+         *
+         * Width / height animate.
+         *
+         * Position never changes.
+         * ========================================
+         */}
 
         {GALLERY_STATES.map(
           (state, index) => (
@@ -829,68 +790,110 @@ export function Gallery() {
               className="
                 pointer-events-none
                 absolute
-                inset-0
-                z-10
+                top-1/2
+                left-1/2
                 overflow-hidden
               "
               style={{
-                clipPath:
-                  `inset(${VIDEO_INSET_Y}px ${VIDEO_INSET_X}px ${VIDEO_INSET_Y}px ${VIDEO_INSET_X}px)`,
+                width:
+                  `${SMALL_VIDEO_WIDTH}px`,
 
-                WebkitClipPath:
-                  `inset(${VIDEO_INSET_Y}px ${VIDEO_INSET_X}px ${VIDEO_INSET_Y}px ${VIDEO_INSET_X}px)`,
+                height:
+                  `${SMALL_VIDEO_HEIGHT}px`,
+
+                transform:
+                  'translate3d(-50%, -50%, 0)',
 
                 opacity:
                   index === 0 ? 1 : 0,
 
-                willChange:
-                  'clip-path, opacity',
+                zIndex:
+                  10 + index,
 
-                transform:
-                  'translateZ(0)',
+                willChange:
+                  'width, height, opacity',
 
                 backfaceVisibility:
                   'hidden',
               }}
             >
+              {/*
+               * ==================================
+               * VIDEO
+               * ==================================
+               *
+               * IMPORTANT:
+               *
+               * Video itself is ALWAYS
+               * 1920 × 1080.
+               *
+               * It does NOT grow.
+               *
+               * The centered window around it
+               * simply reveals more of it.
+               * ==================================
+               */}
+
               <video
-                className="
-                  absolute
-                  inset-0
-                  h-full
-                  w-full
-                  object-cover
-                "
                 src={state.video}
                 autoPlay
                 muted
                 loop
                 playsInline
                 preload="auto"
+                className="
+                  absolute
+                  top-1/2
+                  left-1/2
+                  h-[1080px]
+                  w-[1920px]
+                  max-w-none
+                  object-cover
+                "
                 style={{
                   transform:
-                    'translateZ(0)',
+                    'translate3d(-50%, -50%, 0)',
 
                   backfaceVisibility:
                     'hidden',
                 }}
               />
 
+              {/*
+               * ==================================
+               * OVERLAY
+               * ==================================
+               *
+               * Also fixed at 1920 × 1080
+               * and centered with the video.
+               * ==================================
+               */}
+
               <div
                 className="
                   pointer-events-none
                   absolute
-                  inset-0
+                  top-1/2
+                  left-1/2
+                  h-[1080px]
+                  w-[1920px]
+                  max-w-none
                   bg-black/25
                 "
+                style={{
+                  transform:
+                    'translate3d(-50%, -50%, 0)',
+                }}
               />
             </div>
           ),
         )}
 
-        {/* =======================================
-            SHARED HEADER
-        ======================================= */}
+        {/*
+         * ========================================
+         * SHARED HEADER
+         * ========================================
+         */}
 
         <div
           ref={headerRef}
@@ -920,16 +923,11 @@ export function Gallery() {
           />
         </div>
 
-        {/* =======================================
-            SHARED LINE
-
-            SMALL:
-            1.6px
-            opacity 0.7
-
-            FULLSCREEN:
-            hidden
-        ======================================= */}
+        {/*
+         * ========================================
+         * SHARED LINE
+         * ========================================
+         */}
 
         <div
           ref={lineRef}
@@ -953,9 +951,11 @@ export function Gallery() {
           }}
         />
 
-        {/* =======================================
-            TITLES
-        ======================================= */}
+        {/*
+         * ========================================
+         * TITLES
+         * ========================================
+         */}
 
         {GALLERY_STATES.map(
           (state, index) => (
@@ -994,9 +994,11 @@ export function Gallery() {
           ),
         )}
 
-        {/* =======================================
-            LOCATIONS
-        ======================================= */}
+        {/*
+         * ========================================
+         * LOCATIONS
+         * ========================================
+         */}
 
         {GALLERY_STATES.map(
           (state, index) => (
@@ -1030,9 +1032,11 @@ export function Gallery() {
           ),
         )}
 
-        {/* =======================================
-            SPECS
-        ======================================= */}
+        {/*
+         * ========================================
+         * SPECS
+         * ========================================
+         */}
 
         {GALLERY_STATES.map(
           (state, index) => (
@@ -1066,9 +1070,11 @@ export function Gallery() {
           ),
         )}
 
-        {/* =======================================
-            DESCRIPTIONS
-        ======================================= */}
+        {/*
+         * ========================================
+         * DESCRIPTIONS
+         * ========================================
+         */}
 
         {GALLERY_STATES.map(
           (state, index) => (
