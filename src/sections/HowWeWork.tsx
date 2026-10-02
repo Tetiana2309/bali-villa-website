@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger)
 const BASE_URL = import.meta.env.BASE_URL
 
 const STEP_TOP_OFFSETS = [0, 264, 528, 792]
-const STEP_HEIGHT = 264
+const STEP_HEIGHT = 184
 
 const STEP_IMAGES = [
   `${BASE_URL}images/how-we-work-inquiry.webp`,
@@ -55,8 +55,9 @@ export function HowWeWork() {
          * INITIAL STATE
          * ==========================================
          *
-         * Geometry never moves.
-         * Only opacity changes.
+         * No translate.
+         * No scale.
+         * Only opacity.
          */
 
         gsap.set(image, {
@@ -135,7 +136,8 @@ export function HowWeWork() {
          * ==========================================
          *
          * No scrub.
-         * No movement.
+         * Animation fires only when the row
+         * enters / leaves the reading area.
          */
 
         ScrollTrigger.create({
@@ -249,14 +251,14 @@ export function HowWeWork() {
         right="Maximum - From Ours."
       />
 
-      <div className="absolute top-[152px] left-0 h-[1056px] w-[1920px]">
+      <div className="absolute top-[152px] left-0 h-[976px] w-[1920px]">
         {HOW_WE_WORK_STEPS.map((step, i) => (
           <div
             key={step.title}
             ref={(element) => {
               stepRefs.current[i] = element
             }}
-            className="absolute left-0 h-[264px] w-[1920px]"
+            className="absolute left-0 h-[184px] w-[1920px]"
             style={{
               top: STEP_TOP_OFFSETS[i],
             }}
@@ -271,7 +273,7 @@ export function HowWeWork() {
               ref={(element) => {
                 imageRefs.current[i] = element
               }}
-              className="absolute top-[50px] left-[830px] h-[164px] w-[324px] overflow-hidden rounded-[1px]"
+              className="absolute top-[60px] left-[870px] h-[164px] w-[324px] overflow-hidden rounded-[1px]"
             >
               <img
                 src={STEP_IMAGES[i]}
