@@ -42,115 +42,96 @@ export function HowWeWork() {
         if (!step || !title || !content || !dot) return
 
         /*
-         * Base state
+         * BASE STATE
+         *
+         * Everything is visible immediately.
+         * No transforms are applied to the text.
          */
 
         gsap.set(title, {
           opacity: 0.32,
-          x: 0,
         })
 
         gsap.set(content, {
-          opacity: 0.55,
+          opacity: 0.58,
         })
 
         gsap.set(dot, {
           opacity: 0.25,
-          scale: 1,
-          transformOrigin: '50% 50%',
         })
 
         /*
-         * ==========================================
-         * ACTIVE STEP ANIMATION
-         * ==========================================
+         * ACTIVE STATE
          */
 
-        const timeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 75%',
-            end: 'bottom 35%',
-            scrub: 1.8,
-          },
-        })
-
-        /*
-         * BASE → ACTIVE
-         */
-
-        timeline.to(
-          title,
-          {
+        const activateStep = () => {
+          gsap.to(title, {
             opacity: 0.68,
-            x: 8,
-            duration: 1,
-            ease: 'none',
-          },
-          0,
-        )
+            duration: 0.7,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
 
-        timeline.to(
-          content,
-          {
+          gsap.to(content, {
             opacity: 1,
-            duration: 1,
-            ease: 'none',
-          },
-          0,
-        )
+            duration: 0.7,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
 
-        timeline.to(
-          dot,
-          {
+          gsap.to(dot, {
             opacity: 1,
-            scale: 1.12,
-            duration: 1,
-            ease: 'none',
-          },
-          0,
-        )
+            duration: 0.55,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
 
         /*
-         * Active hold
+         * BASE STATE
          */
 
-        timeline.to({}, { duration: 0.55 })
-
-        /*
-         * ACTIVE → BASE
-         */
-
-        timeline.to(
-          title,
-          {
+        const deactivateStep = () => {
+          gsap.to(title, {
             opacity: 0.32,
-            x: 0,
-            duration: 1,
-            ease: 'none',
-          },
-        )
+            duration: 0.65,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
 
-        timeline.to(
-          content,
-          {
-            opacity: 0.55,
-            duration: 1,
-            ease: 'none',
-          },
-          '<',
-        )
+          gsap.to(content, {
+            opacity: 0.58,
+            duration: 0.65,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
 
-        timeline.to(
-          dot,
-          {
+          gsap.to(dot, {
             opacity: 0.25,
-            scale: 1,
-            duration: 1,
-            ease: 'none',
-          },
-          '<',
-        )
+            duration: 0.5,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          })
+        }
+
+        /*
+         * No scrub.
+         *
+         * The state changes only when the row
+         * enters or leaves the reading zone.
+         */
+
+        ScrollTrigger.create({
+          trigger: step,
+          start: 'top 68%',
+          end: 'bottom 32%',
+
+          onEnter: activateStep,
+          onEnterBack: activateStep,
+
+          onLeave: deactivateStep,
+          onLeaveBack: deactivateStep,
+        })
       })
 
       /*
@@ -164,12 +145,10 @@ export function HowWeWork() {
           footerTextRef.current,
           {
             opacity: 0,
-            y: 14,
           },
           {
             opacity: 0.9,
-            y: 0,
-            duration: 0.9,
+            duration: 0.8,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: footerTextRef.current,
@@ -191,12 +170,10 @@ export function HowWeWork() {
           ctaRef.current,
           {
             opacity: 0,
-            y: 14,
           },
           {
             opacity: 1,
-            y: 0,
-            duration: 0.9,
+            duration: 0.8,
             ease: 'power2.out',
             scrollTrigger: {
               trigger: ctaRef.current,
@@ -208,7 +185,7 @@ export function HowWeWork() {
       }
 
       /*
-       * CTA line
+       * CTA LINE
        */
 
       if (ctaLineRef.current) {
@@ -221,7 +198,7 @@ export function HowWeWork() {
           {
             scaleX: 1,
             duration: 1,
-            ease: 'power2.inOut',
+            ease: 'power3.inOut',
             scrollTrigger: {
               trigger: ctaRef.current,
               start: 'top 92%',
