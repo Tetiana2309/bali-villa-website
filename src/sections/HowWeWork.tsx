@@ -8,14 +8,23 @@ import { HOW_WE_WORK_STEPS } from '../data/howWeWork'
 
 gsap.registerPlugin(ScrollTrigger)
 
+const BASE_URL = import.meta.env.BASE_URL
+
 const STEP_TOP_OFFSETS = [0, 264, 528, 792]
 const STEP_HEIGHT = 184
+
+const STEP_IMAGES = [
+  `${BASE_URL}images/how-we-work-inquiry.webp`,
+  `${BASE_URL}images/how-we-work-selection.webp`,
+  `${BASE_URL}images/how-we-work-showing.webp`,
+  `${BASE_URL}images/how-we-work-closing.webp`,
+]
 
 export function HowWeWork() {
   const sectionRef = useRef<HTMLElement>(null)
 
   const stepRefs = useRef<(HTMLDivElement | null)[]>([])
-  const titleRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([])
   const contentRefs = useRef<(HTMLDivElement | null)[]>([])
   const dotRefs = useRef<(HTMLSpanElement | null)[]>([])
 
@@ -27,103 +36,105 @@ export function HowWeWork() {
     if (!sectionRef.current) return
 
     const ctx = gsap.context(() => {
-      /*
-       * ==========================================
-       * STEPS
-       * ==========================================
-       */
-
       HOW_WE_WORK_STEPS.forEach((_, index) => {
         const step = stepRefs.current[index]
-        const title = titleRefs.current[index]
+        const image = imageRefs.current[index]
         const content = contentRefs.current[index]
         const dot = dotRefs.current[index]
 
-        if (!step || !title || !content || !dot) return
+        if (!step || !image || !content || !dot) return
 
         /*
-         * BASE STATE
-         *
-         * Everything is visible immediately.
-         * No transforms are applied to the text.
+         * ==========================================
+         * INITIAL STATE
+         * ==========================================
          */
 
-        gsap.set(title, {
-          opacity: 0.32,
+        gsap.set(image, {
+          opacity: 0,
+          y: 16,
+          scale: 1.02,
         })
 
         gsap.set(content, {
-          opacity: 0.58,
+          opacity: 0,
+          y: 14,
         })
 
         gsap.set(dot, {
           opacity: 0.25,
+          backgroundColor: '#7B978A',
         })
 
         /*
-         * ACTIVE STATE
+         * ==========================================
+         * ACTIVE
+         * ==========================================
          */
 
         const activateStep = () => {
-          gsap.to(title, {
-            opacity: 0.68,
-            duration: 0.7,
-            ease: 'power2.out',
+          gsap.to(image, {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.85,
+            ease: 'power3.out',
             overwrite: 'auto',
           })
 
           gsap.to(content, {
             opacity: 1,
-            duration: 0.7,
-            ease: 'power2.out',
+            y: 0,
+            duration: 0.9,
+            ease: 'power3.out',
             overwrite: 'auto',
           })
 
           gsap.to(dot, {
             opacity: 1,
-            duration: 0.55,
+            backgroundColor: '#7B978A',
+            duration: 0.6,
             ease: 'power2.out',
             overwrite: 'auto',
           })
         }
 
         /*
-         * BASE STATE
+         * ==========================================
+         * INACTIVE
+         * ==========================================
          */
 
         const deactivateStep = () => {
-          gsap.to(title, {
-            opacity: 0.32,
+          gsap.to(image, {
+            opacity: 0,
+            y: 12,
+            scale: 1.015,
             duration: 0.65,
             ease: 'power2.out',
             overwrite: 'auto',
           })
 
           gsap.to(content, {
-            opacity: 0.58,
-            duration: 0.65,
+            opacity: 0,
+            y: 10,
+            duration: 0.6,
             ease: 'power2.out',
             overwrite: 'auto',
           })
 
           gsap.to(dot, {
             opacity: 0.25,
-            duration: 0.5,
+            backgroundColor: '#7B978A',
+            duration: 0.45,
             ease: 'power2.out',
             overwrite: 'auto',
           })
         }
 
-        /*
-         * No scrub.
-         *
-         * The state changes only when the row
-         * enters or leaves the reading zone.
-         */
-
         ScrollTrigger.create({
           trigger: step,
-          start: 'top 68%',
+          start: 'top 72%',
           end: 'bottom 32%',
 
           onEnter: activateStep,
@@ -145,11 +156,13 @@ export function HowWeWork() {
           footerTextRef.current,
           {
             opacity: 0,
+            y: 12,
           },
           {
             opacity: 0.9,
-            duration: 0.8,
-            ease: 'power2.out',
+            y: 0,
+            duration: 0.85,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: footerTextRef.current,
               start: 'top 92%',
@@ -170,11 +183,13 @@ export function HowWeWork() {
           ctaRef.current,
           {
             opacity: 0,
+            y: 12,
           },
           {
             opacity: 1,
-            duration: 0.8,
-            ease: 'power2.out',
+            y: 0,
+            duration: 0.85,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: ctaRef.current,
               start: 'top 92%',
@@ -185,7 +200,9 @@ export function HowWeWork() {
       }
 
       /*
+       * ==========================================
        * CTA LINE
+       * ==========================================
        */
 
       if (ctaLineRef.current) {
@@ -243,15 +260,29 @@ export function HowWeWork() {
             }}
           >
             <div className="absolute top-0 left-10 h-[124px] w-[1840px]">
-              <span
-                ref={(element) => {
-                  titleRefs.current[i] = element
-                }}
-                className="text-wordmark absolute top-0 left-0"
-              >
+              {/* Large title — always static */}
+              <span className="text-wordmark absolute top-0 left-0 opacity-40">
                 {step.title}
               </span>
 
+              {/* Image */}
+              <div
+                ref={(element) => {
+                  imageRefs.current[i] = element
+                }}
+                className="absolute top-0 left-[830px] h-[164px] w-[324px] overflow-hidden rounded-[1px]"
+              >
+                <img
+                  src={STEP_IMAGES[i]}
+                  alt=""
+                  aria-hidden="true"
+                  className="h-full w-full object-cover"
+                />
+
+                <div className="pointer-events-none absolute inset-0 bg-black/30" />
+              </div>
+
+              {/* Dot */}
               <span
                 ref={(element) => {
                   dotRefs.current[i] = element
@@ -259,6 +290,7 @@ export function HowWeWork() {
                 className="absolute top-0 right-0 h-4 w-4 rounded-full bg-[#7B978A]"
               />
 
+              {/* Right content */}
               <div
                 ref={(element) => {
                   contentRefs.current[i] = element
