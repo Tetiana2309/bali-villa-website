@@ -196,6 +196,169 @@ export function HowWeWork({
 
     /*
      * ==========================================
+     * REDUCED MOTION
+     * ==========================================
+     *
+     * Skip every scroll-triggered reveal and
+     * show the settled first-step state only.
+     * ==========================================
+     */
+
+    const prefersReducedMotion =
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
+
+    if (prefersReducedMotion) {
+      const firstImage =
+        imageRefs.current[0]
+
+      const secondImage =
+        imageRefs.current[1]
+
+      if (firstImage) {
+        gsap.set(firstImage, {
+          opacity: 1,
+        })
+      }
+
+      if (secondImage) {
+        gsap.set(secondImage, {
+          opacity: 0,
+        })
+      }
+
+      HOW_WE_WORK_STEPS.forEach(
+        (_, index) => {
+          const subtitle =
+            activeSubtitleRefs
+              .current[index]
+
+          const description =
+            activeDescriptionRefs
+              .current[index]
+
+          const subtitleWords =
+            (
+              subtitleWordRefs
+                .current[
+                index
+              ] ?? []
+            ).filter(
+              (
+                word,
+              ): word is HTMLSpanElement =>
+                word !== null,
+            )
+
+          const descriptionWords =
+            (
+              descriptionWordRefs
+                .current[
+                index
+              ] ?? []
+            ).filter(
+              (
+                word,
+              ): word is HTMLSpanElement =>
+                word !== null,
+            )
+
+          const dot =
+            dotRefs.current[
+              index
+            ]
+
+          if (subtitle) {
+            gsap.set(subtitle, {
+              opacity: 1,
+            })
+          }
+
+          if (description) {
+            gsap.set(
+              description,
+              {
+                opacity: 1,
+              },
+            )
+          }
+
+          gsap.set(
+            subtitleWords,
+            {
+              opacity: 1,
+            },
+          )
+
+          gsap.set(
+            descriptionWords,
+            {
+              opacity: 1,
+            },
+          )
+
+          if (dot) {
+            gsap.set(dot, {
+              opacity:
+                index === 0
+                  ? 1
+                  : 0.24,
+            })
+          }
+        },
+      )
+
+      if (footerTextRef.current) {
+        gsap.set(
+          footerTextRef.current,
+          {
+            opacity: 0.9,
+          },
+        )
+      }
+
+      const cta = ctaRef.current
+
+      const ctaLine =
+        ctaLineRef.current
+
+      const ctaContent =
+        ctaContentRef.current
+
+      const ctaLetters =
+        cta
+          ? Array.from(
+              cta.querySelectorAll<HTMLElement>(
+                '.how-we-work-cta-letter',
+              ),
+            )
+          : []
+
+      if (ctaLine) {
+        gsap.set(ctaLine, {
+          scaleX: 1,
+        })
+      }
+
+      if (ctaContent) {
+        gsap.set(ctaContent, {
+          x: 0,
+        })
+      }
+
+      if (ctaLetters.length > 0) {
+        gsap.set(ctaLetters, {
+          opacity: 1,
+          y: 0,
+        })
+      }
+
+      return
+    }
+
+    /*
+     * ==========================================
      * HELPERS
      * ==========================================
      */

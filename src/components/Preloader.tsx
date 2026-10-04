@@ -174,6 +174,33 @@ export function Preloader({
 
     /*
      * ==========================================
+     * REDUCED MOTION
+     * ==========================================
+     *
+     * The exit timeline below is GSAP-driven,
+     * so the global CSS reduced-motion rule
+     * (which only affects CSS transitions)
+     * cannot shorten it. Collapse each of its
+     * durations to 0 instead, so the same exit
+     * sequence resolves instantly rather than
+     * being skipped or restructured.
+     * ==========================================
+     */
+
+    const prefersReducedMotion =
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
+
+    const exitDuration = (
+      duration: number,
+    ) =>
+      prefersReducedMotion
+        ? 0
+        : duration
+
+    /*
+     * ==========================================
      * COUNTER
      * ==========================================
      */
@@ -237,7 +264,7 @@ export function Preloader({
           {
             x: -120,
             opacity: 0,
-            duration: 0.7,
+            duration: exitDuration(0.7),
             ease: 'power3.inOut',
           },
           0,
@@ -256,7 +283,7 @@ export function Preloader({
           {
             x: 120,
             opacity: 0,
-            duration: 0.7,
+            duration: exitDuration(0.7),
             ease: 'power3.inOut',
           },
           0,
@@ -275,7 +302,7 @@ export function Preloader({
           {
             opacity: 0,
             y: -14,
-            duration: 0.4,
+            duration: exitDuration(0.4),
             ease: 'power2.inOut',
           },
           0,
@@ -293,7 +320,7 @@ export function Preloader({
           centerCoverRef.current,
           {
             opacity: 0,
-            duration: 0.2,
+            duration: exitDuration(0.2),
             ease: 'none',
           },
           0,
@@ -317,7 +344,7 @@ export function Preloader({
               height: 1080,
             },
 
-            duration: 1.2,
+            duration: exitDuration(1.2),
 
             ease: 'power3.inOut',
           },
@@ -334,7 +361,7 @@ export function Preloader({
       exitTimeline.to(
         {},
         {
-          duration: 0.05,
+          duration: exitDuration(0.05),
         },
       )
     }
