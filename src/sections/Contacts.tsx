@@ -1,7 +1,17 @@
-import { useId, useState, type FormEvent } from 'react'
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type FormEvent,
+} from 'react'
 
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+
+import { gsap } from '../lib/gsap'
 import { SectionHeader } from '../components/SectionHeader'
 import { ArrowIcon } from '../components/ArrowIcon'
+
 import {
   CONTACT_METHODS,
   SOCIAL_LINKS,
@@ -9,7 +19,10 @@ import {
   type ContactMethod,
 } from '../data/contacts'
 
-const BASE_URL = import.meta.env.BASE_URL
+gsap.registerPlugin(ScrollTrigger)
+
+const BASE_URL =
+  import.meta.env.BASE_URL
 
 const DECORATIVE_LINES = [
   { top: 0, height: 6 },
@@ -34,8 +47,79 @@ const INPUT_CLASS = `
   placeholder:text-[#392919]/40
 `
 
+/*
+ * ==========================================
+ * HERO-STYLE LETTER SPLIT
+ * ==========================================
+ */
+
+function AnimatedWords({
+  text,
+  letterClassName,
+}: {
+  text: string
+  letterClassName: string
+}) {
+  const words =
+    text.split(' ')
+
+  return (
+    <>
+      {words.map(
+        (
+          word,
+          wordIndex,
+        ) => (
+          <span
+            key={`${word}-${wordIndex}`}
+            className="
+              inline-block
+              whitespace-nowrap
+            "
+          >
+            {word
+              .split('')
+              .map(
+                (
+                  character,
+                  characterIndex,
+                ) => (
+                  <span
+                    key={`${character}-${characterIndex}`}
+                    className={`${letterClassName} inline-block`}
+                    aria-hidden="true"
+                  >
+                    {character}
+                  </span>
+                ),
+              )}
+
+            {wordIndex <
+              words.length -
+                1 && (
+              <span
+                className={`${letterClassName} inline-block`}
+                aria-hidden="true"
+              >
+                {'\u00A0'}
+              </span>
+            )}
+          </span>
+        ),
+      )}
+    </>
+  )
+}
+
+/*
+ * ==========================================
+ * FOOTER VIDEO LOGO
+ * ==========================================
+ */
+
 function VideoFooterLogo() {
-  const maskId = useId().replace(/:/g, '')
+  const maskId =
+    useId().replace(/:/g, '')
 
   return (
     <svg
@@ -46,7 +130,11 @@ function VideoFooterLogo() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
-      className="block h-[338px] w-[712px]"
+      className="
+        block
+        h-[338px]
+        w-[712px]
+      "
     >
       <defs>
         <mask
@@ -104,14 +192,14 @@ function VideoFooterLogo() {
         height="200"
         mask={`url(#${maskId})`}
       >
-       <div
-  style={{
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-  }}
->
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            height: '100%',
+            overflow: 'hidden',
+          }}
+        >
           <video
             autoPlay
             muted
@@ -137,6 +225,12 @@ function VideoFooterLogo() {
   )
 }
 
+/*
+ * ==========================================
+ * SOCIAL LINK
+ * ==========================================
+ */
+
 function AnimatedSocialLink({
   label,
   href,
@@ -144,49 +238,632 @@ function AnimatedSocialLink({
   label: string
   href: string
 }) {
-  const characters = label.split('')
+  const characters =
+    label.split('')
 
   return (
     <a
       href={href}
-      className="group inline-flex text-body-copy outline-none"
+      className="
+        group
+        inline-flex
+        text-body-copy
+        outline-none
+      "
     >
-      {characters.map((character, index) => (
-        <span
-          key={`${label}-${index}`}
-          className="
-            inline-block
-            text-[#392919]
-            transition-colors
-            duration-300
-            ease-[cubic-bezier(0.22,1,0.36,1)]
-            group-hover:text-[#DDE4EE]
-            group-focus-visible:text-[#DDE4EE]
-          "
-          style={{
-            transitionDelay: `${index * 35}ms`,
-          }}
-        >
-          {character === ' ' ? '\u00A0' : character}
-        </span>
-      ))}
+      {characters.map(
+        (
+          character,
+          index,
+        ) => (
+          <span
+            key={`${label}-${index}`}
+            className="
+              inline-block
+              text-[#392919]
+              transition-colors
+              duration-300
+              ease-[cubic-bezier(0.22,1,0.36,1)]
+              group-hover:text-[#DDE4EE]
+              group-focus-visible:text-[#DDE4EE]
+            "
+            style={{
+              transitionDelay:
+                `${index * 35}ms`,
+            }}
+          >
+            {character === ' '
+              ? '\u00A0'
+              : character}
+          </span>
+        ),
+      )}
     </a>
   )
 }
 
 export function Contacts() {
-  const [method, setMethod] = useState<ContactMethod | null>(null)
+  const [method, setMethod] =
+    useState<ContactMethod | null>(
+      null,
+    )
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  /*
+   * ==========================================
+   * ENTRANCE REFS
+   * ==========================================
+   */
+
+  const sectionRef =
+    useRef<HTMLElement>(null)
+
+  const headerRef =
+    useRef<HTMLDivElement>(null)
+
+  const verticalLineRef =
+    useRef<HTMLSpanElement>(null)
+
+  const headingLineRefs =
+    useRef<
+      (HTMLParagraphElement | null)[]
+    >([])
+
+  const formRef =
+    useRef<HTMLFormElement>(null)
+
+  const contactInfoRef =
+    useRef<HTMLDivElement>(null)
+
+  const socialsRef =
+    useRef<HTMLUListElement>(null)
+
+  const logoRef =
+    useRef<HTMLDivElement>(null)
+
+  const bottomRef =
+    useRef<HTMLDivElement>(null)
+
+  /*
+   * ==========================================
+   * SEND BUTTON REFS
+   * ==========================================
+   */
+
+  const sendButtonRef =
+    useRef<HTMLButtonElement>(null)
+
+  const sendLineRef =
+    useRef<HTMLSpanElement>(null)
+
+  const sendContentRef =
+    useRef<HTMLSpanElement>(null)
+
+  /*
+   * ==========================================
+   * FORM
+   * ==========================================
+   */
+
+  const handleSubmit = (
+    event:
+      FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault()
   }
 
+  /*
+   * ==========================================
+   * CONTACTS ENTRANCE
+   * ==========================================
+   */
+
+  useEffect(() => {
+    if (
+      !sectionRef.current ||
+      !headerRef.current ||
+      !verticalLineRef.current ||
+      !formRef.current ||
+      !contactInfoRef.current ||
+      !socialsRef.current ||
+      !logoRef.current ||
+      !bottomRef.current ||
+      !sendButtonRef.current ||
+      !sendLineRef.current ||
+      !sendContentRef.current
+    ) {
+      return
+    }
+
+    const section =
+      sectionRef.current
+
+    const header =
+      headerRef.current
+
+    const verticalLine =
+      verticalLineRef.current
+
+    const form =
+      formRef.current
+
+    const contactInfo =
+      contactInfoRef.current
+
+    const socials =
+      socialsRef.current
+
+    const logo =
+      logoRef.current
+
+    const bottom =
+      bottomRef.current
+
+    const sendButton =
+      sendButtonRef.current
+
+    const sendLine =
+      sendLineRef.current
+
+    const sendContent =
+      sendContentRef.current
+
+    const sendLetters =
+      Array.from(
+        sendButton.querySelectorAll<HTMLElement>(
+          '.contacts-send-letter',
+        ),
+      )
+
+    const headingLines =
+      headingLineRefs.current.filter(
+        (
+          line,
+        ): line is HTMLParagraphElement =>
+          line !== null,
+      )
+
+    const prefersReducedMotion =
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
+
+    const ctx =
+      gsap.context(() => {
+        /*
+         * ========================================
+         * REDUCED MOTION
+         * ========================================
+         */
+
+        if (
+          prefersReducedMotion
+        ) {
+          gsap.set(
+            verticalLine,
+            {
+              scaleY: 1,
+            },
+          )
+
+          gsap.set(
+            [
+              header,
+              ...headingLines,
+              form,
+              contactInfo,
+              socials,
+              logo,
+              bottom,
+            ],
+            {
+              opacity: 1,
+              x: 0,
+              y: 0,
+            },
+          )
+
+          gsap.set(
+            sendLine,
+            {
+              scaleX: 1,
+            },
+          )
+
+          gsap.set(
+            sendContent,
+            {
+              x: 0,
+            },
+          )
+
+          gsap.set(
+            sendLetters,
+            {
+              opacity: 1,
+              y: 0,
+            },
+          )
+
+          return
+        }
+
+        /*
+         * ========================================
+         * INITIAL STATES
+         * ========================================
+         */
+
+        gsap.set(
+          header,
+          {
+            opacity: 0,
+            y: 10,
+          },
+        )
+
+        gsap.set(
+          verticalLine,
+          {
+            scaleY: 0,
+
+            transformOrigin:
+              'top center',
+          },
+        )
+
+        gsap.set(
+          headingLines,
+          {
+            opacity: 0,
+            y: 22,
+          },
+        )
+
+        gsap.set(
+          form,
+          {
+            opacity: 0,
+            y: 18,
+          },
+        )
+
+        gsap.set(
+          contactInfo,
+          {
+            opacity: 0,
+            y: 16,
+          },
+        )
+
+        gsap.set(
+          socials,
+          {
+            opacity: 0,
+            y: 16,
+          },
+        )
+
+        gsap.set(
+          logo,
+          {
+            opacity: 0,
+            y: 14,
+          },
+        )
+
+        gsap.set(
+          bottom,
+          {
+            opacity: 0,
+            y: 10,
+          },
+        )
+
+        /*
+         * ========================================
+         * SEND BUTTON INITIAL STATE
+         * ========================================
+         */
+
+        gsap.set(
+          sendLine,
+          {
+            scaleX: 0,
+
+            transformOrigin:
+              'left center',
+          },
+        )
+
+        gsap.set(
+          sendContent,
+          {
+            x: 14,
+          },
+        )
+
+        gsap.set(
+          sendLetters,
+          {
+            opacity: 0,
+            y: 5,
+          },
+        )
+
+        /*
+         * ========================================
+         * MASTER ENTRANCE
+         * ========================================
+         */
+
+        const timeline =
+          gsap.timeline({
+            scrollTrigger: {
+              trigger:
+                section,
+
+              start:
+                'top 76%',
+
+              once: true,
+            },
+          })
+
+        /*
+         * ======================================
+         * 1. HEADER
+         * ======================================
+         */
+
+        timeline.to(
+          header,
+          {
+            opacity: 1,
+            y: 0,
+
+            duration:
+              0.7,
+
+            ease:
+              'power3.out',
+          },
+          0,
+        )
+
+        /*
+         * ======================================
+         * 2. VERTICAL DIVIDER
+         * ======================================
+         */
+
+        timeline.to(
+          verticalLine,
+          {
+            scaleY: 1,
+
+            duration:
+              1.15,
+
+            ease:
+              'power3.inOut',
+          },
+          0.07,
+        )
+
+        /*
+         * ======================================
+         * 3. LARGE HEADING
+         * ======================================
+         */
+
+        timeline.to(
+          headingLines,
+          {
+            opacity: 1,
+            y: 0,
+
+            duration:
+              0.8,
+
+            stagger: {
+              each:
+                0.09,
+
+              from:
+                'start',
+            },
+
+            ease:
+              'power3.out',
+          },
+          0.14,
+        )
+
+        /*
+         * ======================================
+         * 4. FORM
+         * ======================================
+         */
+
+        timeline.to(
+          form,
+          {
+            opacity: 1,
+            y: 0,
+
+            duration:
+              0.9,
+
+            ease:
+              'power3.out',
+          },
+          0.4,
+        )
+
+        /*
+         * ======================================
+         * 5. HERO-STYLE SEND LINE
+         * ======================================
+         */
+
+        timeline.to(
+          sendLine,
+          {
+            scaleX: 1,
+
+            duration:
+              1,
+
+            ease:
+              'power3.inOut',
+          },
+          0.64,
+        )
+
+        /*
+         * ======================================
+         * 6. HERO-STYLE SEND CONTENT
+         * ======================================
+         */
+
+        timeline.to(
+          sendContent,
+          {
+            x: 0,
+
+            duration:
+              0.8,
+
+            ease:
+              'power3.out',
+          },
+          0.94,
+        )
+
+        /*
+         * ======================================
+         * 7. HERO-STYLE SEND LETTERS
+         * ======================================
+         */
+
+        timeline.to(
+          sendLetters,
+          {
+            opacity: 1,
+            y: 0,
+
+            duration:
+              0.32,
+
+            stagger: {
+              each:
+                0.025,
+
+              from:
+                'start',
+            },
+
+            ease:
+              'power2.out',
+          },
+          0.94,
+        )
+
+        /*
+         * ======================================
+         * 8. CONTACT DETAILS
+         * ======================================
+         */
+
+        timeline.to(
+          [
+            contactInfo,
+            socials,
+          ],
+          {
+            opacity: 1,
+            y: 0,
+
+            duration:
+              0.8,
+
+            stagger:
+              0.08,
+
+            ease:
+              'power3.out',
+          },
+          0.64,
+        )
+
+        /*
+         * ======================================
+         * 9. VIDEO LOGO
+         * ======================================
+         */
+
+        timeline.to(
+          logo,
+          {
+            opacity: 1,
+            y: 0,
+
+            duration:
+              1,
+
+            ease:
+              'power3.out',
+          },
+          0.74,
+        )
+
+        /*
+         * ======================================
+         * 10. BOTTOM ROW
+         * ======================================
+         */
+
+        timeline.to(
+          bottom,
+          {
+            opacity: 1,
+            y: 0,
+
+            duration:
+              0.7,
+
+            ease:
+              'power3.out',
+          },
+          0.9,
+        )
+      }, section)
+
+    return () => {
+      ctx.revert()
+    }
+  }, [])
+
   return (
     <section
+      ref={sectionRef}
       id="contacts"
       aria-label="Contacts"
-      className="relative mt-[220px] h-[1372px] w-[1920px] bg-ice text-espresso"
+      className="
+        relative
+        mt-[220px]
+        h-[1372px]
+        w-[1920px]
+        bg-ice
+        text-espresso
+      "
     >
+      {/*
+       * ==========================================
+       * INPUT STYLES
+       * ==========================================
+       */}
+
       <style>
         {`
           .contact-input,
@@ -224,52 +901,222 @@ export function Contacts() {
         `}
       </style>
 
-      <div className="absolute top-0 left-0 h-[191px] w-[1920px] overflow-hidden">
-        {DECORATIVE_LINES.map((line, index) => (
-          <span
-            key={index}
-            className="absolute left-0 w-full bg-[#7B978A]"
-            style={{
-              top: `${line.top}px`,
-              height: `${line.height}px`,
-            }}
-          />
-        ))}
+      {/*
+       * ==========================================
+       * DECORATIVE TOP LINES
+       *
+       * STATIC — NO GSAP ANIMATION
+       * ==========================================
+       */}
+
+      <div
+        className="
+          absolute
+          top-0
+          left-0
+          h-[191px]
+          w-[1920px]
+          overflow-hidden
+        "
+      >
+        {DECORATIVE_LINES.map(
+          (
+            line,
+            index,
+          ) => (
+            <span
+              key={index}
+              className="
+                absolute
+                left-0
+                w-full
+                bg-[#7B978A]
+              "
+              style={{
+                top:
+                  `${line.top}px`,
+
+                height:
+                  `${line.height}px`,
+              }}
+            />
+          ),
+        )}
       </div>
 
-      <div className="absolute top-[190px] left-0 h-[1184px] w-[1920px] bg-[#7B978A]">
-        <SectionHeader
-          className="top-10"
-          left="Write To Us"
-          center="Contacts"
-          right="We'll Respond Soon."
-        />
+      {/*
+       * ==========================================
+       * MAIN CONTACT AREA
+       * ==========================================
+       */}
 
-        <span className="absolute top-[72px] left-[960px] h-[1112px] w-[1.6px] bg-[#392919]/70" />
+      <div
+        className="
+          absolute
+          top-[190px]
+          left-0
+          h-[1184px]
+          w-[1920px]
+          bg-[#7B978A]
+        "
+      >
+        {/*
+         * ========================================
+         * SECTION HEADER
+         * ========================================
+         */}
 
-        <div className="absolute top-[112px] left-[40px] flex w-[663px] flex-col gap-[4px]">
-          {CONTACTS_COPY.headingLines.map((line) => (
-            <p
-              key={line}
-              className="text-wordmark m-0 text-[140px] leading-[1] whitespace-nowrap text-[#392919]"
-            >
-              {line}
-            </p>
-          ))}
+        <div
+          ref={headerRef}
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+          "
+          style={{
+            willChange:
+              'opacity, transform',
+          }}
+        >
+          <SectionHeader
+            className="top-10"
+            left="Write To Us"
+            center="Contacts"
+            right="We'll Respond Soon."
+          />
         </div>
 
-        <form
-          id="contact-form"
-          onSubmit={handleSubmit}
-          className="absolute top-[151px] left-[1184px] w-[696px]"
+        {/*
+         * ========================================
+         * CENTRAL VERTICAL LINE
+         * ========================================
+         */}
+
+        <span
+          ref={verticalLineRef}
+          className="
+            absolute
+            top-[72px]
+            left-[960px]
+            h-[1112px]
+            w-[1.6px]
+            bg-[#392919]/70
+          "
+          style={{
+            transformOrigin:
+              'top center',
+
+            willChange:
+              'transform',
+          }}
+        />
+
+        {/*
+         * ========================================
+         * LARGE HEADING
+         * ========================================
+         */}
+
+        <div
+          className="
+            absolute
+            top-[112px]
+            left-[40px]
+            flex
+            w-[663px]
+            flex-col
+            gap-[4px]
+          "
         >
-          <div className="w-[696px]">
-            <p className="text-body-copy m-0 text-[#392919]">
-              {CONTACTS_COPY.formDescription}
+          {CONTACTS_COPY.headingLines.map(
+            (
+              line,
+              index,
+            ) => (
+              <p
+                key={line}
+                ref={(
+                  element,
+                ) => {
+                  headingLineRefs.current[
+                    index
+                  ] =
+                    element
+                }}
+                className="
+                  text-wordmark
+                  m-0
+                  text-[140px]
+                  leading-[1]
+                  whitespace-nowrap
+                  text-[#392919]
+                "
+                style={{
+                  willChange:
+                    'opacity, transform',
+                }}
+              >
+                {line}
+              </p>
+            ),
+          )}
+        </div>
+
+        {/*
+         * ========================================
+         * CONTACT FORM
+         * ========================================
+         */}
+
+        <form
+          ref={formRef}
+          id="contact-form"
+          onSubmit={
+            handleSubmit
+          }
+          className="
+            absolute
+            top-[151px]
+            left-[1184px]
+            w-[696px]
+          "
+          style={{
+            willChange:
+              'opacity, transform',
+          }}
+        >
+          <div
+            className="
+              w-[696px]
+            "
+          >
+            <p
+              className="
+                text-body-copy
+                m-0
+                text-[#392919]
+              "
+            >
+              {
+                CONTACTS_COPY.formDescription
+              }
             </p>
 
-            <div className="mt-[38px] h-[1px] w-[696px] bg-[#392919]" />
+            <div
+              className="
+                mt-[38px]
+                h-[1px]
+                w-[696px]
+                bg-[#392919]
+              "
+            />
           </div>
+
+          {/*
+           * ======================================
+           * NAME
+           * ======================================
+           */}
 
           <input
             type="text"
@@ -277,8 +1124,18 @@ export function Contacts() {
             required
             placeholder="name"
             autoComplete="name"
-            className={`${INPUT_CLASS} mt-[32px] h-[32px]`}
+            className={`
+              ${INPUT_CLASS}
+              mt-[32px]
+              h-[32px]
+            `}
           />
+
+          {/*
+           * ======================================
+           * PHONE
+           * ======================================
+           */}
 
           <input
             type="tel"
@@ -286,59 +1143,102 @@ export function Contacts() {
             required
             placeholder="number"
             autoComplete="tel"
-            className={`${INPUT_CLASS} mt-[32px] h-[32px]`}
+            className={`
+              ${INPUT_CLASS}
+              mt-[32px]
+              h-[32px]
+            `}
           />
 
+          {/*
+           * ======================================
+           * CONTACT METHODS
+           * ======================================
+           */}
+
           <div
-            className="mt-[32px] flex w-[696px] gap-[12px]"
+            className="
+              mt-[32px]
+              flex
+              w-[696px]
+              gap-[12px]
+            "
             role="radiogroup"
             aria-label="Preferred contact method"
           >
-            {CONTACT_METHODS.map((option) => {
-              const isActive = method === option
+            {CONTACT_METHODS.map(
+              (
+                option,
+              ) => {
+                const isActive =
+                  method ===
+                  option
 
-              return (
-                <button
-                  key={option}
-                  type="button"
-                  role="radio"
-                  aria-checked={isActive}
-                  onClick={() => setMethod(option)}
-                  className={`
-                    flex
-                    h-[44px]
-                    w-[165px]
-                    shrink-0
-                    items-center
-                    justify-center
-                    border
-                    text-[18px]
-                    font-normal
-                    outline-none
-                    transition-[background-color,color,border-color]
-                    duration-700
-                    ease-[cubic-bezier(0.22,1,0.36,1)]
-                    ${
-                      isActive
-                        ? 'border-[#392919] bg-[#392919] text-[#DDE4EE]'
-                        : 'border-[#392919]/40 bg-transparent text-[#392919]'
+                return (
+                  <button
+                    key={
+                      option
                     }
-                  `}
-                >
-                  {option.toLowerCase()}
-                </button>
-              )
-            })}
+                    type="button"
+                    role="radio"
+                    aria-checked={
+                      isActive
+                    }
+                    onClick={() =>
+                      setMethod(
+                        option,
+                      )
+                    }
+                    className={`
+                      flex
+                      h-[44px]
+                      w-[165px]
+                      shrink-0
+                      items-center
+                      justify-center
+                      border
+                      text-[18px]
+                      font-normal
+                      outline-none
+
+                      transition-[background-color,color,border-color]
+                      duration-700
+
+                      ease-[cubic-bezier(0.22,1,0.36,1)]
+
+                      ${
+                        isActive
+                          ? 'border-[#392919] bg-[#392919] text-[#DDE4EE]'
+                          : 'border-[#392919]/40 bg-transparent text-[#392919]'
+                      }
+                    `}
+                  >
+                    {
+                      option.toLowerCase()
+                    }
+                  </button>
+                )
+              },
+            )}
           </div>
+
+          {/*
+           * ======================================
+           * CONDITIONAL CONTACT FIELD
+           * ======================================
+           */}
 
           <div
             className={`
               grid
               w-[696px]
               overflow-hidden
+
               transition-[grid-template-rows,opacity,margin-top]
               duration-700
+
               ease-[cubic-bezier(0.22,1,0.36,1)]
+
               ${
                 method
                   ? 'mt-[24px] grid-rows-[1fr] opacity-100'
@@ -346,12 +1246,24 @@ export function Contacts() {
               }
             `}
           >
-            <div className="min-h-0 overflow-hidden">
+            <div
+              className="
+                min-h-0
+                overflow-hidden
+              "
+            >
               <input
                 type="text"
                 name="handle"
-                required={method !== null}
-                tabIndex={method ? 0 : -1}
+                required={
+                  method !==
+                  null
+                }
+                tabIndex={
+                  method
+                    ? 0
+                    : -1
+                }
                 placeholder={
                   method
                     ? `your ${method.toLowerCase()} contact`
@@ -360,9 +1272,12 @@ export function Contacts() {
                 className={`
                   ${INPUT_CLASS}
                   h-[32px]
+
                   transition-[opacity,transform]
                   duration-700
+
                   ease-[cubic-bezier(0.22,1,0.36,1)]
+
                   ${
                     method
                       ? 'translate-y-0 opacity-100'
@@ -373,7 +1288,14 @@ export function Contacts() {
             </div>
           </div>
 
+          {/*
+           * ======================================
+           * SEND — SAME PRINCIPLE AS HERO
+           * ======================================
+           */}
+
           <button
+            ref={sendButtonRef}
             type="submit"
             className="
               group
@@ -381,98 +1303,277 @@ export function Contacts() {
               flex
               w-[696px]
               flex-col
-              gap-[6px]
               text-left
               outline-none
             "
           >
+            {/*
+             * ====================================
+             * LINE
+             * ====================================
+             */}
+
             <span
+              ref={sendLineRef}
               className="
+                block
                 h-[2px]
                 w-full
-                bg-[#392919]
-                transition-colors
-                duration-500
-                ease-[cubic-bezier(0.22,1,0.36,1)]
-                group-hover:bg-[#DDE4EE]
-                group-focus-visible:bg-[#DDE4EE]
+                origin-left
               "
-            />
+            >
+              <span
+                className="
+                  block
+                  h-full
+                  w-full
+                  origin-right
+                  bg-[#392919]
 
-            <span className="flex items-center justify-between">
+                  transition-[background-color,transform]
+                  duration-300
+                  ease-out
+
+                  group-hover:scale-x-[0.95]
+                  group-hover:bg-[#DDE4EE]
+
+                  group-focus-visible:scale-x-[0.95]
+                  group-focus-visible:bg-[#DDE4EE]
+                "
+              />
+            </span>
+
+            {/*
+             * ====================================
+             * CONTENT
+             * ====================================
+             */}
+
+            <span
+              ref={sendContentRef}
+              className="
+                mt-[6px]
+                flex
+                items-center
+                justify-between
+              "
+            >
               <span
                 className="
                   text-button-label
                   text-[#392919]
+
                   transition-colors
-                  duration-500
-                  ease-[cubic-bezier(0.22,1,0.36,1)]
+                  duration-300
+                  ease-out
+
                   group-hover:text-[#DDE4EE]
+                  group-focus-visible:text-[#DDE4EE]
+                "
+                aria-label="Send"
+              >
+                <AnimatedWords
+                  text="Send"
+                  letterClassName="contacts-send-letter"
+                />
+              </span>
+
+              <span
+                className="
+                  inline-flex
+                  text-[#392919]
+
+                  transition-[color,transform]
+                  duration-300
+                  ease-out
+
+                  group-hover:translate-x-[8px]
+                  group-hover:text-[#DDE4EE]
+
+                  group-focus-visible:translate-x-[8px]
                   group-focus-visible:text-[#DDE4EE]
                 "
               >
-                Send
+                <ArrowIcon />
               </span>
-
-              <ArrowIcon
-                className="
-                  text-[#392919]
-                  transition-[color,transform]
-                  duration-500
-                  ease-[cubic-bezier(0.22,1,0.36,1)]
-                  group-hover:translate-x-1
-                  group-hover:text-[#DDE4EE]
-                  group-focus-visible:translate-x-1
-                  group-focus-visible:text-[#DDE4EE]
-                "
-              />
             </span>
           </button>
         </form>
 
-        <div className="absolute top-[756px] left-[40px] w-[279px]">
-          <div className="flex flex-col gap-[10px]">
+        {/*
+         * ========================================
+         * PHONE + ADDRESS
+         * ========================================
+         */}
+
+        <div
+          ref={contactInfoRef}
+          className="
+            absolute
+            top-[756px]
+            left-[40px]
+            w-[279px]
+          "
+          style={{
+            willChange:
+              'opacity, transform',
+          }}
+        >
+          <div
+            className="
+              flex
+              flex-col
+              gap-[10px]
+            "
+          >
             <span className="text-body-copy">
-              {CONTACTS_COPY.phoneNumbers[0]}
+              {
+                CONTACTS_COPY.phoneNumbers[
+                  0
+                ]
+              }
             </span>
 
             <span className="text-body-copy">
-              {CONTACTS_COPY.phoneNumbers[1]}
+              {
+                CONTACTS_COPY.phoneNumbers[
+                  1
+                ]
+              }
             </span>
           </div>
 
-          <p className="text-body-copy mt-[88px] w-[279px] text-espresso/70">
-            {CONTACTS_COPY.address}
+          <p
+            className="
+              text-body-copy
+              mt-[88px]
+              w-[279px]
+              text-espresso/70
+            "
+          >
+            {
+              CONTACTS_COPY.address
+            }
           </p>
         </div>
 
-        <ul className="absolute top-[756px] left-[548px] flex w-[120px] flex-col gap-[20px]">
-          {SOCIAL_LINKS.map((link) => (
-            <li key={link.label}>
-              <AnimatedSocialLink
-                href={link.href}
-                label={link.label}
-              />
-            </li>
-          ))}
+        {/*
+         * ========================================
+         * SOCIAL LINKS
+         * ========================================
+         */}
+
+        <ul
+          ref={socialsRef}
+          className="
+            absolute
+            top-[756px]
+            left-[548px]
+            flex
+            w-[120px]
+            flex-col
+            gap-[20px]
+          "
+          style={{
+            willChange:
+              'opacity, transform',
+          }}
+        >
+          {SOCIAL_LINKS.map(
+            (
+              link,
+            ) => (
+              <li
+                key={
+                  link.label
+                }
+              >
+                <AnimatedSocialLink
+                  href={
+                    link.href
+                  }
+                  label={
+                    link.label
+                  }
+                />
+              </li>
+            ),
+          )}
         </ul>
 
-        <div className="absolute top-[748px] left-[1168px] h-[338px] w-[712px]">
+        {/*
+         * ========================================
+         * VIDEO LOGO
+         * ========================================
+         */}
+
+        <div
+          ref={logoRef}
+          className="
+            absolute
+            top-[748px]
+            left-[1168px]
+            h-[338px]
+            w-[712px]
+          "
+          style={{
+            willChange:
+              'opacity, transform',
+          }}
+        >
           <VideoFooterLogo />
         </div>
 
-        <div className="absolute top-[1128px] left-[40px] flex w-[1840px] items-center justify-between">
-          <span className="text-footnote text-espresso">
+        {/*
+         * ========================================
+         * BOTTOM ROW
+         * ========================================
+         */}
+
+        <div
+          ref={bottomRef}
+          className="
+            absolute
+            top-[1128px]
+            left-[40px]
+            flex
+            w-[1840px]
+            items-center
+            justify-between
+          "
+          style={{
+            willChange:
+              'opacity, transform',
+          }}
+        >
+          <span
+            className="
+              text-footnote
+              text-espresso
+            "
+          >
             ©2025
           </span>
 
-          <span className="text-footnote absolute right-[476px] text-espresso">
-            web designer tetiana varzonova
+          <span
+            className="
+              text-footnote
+              absolute
+              right-[476px]
+              text-espresso
+            "
+          >
+            web designer tetiana
+            varzonova
           </span>
 
           <a
             href="#"
-            className="text-footnote text-espresso hover:text-espresso"
+            className="
+              text-footnote
+              text-espresso
+              hover:text-espresso
+            "
           >
             privacy policy
           </a>

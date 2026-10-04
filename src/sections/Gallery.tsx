@@ -19,6 +19,64 @@ const SMALL_VIDEO_HEIGHT = 862
 const VIDEO_INSET_X =
   (CANVAS_WIDTH - SMALL_VIDEO_WIDTH) / 2
 
+const VIDEO_INSET_Y =
+  (CANVAS_HEIGHT - SMALL_VIDEO_HEIGHT) / 2
+
+/*
+ * ==========================================
+ * CENTERED MASK
+ * ==========================================
+ *
+ * Small frame:
+ *
+ * width  = 1482
+ * height = 862
+ *
+ * inside:
+ *
+ * 1920 × 1080
+ *
+ * Left/right:
+ * 219px
+ *
+ * Top/bottom:
+ * 109px
+ *
+ * Converted to percentages so the mask
+ * stays mathematically centered.
+ * ==========================================
+ */
+
+const SMALL_LEFT =
+  (VIDEO_INSET_X / CANVAS_WIDTH) * 100
+
+const SMALL_RIGHT =
+  ((CANVAS_WIDTH - VIDEO_INSET_X) /
+    CANVAS_WIDTH) *
+  100
+
+const SMALL_TOP =
+  (VIDEO_INSET_Y / CANVAS_HEIGHT) * 100
+
+const SMALL_BOTTOM =
+  ((CANVAS_HEIGHT - VIDEO_INSET_Y) /
+    CANVAS_HEIGHT) *
+  100
+
+const SMALL_CLIP = `polygon(
+  ${SMALL_LEFT}% ${SMALL_TOP}%,
+  ${SMALL_RIGHT}% ${SMALL_TOP}%,
+  ${SMALL_RIGHT}% ${SMALL_BOTTOM}%,
+  ${SMALL_LEFT}% ${SMALL_BOTTOM}%
+)`
+
+const FULL_CLIP = `polygon(
+  0% 0%,
+  100% 0%,
+  100% 100%,
+  0% 100%
+)`
+
 const PIN_DISTANCE = 5200
 
 export function Gallery() {
@@ -59,15 +117,29 @@ export function Gallery() {
       return
     }
 
-    const scene = sceneRef.current
-    const header = headerRef.current
-    const line = lineRef.current
+    const scene =
+      sceneRef.current
 
-    const frames = frameRefs.current
-    const titles = titleRefs.current
-    const locations = locationRefs.current
-    const specs = specsRefs.current
-    const descriptions = descriptionRefs.current
+    const header =
+      headerRef.current
+
+    const line =
+      lineRef.current
+
+    const frames =
+      frameRefs.current
+
+    const titles =
+      titleRefs.current
+
+    const locations =
+      locationRefs.current
+
+    const specs =
+      specsRefs.current
+
+    const descriptions =
+      descriptionRefs.current
 
     if (
       frames.some((item) => !item) ||
@@ -84,126 +156,13 @@ export function Gallery() {
         '(prefers-reduced-motion: reduce)',
       ).matches
 
-    const ctx = gsap.context(() => {
-      /*
-       * ==========================================
-       * INITIAL VIDEO STATES
-       * ==========================================
-       *
-       * Every video WINDOW is physically centered.
-       *
-       * No clip-path.
-       * No scale.
-       * No transform-origin problems.
-       *
-       * The window itself starts:
-       *
-       * 1482 × 862
-       *
-       * and later becomes:
-       *
-       * 1920 × 1080
-       * ==========================================
-       */
-
-      GALLERY_STATES.forEach(
-        (_, index) => {
-          const frame =
-            frames[index]!
-
-          const title =
-            titles[index]!
-
-          const location =
-            locations[index]!
-
-          const spec =
-            specs[index]!
-
-          const description =
-            descriptions[index]!
-
-          /*
-           * ======================================
-           * FRAME
-           * ======================================
-           */
-
-          gsap.set(frame, {
-            width:
-              SMALL_VIDEO_WIDTH,
-
-            height:
-              SMALL_VIDEO_HEIGHT,
-
-            opacity:
-              index === 0 ? 1 : 0,
-          })
-
-          /*
-           * ======================================
-           * TITLE
-           * ======================================
-           */
-
-          gsap.set(title, {
-            x: VIDEO_INSET_X,
-            y: 120,
-
-            opacity:
-              index === 0 ? 1 : 0,
-          })
-
-          /*
-           * ======================================
-           * EXTRA INFO
-           * ======================================
-           */
-
-          gsap.set(
-            [
-              location,
-              spec,
-              description,
-            ],
-            {
-              opacity: 0,
-              y: 18,
-            },
-          )
-        },
-      )
-
-      /*
-       * ==========================================
-       * HEADER INITIAL STATE
-       * ==========================================
-       */
-
-      gsap.set(header, {
-        y: 40,
-        color: ESPRESSO,
-      })
-
-      /*
-       * ==========================================
-       * LINE INITIAL STATE
-       * ==========================================
-       */
-
-      gsap.set(line, {
-        opacity: 0.7,
-      })
-
-      /*
-       * ==========================================
-       * REDUCED MOTION
-       * ==========================================
-       */
-
-      if (reduceMotion) {
-        const lastIndex =
-          GALLERY_STATES.length - 1
+    const ctx =
+      gsap.context(() => {
+        /*
+         * ==========================================
+         * INITIAL STATES
+         * ==========================================
+         */
 
         GALLERY_STATES.forEach(
           (_, index) => {
@@ -222,28 +181,54 @@ export function Gallery() {
             const description =
               descriptions[index]!
 
-            gsap.set(frame, {
-              width:
-                CANVAS_WIDTH,
+            /*
+             * ======================================
+             * FRAME
+             * ======================================
+             */
 
-              height:
-                CANVAS_HEIGHT,
+            gsap.set(
+              frame,
+              {
+                clipPath:
+                  SMALL_CLIP,
 
-              opacity:
-                index === lastIndex
-                  ? 1
-                  : 0,
-            })
+                WebkitClipPath:
+                  SMALL_CLIP,
 
-            gsap.set(title, {
-              x: 0,
-              y: 0,
+                opacity:
+                  index === 0
+                    ? 1
+                    : 0,
+              },
+            )
 
-              opacity:
-                index === lastIndex
-                  ? 1
-                  : 0,
-            })
+            /*
+             * ======================================
+             * TITLE
+             * ======================================
+             */
+
+            gsap.set(
+              title,
+              {
+                x:
+                  VIDEO_INSET_X,
+
+                y: 120,
+
+                opacity:
+                  index === 0
+                    ? 1
+                    : 0,
+              },
+            )
+
+            /*
+             * ======================================
+             * EXTRA INFO
+             * ======================================
+             */
 
             gsap.set(
               [
@@ -252,478 +237,623 @@ export function Gallery() {
                 description,
               ],
               {
-                opacity:
-                  index === lastIndex
-                    ? 0.7
-                    : 0,
-
-                y: 0,
+                opacity: 0,
+                y: 18,
               },
             )
           },
         )
 
-        gsap.set(header, {
-          y: 40,
-          color: ICE,
-        })
+        /*
+         * ==========================================
+         * HEADER
+         * ==========================================
+         */
 
-        gsap.set(line, {
-          opacity: 0,
-        })
-
-        return
-      }
-
-      /*
-       * ==========================================
-       * MASTER TIMELINE
-       * ==========================================
-       */
-
-      const timeline =
-        gsap.timeline({
-          defaults: {
-            ease: 'none',
+        gsap.set(
+          header,
+          {
+            y: 40,
+            color:
+              ESPRESSO,
           },
-        })
+        )
 
-      GALLERY_STATES.forEach(
-        (_, index) => {
-          const frame =
-            frames[index]!
+        /*
+         * ==========================================
+         * LINE
+         * ==========================================
+         */
 
-          const title =
-            titles[index]!
+        gsap.set(
+          line,
+          {
+            opacity:
+              0.7,
+          },
+        )
 
-          const location =
-            locations[index]!
+        /*
+         * ==========================================
+         * REDUCED MOTION
+         * ==========================================
+         */
 
-          const spec =
-            specs[index]!
+        if (
+          reduceMotion
+        ) {
+          const lastIndex =
+            GALLERY_STATES.length -
+            1
 
-          const description =
-            descriptions[index]!
+          GALLERY_STATES.forEach(
+            (_, index) => {
+              const frame =
+                frames[index]!
 
-          /*
-           * ======================================
-           * NEXT VILLA
-           * ======================================
-           */
+              const title =
+                titles[index]!
 
-          if (index > 0) {
-            const previousFrame =
-              frames[index - 1]!
+              const location =
+                locations[index]!
 
-            const previousTitle =
-              titles[index - 1]!
+              const spec =
+                specs[index]!
 
-            const previousLocation =
-              locations[index - 1]!
+              const description =
+                descriptions[index]!
 
-            const previousSpecs =
-              specs[index - 1]!
+              gsap.set(
+                frame,
+                {
+                  clipPath:
+                    FULL_CLIP,
 
-            const previousDescription =
-              descriptions[index - 1]!
+                  WebkitClipPath:
+                    FULL_CLIP,
+
+                  opacity:
+                    index ===
+                    lastIndex
+                      ? 1
+                      : 0,
+                },
+              )
+
+              gsap.set(
+                title,
+                {
+                  x: 0,
+                  y: 0,
+
+                  opacity:
+                    index ===
+                    lastIndex
+                      ? 1
+                      : 0,
+                },
+              )
+
+              gsap.set(
+                [
+                  location,
+                  spec,
+                  description,
+                ],
+                {
+                  opacity:
+                    index ===
+                    lastIndex
+                      ? 0.7
+                      : 0,
+
+                  y: 0,
+                },
+              )
+            },
+          )
+
+          gsap.set(
+            header,
+            {
+              y: 40,
+              color: ICE,
+            },
+          )
+
+          gsap.set(
+            line,
+            {
+              opacity: 0,
+            },
+          )
+
+          return
+        }
+
+        /*
+         * ==========================================
+         * MASTER TIMELINE
+         * ==========================================
+         */
+
+        const timeline =
+          gsap.timeline({
+            defaults: {
+              ease: 'none',
+            },
+          })
+
+        GALLERY_STATES.forEach(
+          (_, index) => {
+            const frame =
+              frames[index]!
+
+            const title =
+              titles[index]!
+
+            const location =
+              locations[index]!
+
+            const spec =
+              specs[index]!
+
+            const description =
+              descriptions[index]!
 
             /*
-             * ====================================
-             * OLD FULLSCREEN VILLA FADES
-             * ====================================
+             * ======================================
+             * NEXT VILLA
+             * ======================================
+             */
+
+            if (
+              index > 0
+            ) {
+              const previousFrame =
+                frames[
+                  index - 1
+                ]!
+
+              const previousTitle =
+                titles[
+                  index - 1
+                ]!
+
+              const previousLocation =
+                locations[
+                  index - 1
+                ]!
+
+              const previousSpecs =
+                specs[
+                  index - 1
+                ]!
+
+              const previousDescription =
+                descriptions[
+                  index - 1
+                ]!
+
+              /*
+               * ====================================
+               * PREVIOUS FULLSCREEN OUT
+               * ====================================
+               */
+
+              timeline.to(
+                previousFrame,
+                {
+                  opacity: 0,
+
+                  duration:
+                    0.85,
+
+                  ease:
+                    'power2.inOut',
+                },
+              )
+
+              /*
+               * ====================================
+               * NEXT SMALL CENTERED FRAME
+               * ====================================
+               */
+
+              timeline.fromTo(
+                frame,
+                {
+                  clipPath:
+                    SMALL_CLIP,
+
+                  WebkitClipPath:
+                    SMALL_CLIP,
+
+                  opacity: 0,
+                },
+                {
+                  clipPath:
+                    SMALL_CLIP,
+
+                  WebkitClipPath:
+                    SMALL_CLIP,
+
+                  opacity: 1,
+
+                  duration:
+                    0.85,
+
+                  ease:
+                    'power2.inOut',
+
+                  immediateRender:
+                    false,
+                },
+                '<',
+              )
+
+              /*
+               * ====================================
+               * PREVIOUS CONTENT OUT
+               * ====================================
+               */
+
+              timeline.to(
+                [
+                  previousTitle,
+                  previousLocation,
+                  previousSpecs,
+                  previousDescription,
+                ],
+                {
+                  opacity: 0,
+
+                  duration:
+                    0.55,
+
+                  ease:
+                    'power1.inOut',
+                },
+                '<',
+              )
+
+              /*
+               * ====================================
+               * NEXT TITLE
+               * ====================================
+               */
+
+              timeline.fromTo(
+                title,
+                {
+                  x:
+                    VIDEO_INSET_X,
+
+                  y: 120,
+
+                  opacity: 0,
+                },
+                {
+                  x:
+                    VIDEO_INSET_X,
+
+                  y: 120,
+
+                  opacity: 1,
+
+                  duration:
+                    0.65,
+
+                  ease:
+                    'power1.inOut',
+
+                  immediateRender:
+                    false,
+                },
+                '<+=0.12',
+              )
+
+              /*
+               * ====================================
+               * HEADER BACK
+               * ====================================
+               */
+
+              timeline.to(
+                header,
+                {
+                  y: 40,
+
+                  color:
+                    ESPRESSO,
+
+                  duration:
+                    0.65,
+
+                  ease:
+                    'power1.inOut',
+                },
+                '<',
+              )
+
+              /*
+               * ====================================
+               * LINE BACK
+               * ====================================
+               */
+
+              timeline.to(
+                line,
+                {
+                  opacity:
+                    0.7,
+
+                  duration:
+                    0.65,
+
+                  ease:
+                    'power1.inOut',
+                },
+                '<',
+              )
+
+              /*
+               * ====================================
+               * SMALL HOLD
+               * ====================================
+               */
+
+              timeline.to(
+                {},
+                {
+                  duration:
+                    0.34,
+                },
+              )
+            } else {
+              /*
+               * ====================================
+               * FIRST SMALL HOLD
+               * ====================================
+               */
+
+              timeline.to(
+                {},
+                {
+                  duration:
+                    0.3,
+                },
+              )
+            }
+
+            /*
+             * ======================================
+             * CENTERED EXPANSION
+             * ======================================
+             *
+             * All four polygon corners move
+             * symmetrically toward the four
+             * corners of the screen.
+             *
+             * left   → left
+             * right  → right
+             * top    → top
+             * bottom → bottom
+             *
+             * Video itself does NOT move.
+             * ======================================
              */
 
             timeline.to(
-              previousFrame,
-              {
-                opacity: 0,
-
-                duration: 0.85,
-
-                ease:
-                  'power2.inOut',
-              },
-            )
-
-            /*
-             * ====================================
-             * NEXT SMALL CENTERED VILLA
-             * ====================================
-             *
-             * Important:
-             *
-             * width and height are already
-             * centered by CSS.
-             *
-             * So it cannot appear from a corner.
-             * ====================================
-             */
-
-            timeline.fromTo(
               frame,
               {
-                width:
-                  SMALL_VIDEO_WIDTH,
+                clipPath:
+                  FULL_CLIP,
 
-                height:
-                  SMALL_VIDEO_HEIGHT,
+                WebkitClipPath:
+                  FULL_CLIP,
 
-                opacity: 0,
-              },
-              {
-                width:
-                  SMALL_VIDEO_WIDTH,
-
-                height:
-                  SMALL_VIDEO_HEIGHT,
-
-                opacity: 1,
-
-                duration: 0.85,
+                duration:
+                  1.55,
 
                 ease:
                   'power2.inOut',
-
-                immediateRender:
-                  false,
               },
-              '<',
             )
 
             /*
-             * ====================================
-             * OLD CONTENT FADES
-             * ====================================
-             */
-
-            timeline.to(
-              [
-                previousTitle,
-                previousLocation,
-                previousSpecs,
-                previousDescription,
-              ],
-              {
-                opacity: 0,
-
-                duration: 0.55,
-
-                ease:
-                  'power1.inOut',
-              },
-              '<',
-            )
-
-            /*
-             * ====================================
-             * NEXT TITLE
-             * ====================================
-             */
-
-            timeline.fromTo(
-              title,
-              {
-                x:
-                  VIDEO_INSET_X,
-
-                y: 120,
-
-                opacity: 0,
-              },
-              {
-                x:
-                  VIDEO_INSET_X,
-
-                y: 120,
-
-                opacity: 1,
-
-                duration: 0.65,
-
-                ease:
-                  'power1.inOut',
-
-                immediateRender:
-                  false,
-              },
-              '<+=0.12',
-            )
-
-            /*
-             * ====================================
-             * HEADER BACK TO SMALL STATE
-             * ====================================
+             * ======================================
+             * HEADER
+             * ======================================
              */
 
             timeline.to(
               header,
               {
                 y: 40,
-                color:
-                  ESPRESSO,
 
-                duration: 0.65,
+                color:
+                  ICE,
+
+                duration:
+                  0.55,
 
                 ease:
                   'power1.inOut',
               },
-              '<',
+              '-=0.58',
             )
 
             /*
-             * ====================================
-             * LINE BACK
-             * ====================================
+             * ======================================
+             * LINE
+             * ======================================
              */
 
             timeline.to(
               line,
               {
-                opacity: 0.7,
+                opacity: 0,
 
-                duration: 0.65,
+                duration:
+                  0.28,
+
+                ease:
+                  'none',
+              },
+              '-=0.6',
+            )
+
+            /*
+             * ======================================
+             * TITLE
+             * ======================================
+             */
+
+            timeline.to(
+              title,
+              {
+                x: 0,
+                y: 0,
+
+                duration:
+                  0.62,
 
                 ease:
                   'power1.inOut',
               },
-              '<',
+              '-=0.36',
             )
 
             /*
-             * ====================================
-             * SMALL HOLD
-             * ====================================
+             * ======================================
+             * LOCATION
+             * ======================================
+             */
+
+            timeline.to(
+              location,
+              {
+                opacity:
+                  0.7,
+
+                y: 0,
+
+                duration:
+                  0.4,
+
+                ease:
+                  'power1.out',
+              },
+              '-=0.2',
+            )
+
+            /*
+             * ======================================
+             * SPECS
+             * ======================================
+             */
+
+            timeline.to(
+              spec,
+              {
+                opacity:
+                  0.7,
+
+                y: 0,
+
+                duration:
+                  0.4,
+
+                ease:
+                  'power1.out',
+              },
+              '<+=0.04',
+            )
+
+            /*
+             * ======================================
+             * DESCRIPTION
+             * ======================================
+             */
+
+            timeline.to(
+              description,
+              {
+                opacity:
+                  0.7,
+
+                y: 0,
+
+                duration:
+                  0.4,
+
+                ease:
+                  'power1.out',
+              },
+              '<+=0.04',
+            )
+
+            /*
+             * ======================================
+             * FULLSCREEN HOLD
+             * ======================================
              */
 
             timeline.to(
               {},
               {
-                duration: 0.34,
+                duration:
+                  index ===
+                  GALLERY_STATES.length -
+                    1
+                    ? 0.7
+                    : 0.48,
               },
             )
-          } else {
-            /*
-             * ====================================
-             * FIRST SMALL HOLD
-             * ====================================
-             */
+          },
+        )
 
-            timeline.to(
-              {},
-              {
-                duration: 0.3,
-              },
-            )
-          }
+        /*
+         * ==========================================
+         * SCROLLTRIGGER
+         * ==========================================
+         */
 
-          /*
-           * ======================================
-           * CENTER EXPANSION
-           * ======================================
-           *
-           * THIS is the main fix.
-           *
-           * The window grows:
-           *
-           * 1482 × 862
-           *
-           * →
-           *
-           * 1920 × 1080
-           *
-           * while its center NEVER moves.
-           *
-           * No scale.
-           * No x.
-           * No y.
-           * No clip-path.
-           * ======================================
-           */
+        ScrollTrigger.create({
+          trigger:
+            scene,
 
-          timeline.to(
-            frame,
-            {
-              width:
-                CANVAS_WIDTH,
+          start:
+            'top top',
 
-              height:
-                CANVAS_HEIGHT,
+          end:
+            `+=${PIN_DISTANCE}`,
 
-              duration: 1.55,
+          pin: true,
 
-              ease: 'none',
-            },
-          )
+          pinSpacing:
+            true,
 
-          /*
-           * ======================================
-           * HEADER
-           * ======================================
-           */
+          anticipatePin:
+            1,
 
-          timeline.to(
-            header,
-            {
-              y: 40,
+          animation:
+            timeline,
 
-              color: ICE,
+          scrub: 1,
 
-              duration: 0.55,
-
-              ease:
-                'power1.inOut',
-            },
-            '-=0.58',
-          )
-
-          /*
-           * ======================================
-           * LINE
-           * ======================================
-           */
-
-          timeline.to(
-            line,
-            {
-              opacity: 0,
-
-              duration: 0.28,
-
-              ease: 'none',
-            },
-            '-=0.6',
-          )
-
-          /*
-           * ======================================
-           * TITLE
-           * ======================================
-           */
-
-          timeline.to(
-            title,
-            {
-              x: 0,
-              y: 0,
-
-              duration: 0.62,
-
-              ease:
-                'power1.inOut',
-            },
-            '-=0.36',
-          )
-
-          /*
-           * ======================================
-           * LOCATION
-           * ======================================
-           */
-
-          timeline.to(
-            location,
-            {
-              opacity: 0.7,
-              y: 0,
-
-              duration: 0.4,
-
-              ease:
-                'power1.out',
-            },
-            '-=0.2',
-          )
-
-          /*
-           * ======================================
-           * SPECS
-           * ======================================
-           */
-
-          timeline.to(
-            spec,
-            {
-              opacity: 0.7,
-              y: 0,
-
-              duration: 0.4,
-
-              ease:
-                'power1.out',
-            },
-            '<+=0.04',
-          )
-
-          /*
-           * ======================================
-           * DESCRIPTION
-           * ======================================
-           */
-
-          timeline.to(
-            description,
-            {
-              opacity: 0.7,
-              y: 0,
-
-              duration: 0.4,
-
-              ease:
-                'power1.out',
-            },
-            '<+=0.04',
-          )
-
-          /*
-           * ======================================
-           * FULLSCREEN HOLD
-           * ======================================
-           */
-
-          timeline.to(
-            {},
-            {
-              duration:
-                index ===
-                GALLERY_STATES.length - 1
-                  ? 0.7
-                  : 0.48,
-            },
-          )
-        },
-      )
-
-      /*
-       * ==========================================
-       * ONE SCROLLTRIGGER
-       * ==========================================
-       */
-
-      ScrollTrigger.create({
-        trigger: scene,
-
-        start: 'top top',
-
-        end: `+=${PIN_DISTANCE}`,
-
-        pin: true,
-
-        pinSpacing: true,
-
-        anticipatePin: 1,
-
-        animation: timeline,
-
-        scrub: 1,
-
-        invalidateOnRefresh: true,
-      })
-    }, sectionRef)
+          invalidateOnRefresh:
+            true,
+        })
+      }, sectionRef)
 
     const refreshFrame =
-      requestAnimationFrame(() => {
-        ScrollTrigger.refresh()
-      })
+      requestAnimationFrame(
+        () => {
+          ScrollTrigger.refresh()
+        },
+      )
 
     return () => {
       cancelAnimationFrame(
@@ -748,7 +878,7 @@ export function Gallery() {
     >
       {/*
        * ==========================================
-       * FIXED SCENE
+       * SCENE
        * ==========================================
        */}
 
@@ -764,78 +894,74 @@ export function Gallery() {
       >
         {/*
          * ========================================
-         * VIDEO WINDOWS
-         * ========================================
-         *
-         * Each frame is centered using:
-         *
-         * left: 50%
-         * top: 50%
-         * translate(-50%, -50%)
-         *
-         * Width / height animate.
-         *
-         * Position never changes.
+         * VIDEO FRAMES
          * ========================================
          */}
 
         {GALLERY_STATES.map(
-          (state, index) => (
+          (
+            state,
+            index,
+          ) => (
             <div
-              key={state.title}
-              ref={(element) => {
-                frameRefs.current[index] =
+              key={
+                state.title
+              }
+              ref={(
+                element,
+              ) => {
+                frameRefs.current[
+                  index
+                ] =
                   element
               }}
               className="
                 pointer-events-none
                 absolute
-                top-1/2
-                left-1/2
+                inset-0
+                h-[1080px]
+                w-[1920px]
                 overflow-hidden
               "
               style={{
-                width:
-                  `${SMALL_VIDEO_WIDTH}px`,
+                clipPath:
+                  SMALL_CLIP,
 
-                height:
-                  `${SMALL_VIDEO_HEIGHT}px`,
-
-                transform:
-                  'translate3d(-50%, -50%, 0)',
+                WebkitClipPath:
+                  SMALL_CLIP,
 
                 opacity:
-                  index === 0 ? 1 : 0,
+                  index === 0
+                    ? 1
+                    : 0,
 
                 zIndex:
-                  10 + index,
+                  10 +
+                  index,
 
                 willChange:
-                  'width, height, opacity',
+                  'clip-path, opacity',
 
                 backfaceVisibility:
                   'hidden',
+
+                WebkitBackfaceVisibility:
+                  'hidden',
+
+                transform:
+                  'translateZ(0)',
               }}
             >
               {/*
                * ==================================
                * VIDEO
                * ==================================
-               *
-               * IMPORTANT:
-               *
-               * Video itself is ALWAYS
-               * 1920 × 1080.
-               *
-               * It does NOT grow.
-               *
-               * The centered window around it
-               * simply reveals more of it.
-               * ==================================
                */}
 
               <video
-                src={state.video}
+                src={
+                  state.video
+                }
                 autoPlay
                 muted
                 loop
@@ -843,19 +969,22 @@ export function Gallery() {
                 preload="auto"
                 className="
                   absolute
-                  top-1/2
-                  left-1/2
+                  inset-0
+                  block
                   h-[1080px]
                   w-[1920px]
                   max-w-none
                   object-cover
                 "
                 style={{
-                  transform:
-                    'translate3d(-50%, -50%, 0)',
-
                   backfaceVisibility:
                     'hidden',
+
+                  WebkitBackfaceVisibility:
+                    'hidden',
+
+                  transform:
+                    'translateZ(0)',
                 }}
               />
 
@@ -863,26 +992,26 @@ export function Gallery() {
                * ==================================
                * OVERLAY
                * ==================================
-               *
-               * Also fixed at 1920 × 1080
-               * and centered with the video.
-               * ==================================
                */}
 
               <div
                 className="
                   pointer-events-none
                   absolute
-                  top-1/2
-                  left-1/2
+                  inset-0
                   h-[1080px]
                   w-[1920px]
-                  max-w-none
                   bg-black/25
                 "
                 style={{
+                  backfaceVisibility:
+                    'hidden',
+
+                  WebkitBackfaceVisibility:
+                    'hidden',
+
                   transform:
-                    'translate3d(-50%, -50%, 0)',
+                    'translateZ(0)',
                 }}
               />
             </div>
@@ -891,7 +1020,7 @@ export function Gallery() {
 
         {/*
          * ========================================
-         * SHARED HEADER
+         * HEADER
          * ========================================
          */}
 
@@ -905,7 +1034,8 @@ export function Gallery() {
             w-[1920px]
           "
           style={{
-            color: ESPRESSO,
+            color:
+              ESPRESSO,
 
             transform:
               'translate3d(0,40px,0)',
@@ -919,13 +1049,15 @@ export function Gallery() {
             left="They Live Differently Here"
             center="Gallery"
             right='Just One Feeling: "My Home"'
-            showDivider={false}
+            showDivider={
+              false
+            }
           />
         </div>
 
         {/*
          * ========================================
-         * SHARED LINE
+         * LINE
          * ========================================
          */}
 
@@ -944,7 +1076,8 @@ export function Gallery() {
             backgroundColor:
               ESPRESSO,
 
-            opacity: 0.7,
+            opacity:
+              0.7,
 
             willChange:
               'opacity',
@@ -958,11 +1091,18 @@ export function Gallery() {
          */}
 
         {GALLERY_STATES.map(
-          (state, index) => (
+          (
+            state,
+            index,
+          ) => (
             <h3
               key={`${state.title}-title`}
-              ref={(element) => {
-                titleRefs.current[index] =
+              ref={(
+                element,
+              ) => {
+                titleRefs.current[
+                  index
+                ] =
                   element
               }}
               className="
@@ -980,16 +1120,20 @@ export function Gallery() {
               "
               style={{
                 opacity:
-                  index === 0 ? 1 : 0,
+                  index === 0
+                    ? 1
+                    : 0,
 
                 transform:
-                  `translate3d(${VIDEO_INSET_X}px, 120px, 0)`,
+                  `translate3d(${VIDEO_INSET_X}px,120px,0)`,
 
                 willChange:
                   'opacity, transform',
               }}
             >
-              {state.title}
+              {
+                state.title
+              }
             </h3>
           ),
         )}
@@ -1001,11 +1145,18 @@ export function Gallery() {
          */}
 
         {GALLERY_STATES.map(
-          (state, index) => (
+          (
+            state,
+            index,
+          ) => (
             <p
               key={`${state.title}-location`}
-              ref={(element) => {
-                locationRefs.current[index] =
+              ref={(
+                element,
+              ) => {
+                locationRefs.current[
+                  index
+                ] =
                   element
               }}
               className="
@@ -1018,7 +1169,8 @@ export function Gallery() {
                 text-[#DDE4EE]
               "
               style={{
-                opacity: 0,
+                opacity:
+                  0,
 
                 transform:
                   'translate3d(0,18px,0)',
@@ -1027,7 +1179,9 @@ export function Gallery() {
                   'opacity, transform',
               }}
             >
-              {state.location}
+              {
+                state.location
+              }
             </p>
           ),
         )}
@@ -1039,11 +1193,18 @@ export function Gallery() {
          */}
 
         {GALLERY_STATES.map(
-          (state, index) => (
+          (
+            state,
+            index,
+          ) => (
             <p
               key={`${state.title}-specs`}
-              ref={(element) => {
-                specsRefs.current[index] =
+              ref={(
+                element,
+              ) => {
+                specsRefs.current[
+                  index
+                ] =
                   element
               }}
               className="
@@ -1056,7 +1217,8 @@ export function Gallery() {
                 text-[#DDE4EE]
               "
               style={{
-                opacity: 0,
+                opacity:
+                  0,
 
                 transform:
                   'translate3d(0,18px,0)',
@@ -1065,7 +1227,9 @@ export function Gallery() {
                   'opacity, transform',
               }}
             >
-              {state.specs}
+              {
+                state.specs
+              }
             </p>
           ),
         )}
@@ -1077,11 +1241,18 @@ export function Gallery() {
          */}
 
         {GALLERY_STATES.map(
-          (state, index) => (
+          (
+            state,
+            index,
+          ) => (
             <p
               key={`${state.title}-description`}
-              ref={(element) => {
-                descriptionRefs.current[index] =
+              ref={(
+                element,
+              ) => {
+                descriptionRefs.current[
+                  index
+                ] =
                   element
               }}
               className="
@@ -1094,7 +1265,8 @@ export function Gallery() {
                 text-[#DDE4EE]
               "
               style={{
-                opacity: 0,
+                opacity:
+                  0,
 
                 transform:
                   'translate3d(0,18px,0)',
@@ -1103,7 +1275,9 @@ export function Gallery() {
                   'opacity, transform',
               }}
             >
-              {state.description}
+              {
+                state.description
+              }
             </p>
           ),
         )}

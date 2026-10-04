@@ -30,6 +30,7 @@
   --color-gray-light: #999999;
 
   --font-anton: 'Anton', sans-serif;
+
   --font-neue:
     'Neue Montreal',
     -apple-system,
@@ -39,6 +40,43 @@
     Arial,
     sans-serif;
 }
+
+/*
+ * ==========================================
+ * HIDE ALL SCROLLBARS
+ * ==========================================
+ *
+ * Scroll itself remains enabled.
+ * Only the visual scrollbar disappears.
+ * ==========================================
+ */
+
+* {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: transparent !important;
+  border: 0 !important;
+}
+
+/*
+ * ==========================================
+ * BASE
+ * ==========================================
+ */
 
 @layer base {
   html,
@@ -50,38 +88,47 @@
 
   html {
     scroll-behavior: auto;
+
     overflow-x: hidden;
     overflow-y: auto;
 
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
 
   body {
     margin: 0;
+
     color: var(--color-espresso);
+
     font-family: var(--font-neue);
     font-weight: 400;
 
     overflow-x: hidden;
-    overflow-y: visible;
+    overflow-y: auto;
 
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
 
   #root {
     min-height: 100%;
+
     background-color: #dde4ee;
+
     overflow: visible;
+
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
 
   html::-webkit-scrollbar,
   body::-webkit-scrollbar,
   #root::-webkit-scrollbar {
-    width: 0;
-    height: 0;
-    display: none;
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+    background: transparent !important;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -96,8 +143,18 @@
   }
 }
 
+/*
+ * ==========================================
+ * TYPOGRAPHY
+ * ==========================================
+ */
+
 @layer components {
-  /* Anton — used only for logo, hero title, and stat/accent numbers */
+  /*
+   * Anton
+   * Used for logo, hero title,
+   * stat / accent numbers.
+   */
 
   .text-logo {
     font-family: var(--font-anton);
@@ -128,7 +185,10 @@
     color: var(--color-sage);
   }
 
-  /* Neue Montreal display wordmarks */
+  /*
+   * Neue Montreal
+   * Display wordmarks.
+   */
 
   .text-card-heading {
     font-family: var(--font-neue);
@@ -146,7 +206,10 @@
     color: var(--color-sage);
   }
 
-  /* Neue Montreal utility text styles */
+  /*
+   * Neue Montreal
+   * Utility text styles.
+   */
 
   .text-heading-two {
     font-family: var(--font-neue);

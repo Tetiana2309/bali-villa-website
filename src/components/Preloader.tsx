@@ -85,17 +85,14 @@ function interpolateProgress(
 export function Preloader({
   onComplete,
 }: PreloaderProps) {
-  const topPanelRef =
-    useRef<HTMLDivElement>(null)
+  /*
+   * ==========================================
+   * REVEAL MASK
+   * ==========================================
+   */
 
-  const bottomPanelRef =
-    useRef<HTMLDivElement>(null)
-
-  const leftPanelRef =
-    useRef<HTMLDivElement>(null)
-
-  const rightPanelRef =
-    useRef<HTMLDivElement>(null)
+  const revealHoleRef =
+    useRef<SVGRectElement>(null)
 
   const centerCoverRef =
     useRef<HTMLDivElement>(null)
@@ -115,15 +112,6 @@ export function Preloader({
   /*
    * ==========================================
    * HERO VIDEO VISIBILITY
-   * ==========================================
-   *
-   * Самого video здесь больше нет.
-   *
-   * Под Preloader будет находиться
-   * единственное видео Hero.
-   *
-   * Мы просто постепенно делаем
-   * центральную плашку прозрачной.
    * ==========================================
    */
 
@@ -157,8 +145,9 @@ export function Preloader({
     )
 
   /*
-   * Надпись постепенно поднимается
-   * снизу к своей позиции.
+   * ==========================================
+   * TEXT POSITION
+   * ==========================================
    */
 
   const textTranslateY =
@@ -237,7 +226,9 @@ export function Preloader({
         })
 
       /*
-       * LUC уходит влево.
+       * ==========================================
+       * LUC EXIT
+       * ==========================================
        */
 
       if (leftWordRef.current) {
@@ -254,7 +245,9 @@ export function Preloader({
       }
 
       /*
-       * .ID уходит вправо.
+       * ==========================================
+       * .ID EXIT
+       * ==========================================
        */
 
       if (rightWordRef.current) {
@@ -271,7 +264,9 @@ export function Preloader({
       }
 
       /*
-       * Проценты исчезают.
+       * ==========================================
+       * PERCENTAGE EXIT
+       * ==========================================
        */
 
       if (percentageRef.current) {
@@ -288,8 +283,9 @@ export function Preloader({
       }
 
       /*
-       * Центральная плашка полностью
-       * становится прозрачной.
+       * ==========================================
+       * CENTER COVER
+       * ==========================================
        */
 
       if (centerCoverRef.current) {
@@ -306,61 +302,23 @@ export function Preloader({
 
       /*
        * ==========================================
-       * OPEN THE HERO
-       * ==========================================
-       *
-       * Здесь мы НЕ увеличиваем video.
-       *
-       * Мы просто убираем четыре панели,
-       * окружающие квадрат.
-       *
-       * Видео Hero под ними остаётся
-       * абсолютно неподвижным.
+       * SINGLE HERO REVEAL
        * ==========================================
        */
 
-      if (topPanelRef.current) {
+      if (revealHoleRef.current) {
         exitTimeline.to(
-          topPanelRef.current,
+          revealHoleRef.current,
           {
-            height: 0,
-            duration: 1.2,
-            ease: 'power3.inOut',
-          },
-          0.05,
-        )
-      }
+            attr: {
+              x: 0,
+              y: 0,
+              width: 1920,
+              height: 1080,
+            },
 
-      if (bottomPanelRef.current) {
-        exitTimeline.to(
-          bottomPanelRef.current,
-          {
-            height: 0,
             duration: 1.2,
-            ease: 'power3.inOut',
-          },
-          0.05,
-        )
-      }
 
-      if (leftPanelRef.current) {
-        exitTimeline.to(
-          leftPanelRef.current,
-          {
-            width: 0,
-            duration: 1.2,
-            ease: 'power3.inOut',
-          },
-          0.05,
-        )
-      }
-
-      if (rightPanelRef.current) {
-        exitTimeline.to(
-          rightPanelRef.current,
-          {
-            width: 0,
-            duration: 1.2,
             ease: 'power3.inOut',
           },
           0.05,
@@ -368,8 +326,9 @@ export function Preloader({
       }
 
       /*
-       * Маленькая пауза после
-       * полного раскрытия.
+       * ==========================================
+       * SMALL FINAL PAUSE
+       * ==========================================
        */
 
       exitTimeline.to(
@@ -408,132 +367,62 @@ export function Preloader({
     >
       {/*
        * ==========================================
-       * TOP
-       * ==========================================
-       *
-       * Центральное окно:
-       * 466 × 466.
-       *
-       * 466 / 2 = 233.
+       * SINGLE BACKGROUND MASK
        * ==========================================
        */}
 
-      <div
-        ref={topPanelRef}
+      <svg
         className="
           absolute
-          top-0
-          left-0
+          inset-0
+          h-full
           w-full
-          bg-[#DDE4EE]
         "
-        style={{
-          height:
-            'calc(50% - 233px)',
+        viewBox="0 0 1920 1080"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <defs>
+          <mask
+            id="preloader-reveal-mask"
+            maskUnits="userSpaceOnUse"
+            x="0"
+            y="0"
+            width="1920"
+            height="1080"
+          >
+            <rect
+              x="0"
+              y="0"
+              width="1920"
+              height="1080"
+              fill="white"
+            />
 
-          willChange:
-            'height',
-        }}
-      />
+            <rect
+              ref={revealHoleRef}
+              x="727"
+              y="307"
+              width="466"
+              height="466"
+              fill="black"
+            />
+          </mask>
+        </defs>
 
-      {/*
-       * ==========================================
-       * BOTTOM
-       * ==========================================
-       */}
-
-      <div
-        ref={bottomPanelRef}
-        className="
-          absolute
-          bottom-0
-          left-0
-          w-full
-          bg-[#DDE4EE]
-        "
-        style={{
-          height:
-            'calc(50% - 233px)',
-
-          willChange:
-            'height',
-        }}
-      />
-
-      {/*
-       * ==========================================
-       * LEFT
-       * ==========================================
-       */}
-
-      <div
-        ref={leftPanelRef}
-        className="
-          absolute
-          left-0
-          bg-[#DDE4EE]
-        "
-        style={{
-          top:
-            'calc(50% - 233px)',
-
-          width:
-            'calc(50% - 233px)',
-
-          height:
-            '466px',
-
-          willChange:
-            'width',
-        }}
-      />
-
-      {/*
-       * ==========================================
-       * RIGHT
-       * ==========================================
-       */}
-
-      <div
-        ref={rightPanelRef}
-        className="
-          absolute
-          right-0
-          bg-[#DDE4EE]
-        "
-        style={{
-          top:
-            'calc(50% - 233px)',
-
-          width:
-            'calc(50% - 233px)',
-
-          height:
-            '466px',
-
-          willChange:
-            'width',
-        }}
-      />
+        <rect
+          x="0"
+          y="0"
+          width="1920"
+          height="1080"
+          fill="#DDE4EE"
+          mask="url(#preloader-reveal-mask)"
+        />
+      </svg>
 
       {/*
        * ==========================================
        * CENTER COVER
-       * ==========================================
-       *
-       * Под этой плашкой будет видно
-       * видео Hero.
-       *
-       * 0%:
-       * полностью DDE4EE.
-       *
-       * 15%:
-       * Hero видно на 15%.
-       *
-       * 35%:
-       * Hero видно на 40%.
-       *
-       * и т.д.
        * ==========================================
        */}
 
@@ -563,135 +452,110 @@ export function Preloader({
 
       {/*
        * ==========================================
-       * BRAND ROW
+       * LUC
        * ==========================================
        *
-       * Пустой блок 466 × 466
-       * занимает место центрального окна.
+       * Квадрат стоит строго по центру.
        *
-       * Между текстом и квадратом
-       * остаётся 36px.
+       * Половина квадрата:
+       * 466 / 2 = 233px
+       *
+       * Отступ:
+       * 36px
+       *
+       * 233 + 36 = 269px
        * ==========================================
        */}
 
-      <div
+      <span
+        ref={leftWordRef}
         className="
           absolute
           top-1/2
-          left-1/2
-          flex
-          -translate-x-1/2
-          -translate-y-1/2
-          items-center
-          justify-center
+          lowercase
+          text-[#7B978A]
         "
+        style={{
+          right:
+            'calc(50% + 269px)',
+
+          fontFamily:
+            'Anton, sans-serif',
+
+          fontWeight: 400,
+
+          fontSize:
+            '200px',
+
+          lineHeight:
+            '110%',
+
+          letterSpacing:
+            '-0.01em',
+
+          opacity:
+            textVisibility,
+
+          transform:
+            `translate3d(0, calc(-50% + ${textTranslateY}px), 0)`,
+
+          transition:
+            'opacity 120ms linear, transform 120ms linear',
+
+          willChange:
+            'opacity, transform',
+        }}
       >
-        {/*
-         * ========================================
-         * LUC
-         * ========================================
-         */}
+        luc
+      </span>
 
-        <span
-          ref={leftWordRef}
-          className="
-            shrink-0
-            lowercase
-            text-[#7B978A]
-          "
-          style={{
-            fontFamily:
-              'Anton, sans-serif',
+      {/*
+       * ==========================================
+       * .ID
+       * ==========================================
+       */}
 
-            fontWeight: 400,
+      <span
+        ref={rightWordRef}
+        className="
+          absolute
+          top-1/2
+          lowercase
+          text-[#7B978A]
+        "
+        style={{
+          left:
+            'calc(50% + 269px)',
 
-            fontSize:
-              '200px',
+          fontFamily:
+            'Anton, sans-serif',
 
-            lineHeight:
-              '110%',
+          fontWeight: 400,
 
-            letterSpacing:
-              '-0.01em',
+          fontSize:
+            '200px',
 
-            opacity:
-              textVisibility,
+          lineHeight:
+            '110%',
 
-            transform:
-              `translate3d(0, ${textTranslateY}px, 0)`,
+          letterSpacing:
+            '-0.01em',
 
-            transition:
-              'opacity 120ms linear, transform 120ms linear',
+          opacity:
+            textVisibility,
 
-            willChange:
-              'opacity, transform',
-          }}
-        >
-          luc
-        </span>
+          transform:
+            `translate3d(0, calc(-50% + ${textTranslateY}px), 0)`,
 
-        {/*
-         * ========================================
-         * EMPTY VIDEO WINDOW
-         * ========================================
-         *
-         * Здесь БОЛЬШЕ НЕТ <video>.
-         * ========================================
-         */}
+          transition:
+            'opacity 120ms linear, transform 120ms linear',
 
-        <div
-          className="
-            mx-[36px]
-            h-[466px]
-            w-[466px]
-            shrink-0
-          "
-        />
-
-        {/*
-         * ========================================
-         * .ID
-         * ========================================
-         */}
-
-        <span
-          ref={rightWordRef}
-          className="
-            shrink-0
-            lowercase
-            text-[#7B978A]
-          "
-          style={{
-            fontFamily:
-              'Anton, sans-serif',
-
-            fontWeight: 400,
-
-            fontSize:
-              '200px',
-
-            lineHeight:
-              '110%',
-
-            letterSpacing:
-              '-0.01em',
-
-            opacity:
-              textVisibility,
-
-            transform:
-              `translate3d(0, ${textTranslateY}px, 0)`,
-
-            transition:
-              'opacity 120ms linear, transform 120ms linear',
-
-            willChange:
-              'opacity, transform',
-          }}
-        >
-          .id
-        </span>
-      </div>
+          willChange:
+            'opacity, transform',
+        }}
+      >
+        .id
+      </span>
 
       {/*
        * ==========================================
