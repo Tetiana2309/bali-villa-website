@@ -501,6 +501,97 @@ export function Hero({
 
     /*
      * ==========================================
+     * REDUCED MOTION
+     * ==========================================
+     *
+     * Skip the staggered intro entirely and
+     * jump straight to the final visible state.
+     * ==========================================
+     */
+
+    const prefersReducedMotion =
+      window.matchMedia(
+        '(prefers-reduced-motion: reduce)',
+      ).matches
+
+    if (prefersReducedMotion) {
+      gsap.set(
+        regularLetters,
+        {
+          opacity: 1,
+          yPercent: 0,
+        },
+      )
+
+      if (titleDotRef.current) {
+        gsap.set(
+          titleDotRef.current,
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+          },
+        )
+      }
+
+      gsap.set(
+        logoLetters,
+        {
+          opacity: 1,
+          y: 0,
+        },
+      )
+
+      gsap.set(
+        utilityLines,
+        {
+          scaleX: 1,
+        },
+      )
+
+      gsap.set(
+        utilityContents,
+        {
+          x: 0,
+        },
+      )
+
+      gsap.set(
+        utilityLetters,
+        {
+          opacity: 1,
+          y: 0,
+        },
+      )
+
+      gsap.set(
+        navItems,
+        {
+          x: 0,
+        },
+      )
+
+      gsap.set(
+        navLetters,
+        {
+          opacity: 1,
+          y: 0,
+        },
+      )
+
+      gsap.set(
+        descriptionLetters,
+        {
+          opacity: 1,
+          y: 0,
+        },
+      )
+
+      return
+    }
+
+    /*
+     * ==========================================
      * HERO INTRO
      * ==========================================
      */
