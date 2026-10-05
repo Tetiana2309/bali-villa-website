@@ -1,12 +1,12 @@
 /*
  * Layout mode is decided ONCE, before React renders (see main.tsx).
  *
- *   desktop  >= 1600px  existing 1920 design, untouched code path
- *   compact  768-1599px 1920 design shown through CompactApp
+ *   desktop  >= 1920px  existing 1920 design, untouched code path
+ *   compact  768-1919px 1920 design shown through CompactApp
  *   mobile   <  768px   (not built yet - currently falls back to desktop)
  */
 
-export const DESKTOP_MIN_WIDTH = 1600
+export const DESKTOP_MIN_WIDTH = 1920
 export const COMPACT_MIN_WIDTH = 768
 
 export type LayoutMode = 'desktop' | 'compact' | 'mobile'
