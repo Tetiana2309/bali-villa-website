@@ -6,6 +6,7 @@ import {
   reloadOnLayoutModeChange,
 } from './responsive/layoutMode'
 import { LazyCompactApp } from './responsive/lazyCompactApp'
+import { LazyMobileApp } from './responsive/lazyMobileApp'
 import '@fontsource/anton/400.css'
 import './index.css'
 
@@ -18,6 +19,10 @@ createRoot(document.getElementById('root')!).render(
     {layoutMode === 'compact' ? (
       <Suspense fallback={null}>
         <LazyCompactApp />
+      </Suspense>
+    ) : layoutMode === 'mobile' ? (
+      <Suspense fallback={null}>
+        <LazyMobileApp />
       </Suspense>
     ) : (
       <App />
