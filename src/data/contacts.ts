@@ -22,5 +22,4 @@ export const CONTACTS_COPY = {
   headingLines: ['Leave', 'A Request', 'We Will', 'Find A Villa'],
   formDescription: 'leave a contact and we will get back to you',
   address: 'Jl. Sunset Road No.88, Seminyak, Kuta, Badung, Bali 80361, Indonesia',
-  phoneNumbers: ['+62 000 000 000', '+62 000 000 001'],
-}
+  phoneNumbers: ['+62 812 34 56 78 90', '+62 361 123 45 67'],}
