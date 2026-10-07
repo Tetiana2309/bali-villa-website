@@ -11,7 +11,6 @@ import { useInView, usePageVisible } from '../hooks/useInView'
 
 const BASE_URL = import.meta.env.BASE_URL
 
-/* First frame of each gallery video (generated from the existing mp4s). */
 const POSTERS = [1, 2, 3].map(
   (n) => `${BASE_URL}images/mobile/gallery-villa-${n}-poster.webp`,
 )
@@ -49,39 +48,36 @@ export function MobileGallery() {
         index={index}
         onIndexChange={setIndex}
       >
-        {GALLERY_STATES.map((state, i) => {
-          const [first, ...rest] = withPeriod(state.description).split('. ')
+        {GALLERY_STATES.map((state, i) => (
+          <div key={state.title}>
+            <div className="m-gal__media">
+              <LazyVideo
+                src={state.video}
+                poster={POSTERS[i]}
+                play={allowed && inView && pageVisible && i === index}
+              />
 
-          return (
-            <div key={state.title}>
-              <div className="m-gal__media">
-                <LazyVideo
-                  src={state.video}
-                  poster={POSTERS[i]}
-                  play={allowed && inView && pageVisible && i === index}
-                />
-                <h2 className="m-gal__title">{state.title}</h2>
-              </div>
-
-              <div className="m-gal__body m-t16">
-                <p>{state.location}</p>
-                <p>{state.specs}</p>
-                {i === 0 ? (
-                  /* Figma card 1 breaks after the first sentence and ends with "see details..." */
-                  <p>
-                    {first}.<br />
-                    {rest.join('. ')}{' '}
-                    <span className="m-gal__more">see details...</span>
-                  </p>
-                ) : (
-                  <p>{withPeriod(state.description)}</p>
-                )}
-
-                <Pagination index={i} total={GALLERY_STATES.length} />
-              </div>
+              <h2 className="m-gal__title">
+                {state.title}
+              </h2>
             </div>
-          )
-        })}
+
+            <div className="m-gal__body m-t16">
+              <p>{state.location}</p>
+
+              <p>{state.specs}</p>
+
+              <p>
+                {withPeriod(state.description)}
+              </p>
+
+              <Pagination
+                index={i}
+                total={GALLERY_STATES.length}
+              />
+            </div>
+          </div>
+        ))}
       </MobileSlider>
     </section>
   )

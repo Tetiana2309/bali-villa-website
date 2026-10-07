@@ -25,7 +25,7 @@ function ActiveArrow() {
 
 export function MobileFAQ() {
   const sectionRef = useRef<HTMLElement>(null)
-  const [active, setActive] = useState<number | null>(0)
+  const [active, setActive] = useState<number | null>(null)
 
   useMobileReveal(sectionRef)
 

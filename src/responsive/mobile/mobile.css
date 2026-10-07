@@ -3,12 +3,14 @@
  * MOBILE (< 768px)
  * ==========================================
  *
- * Built from the approved mobile Figma (375px wide, 20px gutters).
- * Everything is scoped to .m-root / html.m-layout and this file is only
- * imported by the lazy MobileApp chunk, so desktop / compact never load it.
+ * Built from the approved mobile Figma
+ * (375px wide, 20px gutters).
  *
- * Plain CSS on purpose (no Tailwind utilities): Tailwind scans every file
- * in src and would otherwise grow the shared stylesheet.
+ * Everything is scoped to .m-root / html.m-layout
+ * and this file is only imported by the lazy
+ * MobileApp chunk, so desktop / compact never load it.
+ *
+ * Plain CSS on purpose (no Tailwind utilities).
  */
 
 html.m-layout,
@@ -25,15 +27,28 @@ html.m-layout body {
   --m-g9: #999999;
 
   position: relative;
+
   width: 100%;
+
   overflow-x: clip;
+
   background: var(--m-ice);
   color: var(--m-esp);
-  font-family: 'Neue Montreal', -apple-system, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
+
+  font-family:
+    'Neue Montreal',
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+
   font-weight: 400;
+
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -43,7 +58,13 @@ html.m-layout body {
   box-sizing: border-box;
 }
 
-:where(.m-root p, .m-root h1, .m-root h2, .m-root h3, .m-root ul) {
+:where(
+  .m-root p,
+  .m-root h1,
+  .m-root h2,
+  .m-root h3,
+  .m-root ul
+) {
   margin: 0;
   padding: 0;
 }
@@ -60,18 +81,24 @@ html.m-layout body {
 :where(.m-root button) {
   font: inherit;
   color: inherit;
+
   background: none;
   border: 0;
+
   padding: 0;
+
   cursor: pointer;
 }
 
-/* ---------- type ---------- */
+/* ==========================================================
+   TYPE
+   ========================================================== */
 
 .m-t16 {
   font-weight: 400;
   font-size: 16px;
   line-height: 21px;
+
   text-transform: lowercase;
 }
 
@@ -79,6 +106,7 @@ html.m-layout body {
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
+
   text-transform: capitalize;
 }
 
@@ -86,26 +114,37 @@ html.m-layout body {
   font-weight: 500;
   font-size: 60px;
   line-height: 54px;
+
   color: rgba(123, 151, 138, 0.4);
+
   text-transform: capitalize;
+
   white-space: pre;
 }
 
 .m-foot {
   margin: 0 20px;
+
   text-align: center;
+
   color: var(--m-g9);
+
   opacity: 0.9;
+
   font-weight: 400;
   font-size: 16px;
   line-height: 19px;
+
   text-transform: lowercase;
 }
 
-/* ---------- section scaffolding ---------- */
+/* ==========================================================
+   SECTION SCAFFOLDING
+   ========================================================== */
 
 .m-sec {
   position: relative;
+
   padding-top: 20px;
   padding-bottom: 20px;
 }
@@ -116,7 +155,9 @@ html.m-layout body {
 
 .m-label {
   height: 75px;
+
   border-bottom: 1px solid var(--m-esp);
+
   text-align: center;
 }
 
@@ -124,7 +165,9 @@ html.m-layout body {
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
+
   text-transform: capitalize;
+
   opacity: 0.9;
 }
 
@@ -132,44 +175,148 @@ html.m-layout body {
   margin-top: 4px;
 }
 
-/* ---------- CTA (line + label + arrow) ---------- */
+/* ==========================================================
+   CTA — DESKTOP HERO BEHAVIOR
+   ========================================================== */
 
 .m-cta {
   display: block;
-  border-top: 2px solid var(--m-esp);
-  padding-top: 5px;
+
   color: var(--m-esp);
+
+  text-decoration: none;
+
+  outline: none;
+}
+
+.m-cta__line {
+  display: block;
+
+  width: 100%;
+  height: 2px;
+
+  transform-origin: left center;
+
+  overflow: hidden;
+}
+
+.m-cta__line-inner {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  background: currentColor;
+
+  transform: scaleX(1);
+  transform-origin: right center;
+
+  transition: transform 0.3s ease-out;
 }
 
 .m-cta__row {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
+
   height: 21px;
+
+  margin-top: 6px;
+
   font-weight: 500;
   font-size: 18px;
   line-height: 22px;
-  text-transform: capitalize;
+
   white-space: nowrap;
 }
 
-.m-cta--dim {
-  opacity: 0.3;
+.m-cta__label {
+  display: inline-block;
 }
 
-/* ---------- pagination ---------- */
+.m-cta__word {
+  display: inline-block;
+
+  white-space: nowrap;
+}
+
+.m-cta__letter {
+  display: inline-block;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+.m-cta__arrow {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  transition: transform 0.3s ease-out;
+
+  will-change: transform;
+}
+
+.m-cta:hover .m-cta__line-inner,
+.m-cta:focus-visible .m-cta__line-inner {
+  transform: scaleX(0.95);
+}
+
+.m-cta:hover .m-cta__arrow,
+.m-cta:focus-visible .m-cta__arrow {
+  transform: translateX(8px);
+}
+
+.m-cta:focus-visible {
+  outline: none;
+}
+
+.m-cta:active .m-cta__line-inner {
+  transform: scaleX(0.95);
+}
+
+.m-cta:active .m-cta__arrow {
+  transform: translateX(8px);
+}
+
+.m-cta--dim {
+  opacity: 0.5;
+
+  transition: opacity 0.3s ease-out;
+}
+
+.m-cta--dim:hover,
+.m-cta--dim:focus-visible {
+  opacity: 1;
+}
+
+/* ==========================================================
+   PAGINATION
+   ========================================================== */
 
 .m-pag {
   display: flex;
+
   align-items: center;
+
   gap: 20px;
+
   width: 106px;
   height: 21px;
+
   color: var(--m-g5);
+
   font-weight: 400;
   font-size: 16px;
   line-height: 21px;
+
   text-transform: capitalize;
+
   white-space: nowrap;
 }
 
@@ -183,13 +330,17 @@ html.m-layout body {
 
 .m-pag__arrow {
   display: block;
+
   width: 20px;
   height: 12px;
-  /* 44px touch target without changing layout */
+
   padding: 16px 10px;
   margin: -16px -10px;
+
   box-sizing: content-box !important;
+
   color: rgba(57, 41, 25, 0.2);
+
   line-height: 0;
 }
 
@@ -205,15 +356,22 @@ html.m-layout body {
   display: block;
 }
 
-/* ---------- sliders ---------- */
+/* ==========================================================
+   SLIDERS
+   ========================================================== */
 
 .m-slider {
   display: flex;
+
   overflow-x: auto;
   overflow-y: hidden;
+
   scroll-snap-type: x mandatory;
+
   overscroll-behavior-x: contain;
+
   -webkit-overflow-scrolling: touch;
+
   scrollbar-width: none;
 }
 
@@ -228,125 +386,248 @@ html.m-layout body {
 
 .m-slide {
   flex: 0 0 100%;
+
   min-width: 0;
+
   scroll-snap-align: start;
   scroll-snap-stop: always;
 }
 
-/* ---------- hero ---------- */
+/* ==========================================================
+   HERO
+   ========================================================== */
 
 .m-hero {
   position: relative;
-  min-height: max(808px, 100svh);
-  padding-top: 60px;
-  background: var(--m-ice);
-}
 
-.m-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 22px;
-  padding: 0 20px;
-}
+  width: 100%;
 
-.m-logo {
-  font-family: var(--font-anton, 'Anton', sans-serif);
-  font-weight: 400;
-  font-size: 20px;
-  line-height: 22px;
-  letter-spacing: -0.2px;
-  text-transform: lowercase;
-  color: var(--m-sage);
-}
+  height: 808px;
+  min-height: 808px;
 
-.m-menu-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  /* touch target */
-  padding: 12px 0 12px 16px !important;
-  margin: -12px 0 -12px -16px;
-  font-weight: 500;
-  font-size: 16px;
-  line-height: 19px;
-  letter-spacing: -0.32px;
-  text-transform: lowercase;
-  color: var(--m-esp);
-}
+  overflow: hidden;
 
-.m-menu-btn i {
-  display: block;
-  width: 10px;
-  height: 10px;
-  margin-top: 1px;
-  border-radius: 50%;
-  background: var(--m-sage);
+  background: #1c1a17;
 }
 
 .m-hero__media {
   position: relative;
+
   width: 100%;
-  aspect-ratio: 375 / 392;
-  margin-top: 40px;
+  height: 808px;
+
   overflow: hidden;
-  background: var(--m-ice);
+
+  background: #1c1a17;
 }
 
-.m-hero__media img {
+.m-hero__media video {
   position: absolute;
+
   inset: 0;
+
+  z-index: 0;
+
+  display: block;
+
   width: 100%;
   height: 100%;
+
   object-fit: cover;
+  object-position: center;
 }
 
-.m-hero__media::after {
-  content: '';
+.m-hero__overlay {
   position: absolute;
+
   inset: 0;
+
+  z-index: 1;
+
   background: linear-gradient(
     to bottom,
-    rgba(57, 41, 25, 0) 67.092%,
-    #392919 98.98%
+    rgba(57, 41, 25, 0.05) 0%,
+    rgba(57, 41, 25, 0.08) 50%,
+    rgba(57, 41, 25, 0.55) 75%,
+    rgba(57, 41, 25, 0.8) 100%
   );
+
+  pointer-events: none;
 }
+
+/* ---------- header ---------- */
+
+.m-head {
+  position: absolute;
+
+  z-index: 5;
+
+  top: 60px;
+  left: 0;
+  right: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  height: 22px;
+
+  padding: 0 20px;
+}
+
+/* luc.id */
+
+.m-logo {
+  font-family:
+    var(
+      --font-anton,
+      'Anton',
+      sans-serif
+    );
+
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 22px;
+
+  letter-spacing: -0.2px;
+
+  text-transform: lowercase;
+
+  color: #7b978a;
+}
+
+/* menu */
+
+.m-menu-btn {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 6px;
+
+  padding:
+    12px
+    0
+    12px
+    16px
+    !important;
+
+  margin:
+    -12px
+    0
+    -12px
+    -16px;
+
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+
+  letter-spacing: -0.32px;
+
+  text-transform: lowercase;
+
+  color: #7b978a;
+}
+
+.m-menu-btn i {
+  display: block;
+
+  width: 10px;
+  height: 10px;
+
+  margin-top: 1px;
+
+  border-radius: 50%;
+
+  background: #7b978a;
+}
+
+/* ---------- vill.bali ---------- */
 
 .m-wordmark {
   position: absolute;
-  z-index: 1;
+
+  z-index: 5;
+
   left: 50%;
-  bottom: 6px;
+  bottom: 366px;
+
   width: 335px;
   height: 132px;
+
   transform: translateX(-50%);
+
   color: var(--m-sage);
-  font-family: var(--font-anton, 'Anton', sans-serif);
+
+  font-family:
+    var(
+      --font-anton,
+      'Anton',
+      sans-serif
+    );
+
   font-weight: 400;
   font-size: 120px;
   line-height: 1.1;
+
   letter-spacing: -1.2px;
+
   text-transform: lowercase;
+
   white-space: nowrap;
 }
 
 .m-wordmark span {
   position: absolute;
+
   top: 0;
 }
 
 .m-wordmark i {
   position: absolute;
+
   left: 141px;
   top: 107px;
+
   width: 10px;
   height: 10px;
+
   border-radius: 50%;
+
   background: var(--m-sage);
 }
 
+/* ---------- Hero buttons ---------- */
+
 .m-hero__ctas {
-  margin: 38px 20px 0;
+  position: absolute;
+
+  z-index: 5;
+
+  left: 20px;
+  right: 20px;
+
+  bottom: 158px;
+}
+
+.m-hero__ctas .m-cta {
+  color: #dde4ee;
+}
+
+.m-hero__ctas .m-cta--dim {
+  opacity: 0.5;
+}
+
+.m-hero__ctas .m-cta--dim:hover,
+.m-hero__ctas
+  .m-cta--dim:focus-visible {
+  opacity: 1;
+}
+
+.m-hero__ctas
+  .m-cta:not(.m-cta--dim) {
+  opacity: 1;
 }
 
 .m-hero__ctas .m-cta + .m-cta {
@@ -354,52 +635,101 @@ html.m-layout body {
 }
 
 .m-hero .m-foot {
-  margin-top: 40px;
+  position: absolute;
+
+  z-index: 5;
+
+  left: 20px;
+  right: 20px;
+
+  bottom: 22px;
+
+  margin: 0;
+
+  color: #dde4ee;
+
+  opacity: 0.7;
 }
 
-/* ---------- menu ---------- */
+/* ==========================================================
+   MENU
+   ========================================================== */
 
 .m-menu {
   position: fixed;
+
   inset: 0;
+
   z-index: 100;
+
   height: 100dvh;
+
   background: var(--m-sage);
   color: var(--m-esp);
+
   visibility: hidden;
+
   opacity: 0;
+
   overflow-y: auto;
+
   overscroll-behavior: contain;
-  padding-top: max(60px, env(safe-area-inset-top));
-  padding-bottom: env(safe-area-inset-bottom);
+
+  padding-top:
+    max(
+      60px,
+      env(safe-area-inset-top)
+    );
+
+  padding-bottom:
+    env(
+      safe-area-inset-bottom
+    );
+
+  transition:
+    opacity 0.3s ease,
+    visibility
+      0s linear 0.3s;
 }
 
 .m-menu[data-open='true'] {
   visibility: visible;
+
   opacity: 1;
+
+  transition-delay: 0s;
 }
 
 .m-menu__head {
   display: flex;
+
   align-items: center;
   justify-content: space-between;
+
   height: 22px;
+
   padding: 0 20px;
 }
 
 .m-menu .m-logo {
+  position: static;
+
   color: var(--m-esp);
 }
 
 .m-menu__close {
   display: block;
+
   width: 18px;
   height: 18px;
-  /* touch target */
+
   padding: 13px !important;
   margin: -13px;
+
   box-sizing: content-box !important;
+
   line-height: 0;
+
   color: var(--m-esp);
 }
 
@@ -408,43 +738,66 @@ html.m-layout body {
 }
 
 .m-menu__list {
-  margin-top: 116px;
-  padding: 0 20px;
   display: flex;
+
   flex-direction: column;
+
   gap: 28px;
+
+  margin-top: 116px;
+
+  padding: 0 20px;
 }
 
 .m-menu__link {
   display: block;
+
   font-weight: 500;
   font-size: 48px;
   line-height: 43px;
+
   text-transform: capitalize;
+
   color: var(--m-esp);
 }
 
-/* ---------- our method ---------- */
+/* ==========================================================
+   OUR METHOD
+   ========================================================== */
 
 .m-om__photo {
   position: relative;
+
   width: 215px;
   height: 256px;
+
   margin: 0 auto;
+
   overflow: hidden;
 }
 
 .m-om__photo img {
   position: absolute;
+
   display: block;
+
   max-width: none;
 }
 
 .m-om__photo::after {
   content: '';
+
   position: absolute;
+
   inset: 0;
-  background: rgba(0, 0, 0, 0.25);
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.25
+    );
 }
 
 .m-om__slide {
@@ -452,91 +805,150 @@ html.m-layout body {
 }
 
 .m-om__title {
-  margin: 30px 20px 0;
+  margin:
+    30px
+    20px
+    0;
 }
 
 .m-om__text {
   position: relative;
+
   height: 152px;
-  margin: 41px 20px 0;
+
+  margin:
+    41px
+    20px
+    0;
 }
 
 .m-om__stat {
-  font-family: var(--font-anton, 'Anton', sans-serif);
+  font-family:
+    var(
+      --font-anton,
+      'Anton',
+      sans-serif
+    );
+
   font-weight: 400;
   font-size: 24px;
   line-height: 26px;
+
   text-transform: lowercase;
+
   color: var(--m-sage);
 }
 
 .m-om__sub {
   margin-top: 6px;
+
   color: var(--m-esp);
 }
 
 .m-om__desc {
   margin-top: 14px;
+
   color: var(--m-g5);
 }
 
 .m-om__text .m-pag {
   position: absolute;
+
   top: 131px;
   left: 0;
 }
 
 .m-om__slide .m-cta {
-  margin: 56px 20px 0;
+  margin:
+    56px
+    20px
+    0;
 }
 
 .m-om__slide .m-foot {
   margin-top: 40px;
 }
 
-/* ---------- how we work ---------- */
+/* ==========================================================
+   HOW WE WORK
+   ========================================================== */
 
 .m-hww__slide {
   position: relative;
+
   height: 283px;
-  padding: 50px 20px 0;
-  border-bottom: 1px solid var(--m-esp);
+
+  padding:
+    50px
+    20px
+    0;
+
+  border-bottom:
+    1px
+    solid
+    var(--m-esp);
 }
 
 .m-hww__dot {
   position: absolute;
+
   right: 20px;
   top: 56px;
+
   width: 12px;
   height: 12px;
+
   border-radius: 50%;
+
   background: var(--m-sage);
+
+  opacity: 0.24;
 }
 
 .m-hww__text {
   width: 262px;
   max-width: 100%;
+
   margin-top: 33px;
 }
 
-.m-hww__text .m-t16 {
+.m-hww__subtitle {
+  color: var(--m-esp);
+}
+
+.m-hww__description {
   margin-top: 14px;
+
   color: var(--m-g5);
 }
 
+.m-hww__word {
+  display: inline;
+
+  opacity: 0.24;
+}
+
 .m-hww__pag {
-  margin: 24px 20px 0;
+  margin:
+    24px
+    20px
+    0;
 }
 
 .m-hww__cta {
-  margin: 36px 20px 0;
+  margin:
+    36px
+    20px
+    0;
 }
 
 .m-hww .m-foot {
   margin-top: 40px;
 }
 
-/* ---------- gallery ---------- */
+/* ==========================================================
+   GALLERY
+   ========================================================== */
 
 .m-gal__slider {
   margin-top: 40px;
@@ -544,44 +956,72 @@ html.m-layout body {
 
 .m-gal__media {
   position: relative;
+
   height: 322px;
+
   overflow: hidden;
+
   background: #1c1a17;
 }
 
 .m-gal__media video {
   position: absolute;
+
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 }
 
 .m-gal__media::after {
   content: '';
+
   position: absolute;
+
   inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.4
+    );
+
   pointer-events: none;
 }
 
 .m-gal__title {
   position: absolute;
+
   z-index: 1;
+
   left: 20px;
   top: 263px;
+
   font-weight: 500;
   font-size: 54px;
   line-height: 49px;
+
   color: var(--m-ice);
+
   text-transform: capitalize;
+
   white-space: nowrap;
 }
 
 .m-gal__body {
   position: relative;
+
   height: 209px;
-  margin: 20px 20px 0;
+
+  margin:
+    20px
+    20px
+    0;
+
   color: var(--m-g5);
 }
 
@@ -589,20 +1029,27 @@ html.m-layout body {
   margin-top: 18px;
 }
 
-.m-gal__body .m-gal__more {
+.m-gal__body
+  .m-gal__more {
   color: var(--m-sage);
 }
 
 .m-gal__body .m-pag {
   position: absolute;
+
   top: 188px;
   left: 0;
 }
 
-/* ---------- testimonials ---------- */
+/* ==========================================================
+   TESTIMONIALS
+   ========================================================== */
 
 .m-tst__title {
-  margin: 40px 20px 0;
+  margin:
+    40px
+    20px
+    0;
 }
 
 .m-tst__slider {
@@ -611,73 +1058,112 @@ html.m-layout body {
 
 .m-tst__media {
   position: relative;
+
   height: 180px;
-  margin: 0 20px;
+
+  margin:
+    0
+    20px;
+
   overflow: hidden;
+
   background: #1c1a17;
 }
 
 .m-tst__media video {
   position: absolute;
+
   inset: 0;
+
   width: 100%;
   height: 100%;
+
   object-fit: cover;
 }
 
 .m-tst__media::after {
   content: '';
+
   position: absolute;
+
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+
+  background:
+    rgba(
+      0,
+      0,
+      0,
+      0.35
+    );
+
   pointer-events: none;
 }
 
 .m-tst__text {
   position: relative;
+
   height: 195px;
-  margin: 15px 20px 0;
+
+  margin:
+    15px
+    20px
+    0;
 }
 
 .m-tst__text > * {
   position: absolute;
+
   left: 0;
+
   width: 100%;
 }
 
 .m-tst__name {
   top: 0;
+
   color: var(--m-esp);
 }
 
 .m-tst__role {
   top: 25px;
+
   color: var(--m-g5);
 }
 
 .m-tst__review {
   top: 60px;
+
   color: var(--m-g5);
 }
 
 .m-tst__loc {
   top: 153px;
+
   color: var(--m-esp);
+
   opacity: 0.85;
 }
 
 .m-tst__pag {
-  margin: 24px 20px 0;
+  margin:
+    24px
+    20px
+    0;
 }
 
 .m-tst .m-foot {
   margin-top: 42px;
 }
 
-/* ---------- faq ---------- */
+/* ==========================================================
+   FAQ
+   ========================================================== */
 
 .m-faq__title {
-  margin: 40px 20px 0;
+  margin:
+    40px
+    20px
+    0;
 }
 
 .m-faq__list {
@@ -685,12 +1171,32 @@ html.m-layout body {
 }
 
 .m-faq__item {
-  border-top: 1.6px solid rgba(123, 151, 138, 0.4);
-  padding: 35px 20px 30.4px;
+  border-top:
+    1.6px
+    solid
+    rgba(
+      123,
+      151,
+      138,
+      0.4
+    );
+
+  padding:
+    35px
+    20px
+    30.4px;
 }
 
 .m-faq__item--last {
-  border-bottom: 1.6px solid rgba(123, 151, 138, 0.4);
+  border-bottom:
+    1.6px
+    solid
+    rgba(
+      123,
+      151,
+      138,
+      0.4
+    );
 }
 
 .m-faq__q {
@@ -699,32 +1205,47 @@ html.m-layout body {
 
 .m-faq__row {
   position: relative;
+
   margin-top: 13px;
 }
 
 .m-faq__a {
   width: 250px;
+
   color: var(--m-g5);
+
   opacity: 0.15;
-  transition: opacity 0.3s ease;
+
+  transition:
+    opacity
+      0.3s
+      ease;
 }
 
-.m-faq__item[data-active='true'] .m-faq__a {
+.m-faq__item[data-active='true']
+  .m-faq__a {
   opacity: 1;
 }
 
 .m-faq__toggle {
   position: absolute;
+
   right: -12px;
-  /* Figma: arrow sits at the answer's vertical centre, capped at 42px */
+
   top: min(50%, 42px);
+
   display: flex;
+
   align-items: center;
   justify-content: center;
+
   width: 44px;
   height: 44px;
+
   margin-top: -22px;
+
   line-height: 0;
+
   color: var(--m-esp);
 }
 
@@ -732,22 +1253,40 @@ html.m-layout body {
   margin-top: 40px;
 }
 
-/* ---------- contacts ---------- */
+/* ==========================================================
+   CONTACTS
+   ========================================================== */
 
 .m-con {
   position: relative;
+
   margin-top: 62px;
-  padding: 188px 0 80px;
-  background: var(--m-sage);
-  color: var(--m-esp);
+
+  padding:
+    188px
+    0
+    80px;
+
+  background:
+    var(--m-sage);
+
+  color:
+    var(--m-esp);
 }
+
+/* ==========================================================
+   CONTACTS — DECORATIVE STRIPES
+   ========================================================== */
 
 .m-con__stripes {
   position: absolute;
+
   top: 0;
   left: 0;
   right: 0;
+
   height: 145px;
+
   background: linear-gradient(
     to bottom,
     var(--m-sage) 0 6px,
@@ -767,189 +1306,923 @@ html.m-layout body {
   opacity: 0.7;
 }
 
+/* ==========================================================
+   CONTACTS — HEADING
+   ========================================================== */
+
 .m-con__heading {
-  margin: 26px 20px 0;
   width: 303px;
-  max-width: calc(100% - 40px);
+
+  max-width:
+    calc(
+      100% - 40px
+    );
+
+  margin:
+    26px
+    20px
+    0;
 }
 
 .m-con__heading p {
   font-weight: 500;
   font-size: 64px;
   line-height: 58px;
+
   text-transform: capitalize;
+
+  will-change:
+    transform,
+    opacity;
 }
 
 .m-con__heading p + p {
   margin-top: 4px;
 }
 
+/* ==========================================================
+   CONTACTS — FORM
+   ========================================================== */
+
 .m-form {
-  margin: 36px 20px 0;
+  margin:
+    36px
+    20px
+    0;
+
+  will-change:
+    transform,
+    opacity;
 }
 
 .m-form__desc {
   padding-bottom: 19px;
-  border-bottom: 1px solid var(--m-esp);
+
+  border-bottom:
+    1px
+    solid
+    var(--m-esp);
 }
+
+/* ==========================================================
+   CONTACTS — INPUTS
+   ========================================================== */
 
 .m-field {
   display: block;
+
   width: 100%;
+
   margin-top: 20px;
-  padding: 0 0 23px;
+
+  padding:
+    0
+    0
+    10px;
+
   border: 0;
-  border-bottom: 1px solid var(--m-esp);
+
+  border-bottom:
+    1px
+    solid
+    var(--m-esp);
+
   border-radius: 0;
-  background: transparent;
+
+  background:
+    transparent
+    !important;
+
   outline: none;
-  color: var(--m-esp);
+
+  color:
+    var(--m-esp)
+    !important;
+
+  -webkit-text-fill-color:
+    var(--m-esp)
+    !important;
+
+  caret-color:
+    var(--m-esp);
+
   font-family: inherit;
-  /* >= 16px so iOS Safari does not zoom on focus */
+
   font-size: 16px;
   font-weight: 400;
   line-height: 19px;
+
   text-transform: lowercase;
+
+  appearance: none;
+
+  -webkit-appearance:
+    none;
+
+  transition:
+    border-color
+      0.3s ease,
+    border-width
+      0.3s ease;
 }
 
 .m-field::placeholder {
-  color: var(--m-esp);
-  opacity: 0.45;
+  color:
+    rgba(
+      57,
+      41,
+      25,
+      0.4
+    );
+
+  -webkit-text-fill-color:
+    rgba(
+      57,
+      41,
+      25,
+      0.4
+    );
+
+  opacity: 1;
+}
+
+.m-field:hover,
+.m-field:focus,
+.m-field:active {
+  background:
+    transparent
+    !important;
+
+  background-color:
+    transparent
+    !important;
+
+  color:
+    var(--m-esp)
+    !important;
+
+  -webkit-text-fill-color:
+    var(--m-esp)
+    !important;
+
+  outline: none;
 }
 
 .m-field:focus-visible {
-  border-bottom-width: 2px;
-  padding-bottom: 22px;
+  border-bottom-width:
+    2px;
+
+  padding-bottom:
+    22px;
 }
 
-.m-field--handle {
-  margin-top: 14px;
-  padding-bottom: 14px;
+/* AUTOFILL */
+
+.m-field:-webkit-autofill,
+.m-field:-webkit-autofill:hover,
+.m-field:-webkit-autofill:focus,
+.m-field:-webkit-autofill:active {
+  -webkit-text-fill-color:
+    var(--m-esp)
+    !important;
+
+  caret-color:
+    var(--m-esp)
+    !important;
+
+  background:
+    transparent
+    !important;
+
+  background-color:
+    transparent
+    !important;
+
+  transition:
+    background-color
+      99999s
+      ease-out
+      0s
+      !important;
+
+  -webkit-box-shadow:
+    0
+    0
+    0
+    1000px
+    var(--m-sage)
+    inset
+    !important;
+
+  box-shadow:
+    0
+    0
+    0
+    1000px
+    var(--m-sage)
+    inset
+    !important;
 }
 
-.m-field--handle:focus-visible {
-  padding-bottom: 13px;
-}
+/* ==========================================================
+   CONTACT METHOD BUTTONS
+   ========================================================== */
 
 .m-chips {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 13px;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    minmax(0, 1fr);
+
+  column-gap: 13px;
+  row-gap: 13px;
+
+  width: 100%;
+
   margin-top: 20px;
 }
 
 .m-chip {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-width: 0;
+
   height: 44px;
-  border: 0.6px solid var(--m-esp) !important;
-  padding: 0 !important;
+
+  padding:
+    0
+    !important;
+
+  border:
+    0.6px
+    solid
+    rgba(
+      57,
+      41,
+      25,
+      0.4
+    )
+    !important;
+
+  background:
+    transparent
+    !important;
+
+  color:
+    var(--m-esp);
+
+  font-family: inherit;
+
   font-weight: 400;
   font-size: 16px;
   line-height: 21px;
-  text-transform: lowercase;
-  color: var(--m-esp);
-  background: transparent !important;
+
+  text-align: center;
+
+  text-transform:
+    lowercase;
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    background-color
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    color
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    border-color
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    transform
+      0.3s
+      ease-out;
 }
 
+/* ACTIVE */
+
 .m-chip[aria-checked='true'] {
-  background: var(--m-esp) !important;
-  color: var(--m-ice);
+  border-color:
+    var(--m-esp)
+    !important;
+
+  background:
+    var(--m-esp)
+    !important;
+
+  color:
+    var(--m-ice)
+    !important;
 }
+
+/* HOVER */
+
+@media (hover: hover) {
+  .m-chip:hover {
+    border-color:
+      var(--m-esp)
+      !important;
+  }
+}
+
+/* FOCUS */
+
+.m-chip:focus-visible {
+  border-color:
+    var(--m-esp)
+    !important;
+}
+
+/* TOUCH */
+
+.m-chip:active {
+  transform:
+    scale(0.98);
+}
+
+/* ==========================================================
+   CONDITIONAL CONTACT FIELD
+   ========================================================== */
+
+.m-handle {
+  display: grid;
+
+  grid-template-rows:
+    0fr;
+
+  width: 100%;
+
+  margin-top: 0;
+
+  overflow: hidden;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    grid-template-rows
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    margin-top
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    opacity
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      );
+}
+
+.m-handle--open {
+  grid-template-rows:
+    1fr;
+
+  margin-top: 24px;
+
+  opacity: 1;
+
+  pointer-events: auto;
+}
+
+.m-handle__inner {
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+.m-field--handle {
+  margin-top: 0;
+
+  padding-bottom:
+    14px;
+
+  transform:
+    translateY(-6px);
+
+  opacity: 0;
+
+  transition:
+    opacity
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    transform
+      0.7s
+      cubic-bezier(
+        0.22,
+        1,
+        0.36,
+        1
+      ),
+    border-color
+      0.3s
+      ease,
+    border-width
+      0.3s
+      ease;
+}
+
+.m-handle--open
+  .m-field--handle {
+  transform:
+    translateY(0);
+
+  opacity: 1;
+}
+
+.m-field--handle:focus-visible {
+  padding-bottom:
+    13px;
+}
+
+/* ==========================================================
+   SEND BUTTON
+   ========================================================== */
 
 .m-send {
   display: block;
+
   width: 100%;
+
   margin-top: 78px;
-  border-top: 2px solid var(--m-esp) !important;
-  padding-top: 5px !important;
+
+  padding:
+    0
+    !important;
+
+  border:
+    0
+    !important;
+
+  background:
+    transparent
+    !important;
+
+  color:
+    var(--m-esp);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  outline: none;
 }
+
+/* SEND LINE */
+
+.m-send__line {
+  display: block;
+
+  width: 100%;
+  height: 2px;
+
+  overflow: hidden;
+
+  transform-origin:
+    left center;
+}
+
+.m-send__line-inner {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  background:
+    var(--m-esp);
+
+  transform:
+    scaleX(1);
+
+  transform-origin:
+    right center;
+
+  transition:
+    transform
+      0.3s
+      ease-out,
+    background-color
+      0.3s
+      ease-out;
+}
+
+/* SEND ROW */
 
 .m-send__row {
   display: flex;
+
   align-items: center;
-  justify-content: space-between;
+  justify-content:
+    space-between;
+
+  width: 100%;
+
   height: 29px;
+
+  margin-top: 6px;
+
   font-weight: 500;
   font-size: 24px;
   line-height: 29px;
-  text-transform: capitalize;
+
+  text-transform: none;
 }
+
+/* SEND LABEL */
+
+.m-send__label {
+  display: inline-block;
+
+  color:
+    var(--m-esp);
+
+  transition:
+    color
+      0.3s
+      ease-out;
+}
+
+.m-con__word {
+  display: inline-block;
+
+  white-space: nowrap;
+}
+
+.m-con__letter {
+  display: inline-block;
+
+  will-change:
+    transform,
+    opacity;
+}
+
+/* SEND ARROW */
+
+.m-send__arrow {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  color:
+    var(--m-esp);
+
+  transition:
+    color
+      0.3s
+      ease-out,
+    transform
+      0.3s
+      ease-out;
+}
+
+.m-send__arrow svg {
+  display: block;
+}
+
+/* SEND HOVER / FOCUS */
+
+.m-send:hover
+  .m-send__line-inner,
+.m-send:focus-visible
+  .m-send__line-inner {
+  background:
+    var(--m-ice);
+
+  transform:
+    scaleX(0.95);
+}
+
+.m-send:hover
+  .m-send__label,
+.m-send:focus-visible
+  .m-send__label {
+  color:
+    var(--m-ice);
+}
+
+.m-send:hover
+  .m-send__arrow,
+.m-send:focus-visible
+  .m-send__arrow {
+  color:
+    var(--m-ice);
+
+  transform:
+    translateX(8px);
+}
+
+.m-send:focus-visible {
+  outline: none;
+}
+
+/* SEND TOUCH */
+
+.m-send:active
+  .m-send__line-inner {
+  background:
+    var(--m-ice);
+
+  transform:
+    scaleX(0.95);
+}
+
+.m-send:active
+  .m-send__label {
+  color:
+    var(--m-ice);
+}
+
+.m-send:active
+  .m-send__arrow {
+  color:
+    var(--m-ice);
+
+  transform:
+    translateX(8px);
+}
+
+/* ==========================================================
+   VIDEO LOGO
+   ========================================================== */
 
 .m-con__logo {
   display: block;
-  margin: 154px 20px 0;
-  width: calc(100% - 40px);
+
+  width:
+    calc(
+      100% - 40px
+    );
+
+  max-width: 335px;
+
   height: auto;
-  aspect-ratio: 335 / 128;
-  overflow: visible;
-  color: var(--m-esp);
+
+  aspect-ratio:
+    335 / 128;
+
+  margin:
+    154px
+    auto
+    0;
+
+  overflow: hidden;
 }
 
+.m-con__logo foreignObject {
+  width: 100%;
+  height: 100%;
+}
+
+.m-con__logo video {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+}
+
+.m-con
+  > div:has(
+    > .m-con__logo
+  ) {
+  will-change:
+    transform,
+    opacity;
+}
+
+/* ==========================================================
+   PHONE + ADDRESS
+   ========================================================== */
+
 .m-con__info {
-  margin: 61px 20px 0;
+  margin:
+    61px
+    20px
+    0;
+
   text-align: center;
-  color: var(--m-esp);
+
+  color:
+    var(--m-esp);
+
+  will-change:
+    transform,
+    opacity;
 }
 
 .m-con__phones {
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   gap: 6px;
+}
+
+.m-con__phones a {
+  display: block;
+
+  padding:
+    4px
+    12px;
+
+  margin:
+    -4px
+    -12px;
+
+  color:
+    var(--m-esp);
+
+  transition:
+    color
+      0.3s
+      ease-out;
+}
+
+.m-con__phones a:hover,
+.m-con__phones a:focus-visible {
+  color:
+    var(--m-ice);
+
+  outline: none;
 }
 
 .m-con__addr {
-  margin: 24px auto 0;
   max-width: 279px;
+
+  margin:
+    24px
+    auto
+    0;
 }
+
+/* ==========================================================
+   SOCIAL LINKS
+   ========================================================== */
 
 .m-con__socials {
-  margin: 40px 20px 0;
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   gap: 12px;
+
+  margin:
+    100px
+    20px
+    0;
+
+  will-change:
+    transform,
+    opacity;
 }
 
-.m-con__socials a,
-.m-con__phones a {
+.m-con__socials li {
   display: block;
-  /* touch target */
-  padding: 4px 12px;
-  margin: -4px -12px;
 }
+
+.m-con__social-link {
+  display: inline-flex;
+
+  padding:
+    4px
+    12px;
+
+  margin:
+    -4px
+    -12px;
+
+  outline: none;
+}
+
+.m-con__social-letter {
+  display: inline-block;
+
+  color:
+    var(--m-esp);
+
+  transition-property:
+    color;
+
+  transition-duration:
+    0.3s;
+
+  transition-timing-function:
+    cubic-bezier(
+      0.22,
+      1,
+      0.36,
+      1
+    );
+}
+
+.m-con__social-link:hover
+  .m-con__social-letter,
+.m-con__social-link:focus-visible
+  .m-con__social-letter {
+  color:
+    var(--m-ice);
+}
+
+.m-con__social-link:focus-visible {
+  outline: none;
+}
+
+.m-con__social-link:active
+  .m-con__social-letter {
+  color:
+    var(--m-ice);
+}
+
+/* ==========================================================
+   LEGAL / BOTTOM
+   ========================================================== */
 
 .m-con__legal {
-  margin: 60px 20px 0;
   display: flex;
+
   flex-direction: column;
+
   align-items: center;
+
   gap: 6px;
+
+  margin:
+    160px
+    20px
+    0;
+
   text-align: center;
+
   font-size: 14px;
   line-height: 18px;
-  text-transform: lowercase;
+
+  text-transform:
+    lowercase;
+
+  will-change:
+    transform,
+    opacity;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .m-faq__a {
-    transition: none;
-  }
+.m-con__legal a {
+  transition:
+    color
+      0.3s
+      ease-out;
 }
 
-.m-menu {
-  transition: opacity 0.3s ease, visibility 0s linear 0.3s;
-}
+.m-con__legal a:hover,
+.m-con__legal a:focus-visible {
+  color:
+    var(--m-ice);
 
-.m-menu[data-open='true'] {
-  transition-delay: 0s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .m-menu {
-    transition: none;
-  }
-}
-
-#our-method {
-  padding-bottom: 0;
+  outline: none;
 }
