@@ -1,4 +1,9 @@
-import { type KeyboardEvent, type MouseEvent, useEffect, useRef } from 'react'
+import {
+  type KeyboardEvent,
+  type MouseEvent,
+  useEffect,
+  useRef,
+} from 'react'
 
 import { NAV_ITEMS } from '../../../data/site'
 
@@ -8,10 +13,16 @@ interface MobileMenuProps {
   onNavigate: (href: string) => void
 }
 
-/* Approved Figma menu frame: sage full screen, logo + close, 48px links. */
-export function MobileMenu({ open, onClose, onNavigate }: MobileMenuProps) {
-  const closeRef = useRef<HTMLButtonElement>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
+export function MobileMenu({
+  open,
+  onClose,
+  onNavigate,
+}: MobileMenuProps) {
+  const closeRef =
+    useRef<HTMLButtonElement>(null)
+
+  const menuRef =
+    useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (open) {
@@ -19,33 +30,59 @@ export function MobileMenu({ open, onClose, onNavigate }: MobileMenuProps) {
     }
   }, [open])
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+  const handleKeyDown = (
+    event:
+      KeyboardEvent<HTMLDivElement>,
+  ) => {
     if (event.key === 'Escape') {
       onClose()
       return
     }
 
-    if (event.key !== 'Tab' || !menuRef.current) {
+    if (
+      event.key !== 'Tab' ||
+      !menuRef.current
+    ) {
       return
     }
 
-    const focusable = Array.from(
-      menuRef.current.querySelectorAll<HTMLElement>('a, button'),
-    )
-    const first = focusable[0]
-    const last = focusable[focusable.length - 1]
+    const focusable =
+      Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>(
+          'a, button',
+        ),
+      )
 
-    if (event.shiftKey && document.activeElement === first) {
+    const first =
+      focusable[0]
+
+    const last =
+      focusable[
+        focusable.length - 1
+      ]
+
+    if (
+      event.shiftKey &&
+      document.activeElement === first
+    ) {
       event.preventDefault()
       last.focus()
-    } else if (!event.shiftKey && document.activeElement === last) {
+    } else if (
+      !event.shiftKey &&
+      document.activeElement === last
+    ) {
       event.preventDefault()
       first.focus()
     }
   }
 
-  const handleLink = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleLink = (
+    event:
+      MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
     event.preventDefault()
+
     onNavigate(href)
   }
 
@@ -59,17 +96,26 @@ export function MobileMenu({ open, onClose, onNavigate }: MobileMenuProps) {
       aria-modal="true"
       aria-label="Menu"
       aria-hidden={!open}
-      onKeyDown={handleKeyDown}
+      onKeyDown={
+        handleKeyDown
+      }
     >
       <div className="m-menu__head">
-        <span className="m-logo">luc.id</span>
+        <span
+          className="m-logo"
+          aria-label="luc.id"
+        >
+          luc.id
+        </span>
 
         <button
           ref={closeRef}
           type="button"
           className="m-menu__close"
           aria-label="Close menu"
-          onClick={onClose}
+          onClick={
+            onClose
+          }
         >
           <svg
             width="18"
@@ -81,7 +127,7 @@ export function MobileMenu({ open, onClose, onNavigate }: MobileMenuProps) {
             <path
               d="M1 1L17 17M17 1L1 17"
               stroke="currentColor"
-              strokeWidth="1.5"
+              strokeWidth="3"
             />
           </svg>
         </button>
@@ -89,17 +135,39 @@ export function MobileMenu({ open, onClose, onNavigate }: MobileMenuProps) {
 
       <nav aria-label="Primary">
         <ul className="m-menu__list">
-          {NAV_ITEMS.map((item) => (
-            <li key={item.href}>
-              <a
-                href={item.href}
-                className="m-menu__link"
-                onClick={(event) => handleLink(event, item.href)}
+          {NAV_ITEMS.map(
+            (item) => (
+              <li
+                key={item.href}
+                className="m-menu__item"
               >
-                {item.label}
-              </a>
-            </li>
-          ))}
+                <a
+                  href={item.href}
+                  className="m-menu__link"
+                  aria-label={
+                    item.label
+                  }
+                  onClick={(
+                    event,
+                  ) =>
+                    handleLink(
+                      event,
+                      item.href,
+                    )
+                  }
+                >
+                  <span
+                    className="m-menu__marker"
+                    aria-hidden="true"
+                  />
+
+                  <span className="m-menu__link-text">
+                    {item.label}
+                  </span>
+                </a>
+              </li>
+            ),
+          )}
         </ul>
       </nav>
     </div>

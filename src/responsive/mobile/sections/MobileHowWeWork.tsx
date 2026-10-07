@@ -260,7 +260,7 @@ export function MobileHowWeWork() {
 
       <Cta
         href="#contact-form"
-        label="Get advice"
+        label="Get Advice"
         className="m-hww__cta"
       />
 

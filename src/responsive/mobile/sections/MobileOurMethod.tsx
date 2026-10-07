@@ -83,7 +83,7 @@ export function MobileOurMethod() {
               <Pagination index={i} total={OUR_METHOD_STATES.length} />
             </div>
 
-            <Cta href="#contact-form" label="Get advice" />
+            <Cta href="#contact-form" label="Get Advice" />
 
             <p className="m-foot">
               {state.supportingText[0]}

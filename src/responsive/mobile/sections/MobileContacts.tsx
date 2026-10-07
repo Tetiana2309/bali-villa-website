@@ -532,9 +532,11 @@ export function MobileContacts() {
 
       {/* SECTION LABEL */}
 
-      <div className="m-label">
-        <p>contacts</p>
-      </div>
+     <div className="m-label">
+  <p>Write To Us</p>
+  <p>Contacts</p>
+  <p>We’ll Respond Soon.</p>
+</div>
 
       {/* HEADING */}
 

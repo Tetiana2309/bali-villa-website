@@ -15,15 +15,10 @@ interface MobileSliderProps {
   index: number
   onIndexChange: (index: number) => void
   className?: string
-  /** Rendered inside the slider context, after the track (e.g. shared pagination). */
   after?: ReactNode
   children: ReactNode
 }
 
-/*
- * Native horizontal slider: CSS scroll-snap does the swiping, so touch
- * gestures stay fully native and Lenis never sees them.
- */
 export function MobileSlider({
   label,
   index,
@@ -32,96 +27,466 @@ export function MobileSlider({
   after,
   children,
 }: MobileSliderProps) {
-  const trackRef = useRef<HTMLDivElement>(null)
-  const frameRef = useRef(0)
-  const indexRef = useRef(index)
-  const onChangeRef = useRef(onIndexChange)
+  const trackRef =
+    useRef<HTMLDivElement>(null)
 
-  const slides = Children.toArray(children)
-  const count = slides.length
+  const frameRef =
+    useRef(0)
+
+  const indexRef =
+    useRef(index)
+
+  const onChangeRef =
+    useRef(onIndexChange)
+
+  const slides =
+    Children.toArray(children)
+
+  const count =
+    slides.length
 
   useEffect(() => {
     indexRef.current = index
     onChangeRef.current = onIndexChange
-  })
+  }, [
+    index,
+    onIndexChange,
+  ])
 
-  const goTo = useCallback(
-    (target: number) => {
-      const track = trackRef.current
+  /*
+   * ==========================================
+   * VISUAL MOTION
+   * ==========================================
+   */
 
-      if (!track) {
+  const updateMotion =
+    useCallback(() => {
+      const track =
+        trackRef.current
+
+      if (
+        !track ||
+        !track.clientWidth
+      ) {
         return
       }
 
-      const next = Math.max(0, Math.min(count - 1, target))
-      const reduced = window.matchMedia(
-        '(prefers-reduced-motion: reduce)',
-      ).matches
+      const width =
+        track.clientWidth
 
-      track.scrollTo({
-        left: next * track.clientWidth,
-        behavior: reduced ? 'auto' : 'smooth',
-      })
-    },
-    [count],
-  )
+      const scrollLeft =
+        track.scrollLeft
 
-  const handleScroll = () => {
-    cancelAnimationFrame(frameRef.current)
+      const slideElements =
+        Array.from(
+          track.querySelectorAll<HTMLElement>(
+            '.m-slide',
+          ),
+        )
 
-    frameRef.current = requestAnimationFrame(() => {
-      const track = trackRef.current
+      slideElements.forEach(
+        (
+          slide,
+          slideIndex,
+        ) => {
+          const inner =
+            slide.querySelector<HTMLElement>(
+              '[data-slider-inner]',
+            )
 
-      if (!track || !track.clientWidth) {
-        return
-      }
+          if (!inner) {
+            return
+          }
 
-      const next = Math.max(
-        0,
-        Math.min(count - 1, Math.round(track.scrollLeft / track.clientWidth)),
+          /*
+           * 0 = active
+           * 1 = one screen right
+           * -1 = one screen left
+           */
+
+          const distance =
+            (
+              slideIndex *
+                width -
+              scrollLeft
+            ) /
+            width
+
+          const progress =
+            Math.max(
+              -1,
+              Math.min(
+                1,
+                distance,
+              ),
+            )
+
+          const abs =
+            Math.abs(
+              progress,
+            )
+
+          /*
+           * ======================================
+           * MAIN CARD DEPTH
+           * ======================================
+           */
+
+          const scale =
+            1 -
+            abs * 0.055
+
+          /*
+           * Counter movement.
+           *
+           * The physical slide moves with
+           * native scroll.
+           *
+           * The content moves slightly against it,
+           * which creates a cinematic layered feel.
+           */
+
+          const x =
+            progress * -34
+
+          /*
+           * Very small vertical depth.
+           */
+
+          const y =
+            abs * 8
+
+          /*
+           * Incoming card is slightly masked.
+           */
+
+          const mask =
+            abs * 9
+
+          let clipPath =
+            'inset(0% 0% 0% 0%)'
+
+          if (progress > 0) {
+            clipPath =
+              `inset(0% ${mask}% 0% 0%)`
+          }
+
+          if (progress < 0) {
+            clipPath =
+              `inset(0% 0% 0% ${mask}%)`
+          }
+
+          inner.style.transform =
+            `
+              translate3d(
+                ${x}px,
+                ${y}px,
+                0
+              )
+              scale(${scale})
+            `
+
+          inner.style.clipPath =
+            clipPath
+
+          inner.style.transformOrigin =
+            progress > 0
+              ? 'left center'
+              : 'right center'
+
+          inner.style.willChange =
+            'transform, clip-path'
+
+          /*
+           * ======================================
+           * MEDIA LAYER
+           * ======================================
+           */
+
+          const media =
+            inner.querySelector<HTMLElement>(
+              'video, img',
+            )
+
+          if (media) {
+            /*
+             * Media moves independently from
+             * the card.
+             */
+
+            const mediaX =
+              progress * -24
+
+            const mediaScale =
+              1.035 +
+              abs * 0.025
+
+            media.style.transform =
+              `
+                translate3d(
+                  ${mediaX}px,
+                  0,
+                  0
+                )
+                scale(${mediaScale})
+              `
+
+            media.style.transformOrigin =
+              'center center'
+
+            media.style.willChange =
+              'transform'
+          }
+
+          /*
+           * ======================================
+           * LARGE TITLES
+           * ======================================
+           */
+
+          const titles =
+            inner.querySelectorAll<HTMLElement>(
+              '.m-big, .m-gal__title',
+            )
+
+          titles.forEach(
+            (
+              title,
+            ) => {
+              const titleX =
+                progress * -18
+
+              const titleY =
+                abs * 5
+
+              title.style.transform =
+                `
+                  translate3d(
+                    ${titleX}px,
+                    ${titleY}px,
+                    0
+                  )
+                `
+
+              title.style.willChange =
+                'transform'
+            },
+          )
+        },
+      )
+    }, [])
+
+  /*
+   * ==========================================
+   * GO TO
+   * ==========================================
+   */
+
+  const goTo =
+    useCallback(
+      (
+        target: number,
+      ) => {
+        const track =
+          trackRef.current
+
+        if (!track) {
+          return
+        }
+
+        const next =
+          Math.max(
+            0,
+            Math.min(
+              count - 1,
+              target,
+            ),
+          )
+
+        const reduced =
+          window.matchMedia(
+            '(prefers-reduced-motion: reduce)',
+          ).matches
+
+        track.scrollTo({
+          left:
+            next *
+            track.clientWidth,
+
+          behavior:
+            reduced
+              ? 'auto'
+              : 'smooth',
+        })
+      },
+      [count],
+    )
+
+  /*
+   * ==========================================
+   * SCROLL
+   * ==========================================
+   */
+
+  const handleScroll =
+    () => {
+      cancelAnimationFrame(
+        frameRef.current,
       )
 
-      if (next !== indexRef.current) {
-        indexRef.current = next
-        onChangeRef.current(next)
+      frameRef.current =
+        requestAnimationFrame(
+          () => {
+            const track =
+              trackRef.current
+
+            if (
+              !track ||
+              !track.clientWidth
+            ) {
+              return
+            }
+
+            /*
+             * Awwwards-style visual motion.
+             */
+
+            updateMotion()
+
+            /*
+             * Existing index logic.
+             */
+
+            const next =
+              Math.max(
+                0,
+                Math.min(
+                  count - 1,
+                  Math.round(
+                    track.scrollLeft /
+                      track.clientWidth,
+                  ),
+                ),
+              )
+
+            if (
+              next !==
+              indexRef.current
+            ) {
+              indexRef.current =
+                next
+
+              onChangeRef.current(
+                next,
+              )
+            }
+          },
+        )
+    }
+
+  /*
+   * ==========================================
+   * KEYBOARD
+   * ==========================================
+   */
+
+  const handleKeyDown =
+    (
+      event:
+        KeyboardEvent<HTMLDivElement>,
+    ) => {
+      if (
+        event.key ===
+        'ArrowRight'
+      ) {
+        event.preventDefault()
+
+        goTo(
+          indexRef.current +
+            1,
+        )
       }
-    })
-  }
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === 'ArrowRight') {
-      event.preventDefault()
-      goTo(indexRef.current + 1)
+      if (
+        event.key ===
+        'ArrowLeft'
+      ) {
+        event.preventDefault()
+
+        goTo(
+          indexRef.current -
+            1,
+        )
+      }
     }
 
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault()
-      goTo(indexRef.current - 1)
-    }
-  }
+  /*
+   * ==========================================
+   * INITIAL POSITION + RESIZE
+   * ==========================================
+   */
 
-  /* Keep the active slide aligned when the viewport width changes. */
   useEffect(() => {
-    const realign = () => {
-      const track = trackRef.current
+    const realign =
+      () => {
+        const track =
+          trackRef.current
 
-      if (track) {
-        track.scrollLeft = indexRef.current * track.clientWidth
+        if (!track) {
+          return
+        }
+
+        track.scrollLeft =
+          indexRef.current *
+          track.clientWidth
+
+        updateMotion()
       }
-    }
 
-    window.addEventListener('resize', realign)
+    const initialFrame =
+      requestAnimationFrame(
+        realign,
+      )
+
+    window.addEventListener(
+      'resize',
+      realign,
+    )
 
     return () => {
-      window.removeEventListener('resize', realign)
-      cancelAnimationFrame(frameRef.current)
-    }
-  }, [])
+      cancelAnimationFrame(
+        initialFrame,
+      )
 
-  const control = useMemo(() => ({ goTo }), [goTo])
+      window.removeEventListener(
+        'resize',
+        realign,
+      )
+
+      cancelAnimationFrame(
+        frameRef.current,
+      )
+    }
+  }, [updateMotion])
+
+  /*
+   * ==========================================
+   * CONTROL
+   * ==========================================
+   */
+
+  const control =
+    useMemo(
+      () => ({
+        goTo,
+      }),
+      [goTo],
+    )
 
   return (
-    <SliderControlContext.Provider value={control}>
+    <SliderControlContext.Provider
+      value={control}
+    >
       <div
         ref={trackRef}
         className={`m-slider ${className}`}
@@ -129,21 +494,58 @@ export function MobileSlider({
         aria-roledescription="carousel"
         aria-label={label}
         tabIndex={0}
-        onScroll={handleScroll}
-        onKeyDown={handleKeyDown}
+        onScroll={
+          handleScroll
+        }
+        onKeyDown={
+          handleKeyDown
+        }
       >
-        {slides.map((slide, slideIndex) => (
-          <div
-            key={slideIndex}
-            className="m-slide"
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${slideIndex + 1} of ${count}`}
-            inert={slideIndex !== index}
-          >
-            {slide}
-          </div>
-        ))}
+        {slides.map(
+          (
+            slide,
+            slideIndex,
+          ) => (
+            <div
+              key={
+                slideIndex
+              }
+              className="m-slide"
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${slideIndex + 1} of ${count}`}
+              inert={
+                slideIndex !==
+                index
+              }
+              style={{
+                overflow:
+                  'hidden',
+              }}
+            >
+              <div
+                data-slider-inner
+                style={{
+                  width:
+                    '100%',
+
+                  minWidth: 0,
+
+                  transform:
+                    'translate3d(0,0,0)',
+
+                  clipPath:
+                    'inset(0% 0% 0% 0%)',
+
+                  backfaceVisibility:
+                    'hidden',
+                }}
+              >
+                {slide}
+              </div>
+            </div>
+          ),
+        )}
       </div>
 
       {after}
