@@ -8,6 +8,14 @@ interface LazyVideoProps {
   play: boolean
 }
 
+/*
+ * Decorative looping video.
+ *
+ * iPhone / Safari safe:
+ * - src is always attached
+ * - metadata can preload
+ * - actual playback is still controlled by useSlideVideo
+ */
 export function LazyVideo({
   src,
   poster,
@@ -30,21 +38,11 @@ export function LazyVideo({
       muted
       loop
       playsInline
-      preload="auto"
+      preload="metadata"
       disablePictureInPicture
       disableRemotePlayback
       aria-hidden="true"
       tabIndex={-1}
-      style={{
-        display: 'block',
-        width: '100%',
-        height: '100%',
-        objectFit: 'cover',
-        objectPosition: 'center',
-        backgroundColor: 'transparent',
-        WebkitBackfaceVisibility: 'hidden',
-        backfaceVisibility: 'hidden',
-      }}
     />
   )
 }

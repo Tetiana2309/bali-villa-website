@@ -4,7 +4,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type RefObject,
 } from 'react'
 
 import Lenis from 'lenis'
@@ -32,21 +31,6 @@ gsap.registerPlugin(ScrollTrigger)
 
 const BASE_URL =
   import.meta.env.BASE_URL
-
-/*
- * ==========================================
- * MENU CLOSE DURATION
- * ==========================================
- *
- * mobile.css:
- * .m-menu transition = 0.75s
- *
- * Give Safari a tiny additional margin.
- * ==========================================
- */
-
-const MENU_CLOSE_DELAY =
-  780
 
 /*
  * ==========================================
@@ -103,55 +87,17 @@ const MOBILE_VIDEO_LOGO_MASK =
  * ==========================================
  */
 
-function MobileVideoTransitionLogo({
-  videoRef,
-}: {
-  videoRef:
-    RefObject<HTMLVideoElement | null>
-}) {
+function MobileVideoTransitionLogo() {
   return (
-    <div
-      className="m-transition__logo"
-      style={{
-        position:
-          'relative',
-
-        width:
-          '100%',
-
-        height:
-          '100%',
-
-        overflow:
-          'hidden',
-      }}
-    >
+    <div className="m-transition__logo">
       <video
-        ref={videoRef}
-        src={`${BASE_URL}videos/hero-setion.mp4`}
         autoPlay
         muted
         loop
         playsInline
-        preload="auto"
+        preload="metadata"
         className="m-transition__video"
-        aria-hidden="true"
         style={{
-          display:
-            'block',
-
-          width:
-            '100%',
-
-          height:
-            '100%',
-
-          objectFit:
-            'cover',
-
-          objectPosition:
-            'center',
-
           WebkitMaskImage:
             MOBILE_VIDEO_LOGO_MASK,
 
@@ -175,137 +121,40 @@ function MobileVideoTransitionLogo({
 
           maskPosition:
             'center',
-
-          transform:
-            'translateZ(0)',
-
-          WebkitBackfaceVisibility:
-            'hidden',
-
-          backfaceVisibility:
-            'hidden',
         }}
-      />
+      >
+        <source
+          src={`${BASE_URL}videos/hero-setion.mp4`}
+          type="video/mp4"
+        />
+      </video>
     </div>
   )
 }
 
-/*
- * ==========================================
- * MOBILE APP
- * ==========================================
- */
-
 export default function MobileApp() {
   const lenisRef =
-    useRef<Lenis | null>(
-      null,
-    )
+    useRef<Lenis | null>(null)
 
   const menuButtonRef =
-    useRef<HTMLButtonElement>(
-      null,
-    )
+    useRef<HTMLButtonElement>(null)
 
   const transitionRef =
-    useRef<HTMLDivElement>(
-      null,
-    )
+    useRef<HTMLDivElement>(null)
 
   const transitionLogoRef =
-    useRef<HTMLDivElement>(
-      null,
-    )
-
-  const transitionVideoRef =
-    useRef<HTMLVideoElement>(
-      null,
-    )
+    useRef<HTMLDivElement>(null)
 
   const transitionActiveRef =
     useRef(false)
 
-  const menuTimerRef =
-    useRef<number | null>(
-      null,
-    )
+  const [menuOpen, setMenuOpen] =
+    useState(false)
 
-  const transitionTimelineRef =
-    useRef<gsap.core.Timeline | null>(
-      null,
-    )
-
-  const [
-    menuOpen,
-    setMenuOpen,
-  ] = useState(false)
-
-  const [
-    isLoading,
-    setIsLoading,
-  ] = useState(true)
+  const [isLoading, setIsLoading] =
+    useState(true)
 
   useMobileViewport()
-
-  /*
-   * ==========================================
-   * START TRANSITION VIDEO
-   * ==========================================
-   */
-
-  const startTransitionVideo =
-    useCallback(() => {
-      const video =
-        transitionVideoRef.current
-
-      if (!video) {
-        return
-      }
-
-      video.muted =
-        true
-
-      video.defaultMuted =
-        true
-
-      video.loop =
-        true
-
-      video.playsInline =
-        true
-
-      video.setAttribute(
-        'muted',
-        '',
-      )
-
-      video.setAttribute(
-        'playsinline',
-        '',
-      )
-
-      video.setAttribute(
-        'webkit-playsinline',
-        '',
-      )
-
-      const attempt =
-        video.play()
-
-      if (attempt) {
-        void attempt.catch(
-          () => {
-            /*
-             * Safari may still reject
-             * programmatic playback.
-             *
-             * The transition itself
-             * continues normally.
-             */
-          },
-        )
-      }
-    }, [])
 
   /*
    * ==========================================
@@ -323,20 +172,16 @@ export default function MobileApp() {
     )
 
     ScrollTrigger.config({
-      ignoreMobileResize:
-        true,
+      ignoreMobileResize: true,
     })
 
     const lenis =
       new Lenis({
-        lerp:
-          0.1,
+        lerp: 0.1,
 
-        smoothWheel:
-          true,
+        smoothWheel: true,
 
-        syncTouch:
-          false,
+        syncTouch: false,
 
         gestureOrientation:
           'vertical',
@@ -346,14 +191,7 @@ export default function MobileApp() {
       lenis
 
     /*
-     * ========================================
-     * TRANSITION INITIAL STATE
-     * ========================================
-     *
-     * Important:
-     * remove CSS clip-path animation.
-     * Safari gets a transform-based transition.
-     * ========================================
+     * INITIAL TRANSITION STATE
      */
 
     if (
@@ -363,19 +201,7 @@ export default function MobileApp() {
         transitionRef.current,
         {
           clipPath:
-            'none',
-
-          WebkitClipPath:
-            'none',
-
-          yPercent:
-            100,
-
-          force3D:
-            true,
-
-          visibility:
-            'visible',
+            'inset(100% 0% 0% 0%)',
         },
       )
     }
@@ -387,33 +213,15 @@ export default function MobileApp() {
         transitionLogoRef.current,
         {
           clipPath:
-            'none',
+            'inset(0% 50% 0% 50%)',
 
-          WebkitClipPath:
-            'none',
-
-          opacity:
-            0,
-
-          scaleX:
-            0.08,
-
-          scaleY:
-            0.96,
-
-          transformOrigin:
-            'center center',
-
-          force3D:
-            true,
+          opacity: 0,
         },
       )
     }
 
     /*
-     * ========================================
      * PRELOADER LOCK
-     * ========================================
      */
 
     lenis.stop()
@@ -421,11 +229,7 @@ export default function MobileApp() {
     lenis.scrollTo(
       0,
       {
-        immediate:
-          true,
-
-        force:
-          true,
+        immediate: true,
       },
     )
 
@@ -457,11 +261,7 @@ export default function MobileApp() {
           lenis.scrollTo(
             0,
             {
-              immediate:
-                true,
-
-              force:
-                true,
+              immediate: true,
             },
           )
 
@@ -473,18 +273,6 @@ export default function MobileApp() {
       cancelAnimationFrame(
         refreshFrame,
       )
-
-      if (
-        menuTimerRef.current !==
-        null
-      ) {
-        window.clearTimeout(
-          menuTimerRef.current,
-        )
-      }
-
-      transitionTimelineRef.current
-        ?.kill()
 
       gsap.ticker.remove(
         raf,
@@ -517,55 +305,39 @@ export default function MobileApp() {
         lenis.scrollTo(
           0,
           {
-            immediate:
-              true,
-
-            force:
-              true,
+            immediate: true,
           },
         )
       }
 
-      setIsLoading(
-        false,
-      )
+      setIsLoading(false)
 
       requestAnimationFrame(
         () => {
-          requestAnimationFrame(
-            () => {
-              window.scrollTo(
-                0,
-                0,
-              )
-
-              if (
-                lenis
-              ) {
-                lenis.scrollTo(
-                  0,
-                  {
-                    immediate:
-                      true,
-
-                    force:
-                      true,
-                  },
-                )
-
-                lenis.start()
-              }
-
-              ScrollTrigger.refresh()
-            },
+          window.scrollTo(
+            0,
+            0,
           )
+
+          if (lenis) {
+            lenis.scrollTo(
+              0,
+              {
+                immediate: true,
+              },
+            )
+
+            lenis.start()
+          }
+
+          ScrollTrigger.refresh()
         },
       )
     }, [])
 
   /*
    * ==========================================
-   * GLOBAL SCROLL LOCK
+   * SCROLL LOCK
    * ==========================================
    */
 
@@ -576,42 +348,25 @@ export default function MobileApp() {
     const root =
       document.documentElement
 
-    const body =
-      document.body
-
     if (
       isLoading ||
-      menuOpen
+      menuOpen ||
+      transitionActiveRef.current
     ) {
       lenis?.stop()
 
       root.style.overflow =
         'hidden'
-
-      body.style.overflow =
-        'hidden'
-    } else if (
-      !transitionActiveRef.current
-    ) {
+    } else {
       lenis?.start()
 
       root.style.overflow =
         ''
-
-      body.style.overflow =
-        ''
     }
 
     return () => {
-      if (
-        !transitionActiveRef.current
-      ) {
-        root.style.overflow =
-          ''
-
-        body.style.overflow =
-          ''
-      }
+      root.style.overflow =
+        ''
     }
   }, [
     isLoading,
@@ -629,10 +384,7 @@ export default function MobileApp() {
       (
         target: string,
       ) => {
-        if (
-          isLoading ||
-          transitionActiveRef.current
-        ) {
+        if (isLoading) {
           return
         }
 
@@ -650,38 +402,19 @@ export default function MobileApp() {
             '(prefers-reduced-motion: reduce)',
           ).matches
 
-        const lenis =
-          lenisRef.current
+        lenisRef.current
+          ?.scrollTo(
+            element,
+            {
+              duration:
+                reduced
+                  ? 0
+                  : 1.1,
 
-        if (!lenis) {
-          element.scrollIntoView({
-            behavior:
-              reduced
-                ? 'auto'
-                : 'smooth',
-
-            block:
-              'start',
-          })
-
-          return
-        }
-
-        lenis.scrollTo(
-          element,
-          {
-            duration:
-              reduced
-                ? 0
-                : 1.1,
-
-            immediate:
-              reduced,
-
-            force:
-              true,
-          },
-        )
+              immediate:
+                reduced,
+            },
+          )
 
         window.history.replaceState(
           null,
@@ -696,106 +429,7 @@ export default function MobileApp() {
 
   /*
    * ==========================================
-   * RESET TRANSITION
-   * ==========================================
-   */
-
-  const resetTransition =
-    useCallback(() => {
-      const transition =
-        transitionRef.current
-
-      const logo =
-        transitionLogoRef.current
-
-      if (
-        transition
-      ) {
-        gsap.set(
-          transition,
-          {
-            clipPath:
-              'none',
-
-            WebkitClipPath:
-              'none',
-
-            yPercent:
-              100,
-
-            force3D:
-              true,
-          },
-        )
-      }
-
-      if (logo) {
-        gsap.set(
-          logo,
-          {
-            clipPath:
-              'none',
-
-            WebkitClipPath:
-              'none',
-
-            opacity:
-              0,
-
-            scaleX:
-              0.08,
-
-            scaleY:
-              0.96,
-
-            transformOrigin:
-              'center center',
-
-            force3D:
-              true,
-          },
-        )
-      }
-    }, [])
-
-  /*
-   * ==========================================
-   * FINISH TRANSITION
-   * ==========================================
-   */
-
-  const finishTransition =
-    useCallback(() => {
-      const lenis =
-        lenisRef.current
-
-      document.documentElement
-        .style.overflow =
-        ''
-
-      document.body
-        .style.overflow =
-        ''
-
-      resetTransition()
-
-      transitionActiveRef.current =
-        false
-
-      lenis?.start()
-
-      requestAnimationFrame(
-        () => {
-          ScrollTrigger.refresh()
-        },
-      )
-    }, [
-      resetTransition,
-    ])
-
-  /*
-   * ==========================================
-   * MOBILE SECTION TRANSITION
+   * PREMIUM MOBILE SECTION TRANSITION
    * ==========================================
    */
 
@@ -811,15 +445,6 @@ export default function MobileApp() {
           return
         }
 
-        const target =
-          document.querySelector<HTMLElement>(
-            targetId,
-          )
-
-        if (!target) {
-          return
-        }
-
         const lenis =
           lenisRef.current
 
@@ -829,30 +454,19 @@ export default function MobileApp() {
         const logo =
           transitionLogoRef.current
 
-        /*
-         * ======================================
-         * FALLBACK WITHOUT LENIS / TRANSITION
-         * ======================================
-         */
-
         if (
           !lenis ||
           !transition
         ) {
-          target.scrollIntoView({
-            behavior:
-              'auto',
+          return
+        }
 
-            block:
-              'start',
-          })
-
-          window.history.replaceState(
-            null,
-            '',
+        const target =
+          document.querySelector<HTMLElement>(
             targetId,
           )
 
+        if (!target) {
           return
         }
 
@@ -861,21 +475,12 @@ export default function MobileApp() {
             '(prefers-reduced-motion: reduce)',
           ).matches
 
-        /*
-         * ======================================
-         * REDUCED MOTION
-         * ======================================
-         */
-
         if (reduced) {
           lenis.scrollTo(
             target,
             {
-              immediate:
-                true,
-
-              force:
-                true,
+              immediate: true,
+              force: true,
             },
           )
 
@@ -885,15 +490,11 @@ export default function MobileApp() {
             targetId,
           )
 
-          ScrollTrigger.refresh()
-
           return
         }
 
         /*
-         * ======================================
          * LOCK
-         * ======================================
          */
 
         transitionActiveRef.current =
@@ -901,16 +502,8 @@ export default function MobileApp() {
 
         lenis.stop()
 
-        document.documentElement
-          .style.overflow =
+        document.documentElement.style.overflow =
           'hidden'
-
-        document.body
-          .style.overflow =
-          'hidden'
-
-        transitionTimelineRef.current
-          ?.kill()
 
         gsap.killTweensOf(
           transition,
@@ -923,36 +516,14 @@ export default function MobileApp() {
         }
 
         /*
-         * ======================================
-         * START VIDEO
-         * ======================================
-         */
-
-        startTransitionVideo()
-
-        /*
-         * ======================================
          * RESET
-         * ======================================
          */
 
         gsap.set(
           transition,
           {
             clipPath:
-              'none',
-
-            WebkitClipPath:
-              'none',
-
-            yPercent:
-              100,
-
-            force3D:
-              true,
-
-            visibility:
-              'visible',
+              'inset(100% 0% 0% 0%)',
           },
         )
 
@@ -961,211 +532,169 @@ export default function MobileApp() {
             logo,
             {
               clipPath:
-                'none',
+                'inset(0% 50% 0% 50%)',
 
-              WebkitClipPath:
-                'none',
-
-              opacity:
-                0,
-
-              scaleX:
-                0.08,
-
-              scaleY:
-                0.96,
-
-              transformOrigin:
-                'center center',
-
-              force3D:
-                true,
+              opacity: 0,
             },
           )
         }
 
         /*
-         * ======================================
          * MASTER TIMELINE
-         * ======================================
          */
 
         const timeline =
-          gsap.timeline({
-            onComplete:
-              finishTransition,
-          })
-
-        transitionTimelineRef.current =
-          timeline
+          gsap.timeline()
 
         /*
-         * ======================================
          * 1. BACKGROUND ENTER
-         * ======================================
          */
 
         timeline.to(
           transition,
           {
-            yPercent:
-              0,
+            clipPath:
+              'inset(0% 0% 0% 0%)',
 
-            duration:
-              0.9,
+            duration: 0.9,
 
             ease:
               'power3.inOut',
-
-            force3D:
-              true,
           },
-          0,
         )
 
         /*
-         * ======================================
-         * 2. VIDEO LOGO REVEAL
-         * ======================================
+         * 2. LOGO REVEAL
          */
 
         if (logo) {
           timeline.to(
             logo,
             {
-              opacity:
-                1,
+              clipPath:
+                'inset(0% 0% 0% 0%)',
 
-              scaleX:
-                1,
+              opacity: 1,
 
-              scaleY:
-                1,
-
-              duration:
-                0.9,
+              duration: 1,
 
               ease:
                 'power3.inOut',
-
-              force3D:
-                true,
             },
-            0.38,
+            '-=0.4',
           )
         }
 
         /*
-         * ======================================
          * 3. HOLD
-         * ======================================
          */
 
         timeline.to(
           {},
           {
-            duration:
-              0.35,
+            duration: 0.45,
           },
         )
 
         /*
-         * ======================================
-         * 4. HIDDEN SCROLL JUMP
-         * ======================================
+         * 4. HIDDEN JUMP
          */
 
-        timeline.add(
-          () => {
-            lenis.scrollTo(
-              target,
-              {
-                immediate:
-                  true,
+        timeline.add(() => {
+          lenis.scrollTo(
+            target,
+            {
+              immediate: true,
+              force: true,
+            },
+          )
 
-                force:
-                  true,
-              },
-            )
+          ScrollTrigger.update()
 
-            window.scrollTo(
-              0,
-              target.offsetTop,
-            )
-
-            window.history.replaceState(
-              null,
-              '',
-              targetId,
-            )
-
-            ScrollTrigger.update()
-          },
-        )
+          window.history.replaceState(
+            null,
+            '',
+            targetId,
+          )
+        })
 
         /*
-         * ======================================
-         * 5. LOGO OUT
-         * ======================================
+         * 5. LOGO CLOSE
          */
 
         if (logo) {
           timeline.to(
             logo,
             {
-              opacity:
-                0,
+              clipPath:
+                'inset(0% 50% 0% 50%)',
 
-              scaleX:
-                0.08,
+              opacity: 0,
 
-              scaleY:
-                0.96,
-
-              duration:
-                0.65,
+              duration: 0.7,
 
               ease:
                 'power3.inOut',
-
-              force3D:
-                true,
             },
           )
         }
 
         /*
-         * ======================================
-         * 6. BACKGROUND OUT
-         * ======================================
-         *
-         * Move upward instead of using
-         * clip-path.
-         * ======================================
+         * 6. DESTINATION REVEAL
          */
 
         timeline.to(
           transition,
           {
-            yPercent:
-              -100,
+            clipPath:
+              'inset(0% 0% 100% 0%)',
 
-            duration:
-              0.9,
+            duration: 0.9,
 
             ease:
               'power3.inOut',
 
-            force3D:
-              true,
+            onStart: () => {
+              ScrollTrigger.update()
+            },
+
+            onComplete: () => {
+              gsap.set(
+                transition,
+                {
+                  clipPath:
+                    'inset(100% 0% 0% 0%)',
+                },
+              )
+
+              if (logo) {
+                gsap.set(
+                  logo,
+                  {
+                    clipPath:
+                      'inset(0% 50% 0% 50%)',
+
+                    opacity: 0,
+                  },
+                )
+              }
+
+              document.documentElement.style.overflow =
+                ''
+
+              lenis.start()
+
+              transitionActiveRef.current =
+                false
+
+              ScrollTrigger.refresh()
+            },
           },
-          '-=0.15',
+          '-=0.05',
         )
       },
       [
-        finishTransition,
         isLoading,
-        startTransitionVideo,
       ],
     )
 
@@ -1177,89 +706,39 @@ export default function MobileApp() {
 
   const closeMenu =
     useCallback(() => {
-      if (
-        menuTimerRef.current !==
-        null
-      ) {
-        window.clearTimeout(
-          menuTimerRef.current,
-        )
-
-        menuTimerRef.current =
-          null
-      }
-
       setMenuOpen(
         false,
       )
 
-      window.setTimeout(
-        () => {
-          menuButtonRef.current
-            ?.focus()
-        },
-        MENU_CLOSE_DELAY,
-      )
+      menuButtonRef.current
+        ?.focus()
     }, [])
-
-  /*
-   * ==========================================
-   * NAVIGATE FROM MENU
-   * ==========================================
-   *
-   * Current CSS menu close animation:
-   * 0.75 seconds.
-   *
-   * Do not start page transition after only
-   * two animation frames.
-   * ==========================================
-   */
 
   const navigateFromMenu =
     useCallback(
       (
         href: string,
       ) => {
-        if (
-          transitionActiveRef.current
-        ) {
-          return
-        }
-
-        if (
-          menuTimerRef.current !==
-          null
-        ) {
-          window.clearTimeout(
-            menuTimerRef.current,
-          )
-        }
-
-        /*
-         * Begin closing burger menu.
-         */
-
         setMenuOpen(
           false,
         )
 
         /*
-         * Wait until burger animation
-         * has actually finished.
+         * Wait for menu to disappear
+         * before transition starts.
          */
 
-        menuTimerRef.current =
-          window.setTimeout(
-            () => {
-              menuTimerRef.current =
-                null
-
-              navigateWithTransition(
-                href,
-              )
-            },
-            MENU_CLOSE_DELAY,
-          )
+        requestAnimationFrame(
+          () => {
+            requestAnimationFrame(
+              () => {
+                navigateWithTransition(
+                  href,
+                )
+              },
+            )
+          },
+        )
       },
       [
         navigateWithTransition,
@@ -1300,18 +779,11 @@ export default function MobileApp() {
           menuOpen={
             menuOpen
           }
-          onMenuOpen={() => {
-            if (
-              isLoading ||
-              transitionActiveRef.current
-            ) {
-              return
-            }
-
+          onMenuOpen={() =>
             setMenuOpen(
               true,
             )
-          }}
+          }
           menuButtonRef={
             menuButtonRef
           }
@@ -1349,77 +821,17 @@ export default function MobileApp() {
        */}
 
       <div
-        ref={
-          transitionRef
-        }
+        ref={transitionRef}
         className="m-transition"
         aria-hidden="true"
-        style={{
-          /*
-           * Override old CSS clip-path.
-           */
-
-          clipPath:
-            'none',
-
-          WebkitClipPath:
-            'none',
-
-          /*
-           * Match Hero + Preloader.
-           */
-
-          height:
-            '100svh',
-
-          minHeight:
-            '100svh',
-
-          /*
-           * Safari composition layer.
-           */
-
-          transform:
-            'translate3d(0, 100%, 0)',
-
-          WebkitBackfaceVisibility:
-            'hidden',
-
-          backfaceVisibility:
-            'hidden',
-        }}
       >
         <div
           ref={
             transitionLogoRef
           }
           className="m-transition__logo-wrap"
-          style={{
-            /*
-             * Override CSS logo clipping.
-             */
-
-            clipPath:
-              'none',
-
-            WebkitClipPath:
-              'none',
-
-            transformOrigin:
-              'center center',
-
-            WebkitBackfaceVisibility:
-              'hidden',
-
-            backfaceVisibility:
-              'hidden',
-          }}
         >
-          <MobileVideoTransitionLogo
-            videoRef={
-              transitionVideoRef
-            }
-          />
+          <MobileVideoTransitionLogo />
         </div>
       </div>
 
