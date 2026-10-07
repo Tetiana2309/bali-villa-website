@@ -433,7 +433,7 @@ html.m-layout body {
 
   width: 100%;
 
-  height: 808px;
+  height: 100svh;
   min-height: 808px;
 
   overflow: hidden;
@@ -443,7 +443,7 @@ html.m-layout body {
   position: relative;
 
   width: 100%;
-  height: 808px;
+  height: 100%;
 
   overflow: hidden;
 }
@@ -473,7 +473,6 @@ html.m-layout body {
 
   pointer-events: none;
 }
-
 
 /* ---------- HERO HEADER ---------- */
 

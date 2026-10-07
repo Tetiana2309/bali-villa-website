@@ -9,22 +9,36 @@ interface LazyVideoProps {
 }
 
 /*
- * Decorative looping video (no controls, as in the Figma).
- * preload="none": nothing downloads until the slide first plays.
+ * Decorative looping video.
+ *
+ * iPhone / Safari safe:
+ * - src is always attached
+ * - metadata can preload
+ * - actual playback is still controlled by useSlideVideo
  */
-export function LazyVideo({ src, poster, play }: LazyVideoProps) {
-  const ref = useRef<HTMLVideoElement>(null)
+export function LazyVideo({
+  src,
+  poster,
+  play,
+}: LazyVideoProps) {
+  const ref =
+    useRef<HTMLVideoElement>(null)
 
-  useSlideVideo(ref, src, play)
+  useSlideVideo(
+    ref,
+    src,
+    play,
+  )
 
   return (
     <video
       ref={ref}
+      src={src}
       poster={poster}
       muted
       loop
       playsInline
-      preload="none"
+      preload="metadata"
       disablePictureInPicture
       disableRemotePlayback
       aria-hidden="true"

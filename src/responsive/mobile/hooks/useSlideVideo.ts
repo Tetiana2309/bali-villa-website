@@ -5,34 +5,51 @@ interface NetworkInformationLike {
 }
 
 /*
- * Autoplay is skipped for reduced-motion and data-saver users:
- * the poster frame stays visible instead.
+ * ==========================================
+ * AUTOPLAY PERMISSION
+ * ==========================================
+ *
+ * Respect reduced motion and data saver.
  */
-export function canAutoplayVideo() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+
+export function canAutoplayVideo(): boolean {
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  const reducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)',
+  ).matches
+
+  if (reducedMotion) {
     return false
   }
 
   const connection = (
-    navigator as Navigator & { connection?: NetworkInformationLike }
+    navigator as Navigator & {
+      connection?: NetworkInformationLike
+    }
   ).connection
 
   return !connection?.saveData
 }
 
-const UNLOAD_DELAY_MS = 2500
-
 /*
- * Visibility-driven playback for a slide video.
+ * ==========================================
+ * SLIDE VIDEO PLAYBACK
+ * ==========================================
  *
- *  - play=true  : attach src (first time only) and play muted + looped.
- *                 If the browser blocks autoplay the poster stays visible.
- *  - play=false : pause immediately; after a short delay drop the src so
- *                 at most one video stays decoded (iOS Safari memory).
- *                 The poster attribute keeps the fallback frame visible.
+ * iPhone / Safari compatibility:
  *
- * Nothing is fetched until a slide first becomes active (preload="none").
+ * - Keep the video src attached
+ * - Force muted inline playback
+ * - Play only the active visible slide
+ * - Pause inactive slides
+ * - Retry playback when video is ready
+ * - Never remove src during playback lifecycle
+ * - Clean up listeners on slide changes
  */
+
 export function useSlideVideo(
   ref: RefObject<HTMLVideoElement | null>,
   src: string,
@@ -45,34 +62,172 @@ export function useSlideVideo(
       return
     }
 
+    let cancelled = false
+
+    /*
+     * ========================================
+     * VIDEO CONFIGURATION
+     * ========================================
+     */
+
     video.muted = true
     video.defaultMuted = true
+    video.loop = true
+    video.playsInline = true
 
-    if (!play) {
-      video.pause()
+    video.setAttribute('muted', '')
+    video.setAttribute('playsinline', '')
+    video.setAttribute('webkit-playsinline', '')
 
-      const timer = window.setTimeout(() => {
-        if (video.getAttribute('src')) {
-          video.removeAttribute('src')
-          video.load()
-        }
-      }, UNLOAD_DELAY_MS)
-
-      return () => window.clearTimeout(timer)
-    }
+    /*
+     * ========================================
+     * SOURCE
+     * ========================================
+     *
+     * LazyVideo already provides src in JSX.
+     * Only update it if it actually changes.
+     */
 
     if (video.getAttribute('src') !== src) {
       video.src = src
     }
 
-    const attempt = video.play()
+    /*
+     * ========================================
+     * PLAYBACK
+     * ========================================
+     */
 
-    if (attempt) {
-      attempt.catch(() => {
-        /* autoplay blocked: keep the poster frame */
-      })
+    const attemptPlay = () => {
+      if (cancelled || !play) {
+        return
+      }
+
+      if (!video.isConnected) {
+        return
+      }
+
+      if (!video.paused) {
+        return
+      }
+
+      video.muted = true
+      video.playsInline = true
+
+      const promise = video.play()
+
+      if (promise) {
+        void promise.catch(() => {
+          /*
+           * Safari may reject autoplay.
+           * Keep the poster as a fallback.
+           */
+        })
+      }
+    }
+
+    /*
+     * ========================================
+     * INACTIVE SLIDE
+     * ========================================
+     */
+
+    if (!play) {
+      video.pause()
+
+      return () => {
+        cancelled = true
+      }
+    }
+
+    /*
+     * ========================================
+     * ACTIVE SLIDE
+     * ========================================
+     *
+     * Try immediately, then retry when
+     * Safari reports that playback is ready.
+     */
+
+    video.addEventListener(
+      'loadeddata',
+      attemptPlay,
+    )
+
+    video.addEventListener(
+      'canplay',
+      attemptPlay,
+    )
+
+    video.addEventListener(
+      'canplaythrough',
+      attemptPlay,
+    )
+
+    /*
+     * Retry if the video unexpectedly pauses
+     * while its slide is still active.
+     */
+
+    const handleWaiting = () => {
+      if (cancelled) {
+        return
+      }
+
+      if (video.readyState >= 2) {
+        attemptPlay()
+      }
+    }
+
+    video.addEventListener(
+      'stalled',
+      handleWaiting,
+    )
+
+    /*
+     * Start playback.
+     */
+
+    attemptPlay()
+
+    /*
+     * ========================================
+     * CLEANUP
+     * ========================================
+     */
+
+    return () => {
+      cancelled = true
+
+      video.removeEventListener(
+        'loadeddata',
+        attemptPlay,
+      )
+
+      video.removeEventListener(
+        'canplay',
+        attemptPlay,
+      )
+
+      video.removeEventListener(
+        'canplaythrough',
+        attemptPlay,
+      )
+
+      video.removeEventListener(
+        'stalled',
+        handleWaiting,
+      )
+
+      video.pause()
     }
   }, [ref, src, play])
+
+  /*
+   * ==========================================
+   * UNMOUNT CLEANUP
+   * ==========================================
+   */
 
   useEffect(() => {
     const video = ref.current

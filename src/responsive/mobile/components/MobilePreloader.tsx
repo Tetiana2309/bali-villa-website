@@ -363,7 +363,7 @@ export function MobilePreloader({
               '100vw',
 
             height:
-              '100dvh',
+              '100svh',
 
             duration:
               exitDuration(
@@ -418,9 +418,9 @@ export function MobilePreloader({
    *
    * artworkLeft = 0
    *
-   * At 430px:
+   * At 440px:
    *
-   * artworkLeft = 27.5px
+   * artworkLeft = 32.5px
    *
    * So the whole composition stays centred.
    * ==========================================
@@ -429,26 +429,26 @@ export function MobilePreloader({
   const artworkLeft =
     `calc(
       50% -
-      ${BASE_WIDTH / 2}px
+        ${BASE_WIDTH / 2}px
     )`
 
   const videoLeft =
     `calc(
       ${artworkLeft} +
-      ${VIDEO_LEFT}px
+        ${VIDEO_LEFT}px
     )`
 
   const leftWordPosition =
     `calc(
       ${artworkLeft} +
-      ${TEXT_SIDE_GAP}px
+        ${TEXT_SIDE_GAP}px
     )`
 
   const rightWordPosition =
     `calc(
       50% -
-      ${BASE_WIDTH / 2}px +
-      ${TEXT_SIDE_GAP}px
+        ${BASE_WIDTH / 2}px +
+        ${TEXT_SIDE_GAP}px
     )`
 
   /*
@@ -460,7 +460,7 @@ export function MobilePreloader({
   const videoCenter =
     `calc(
       50% +
-      ${VIDEO_CENTER_OFFSET}px
+        ${VIDEO_CENTER_OFFSET}px
     )`
 
   /*
@@ -516,7 +516,7 @@ export function MobilePreloader({
           '100vw',
 
         height:
-          '100dvh',
+          '100svh',
 
         overflow:
           'hidden',
@@ -567,6 +567,9 @@ export function MobilePreloader({
 
           backfaceVisibility:
             'hidden',
+
+          transform:
+            'translateZ(0)',
         }}
       />
 
