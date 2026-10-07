@@ -5,6 +5,17 @@ interface NetworkInformationLike {
 }
 
 /*
+ * iOS / iPadOS WebKit (Safari and every other iOS browser).
+ * Used only to scope iPhone-specific workarounds; Android and desktop
+ * keep their current behaviour.
+ */
+export const IS_IOS_WEBKIT: boolean =
+  typeof navigator !== 'undefined' &&
+  (/iP(hone|ad|od)/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' &&
+      navigator.maxTouchPoints > 1))
+
+/*
  * ==========================================
  * AUTOPLAY PERMISSION
  * ==========================================
