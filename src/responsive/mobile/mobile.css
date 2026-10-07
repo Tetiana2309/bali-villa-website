@@ -903,7 +903,7 @@ html.m-layout body {
 
   gap: 28px;
 
-  margin-top: 95px;
+  margin-top: 55px;
 
   padding:
     0 20px;
@@ -3139,9 +3139,9 @@ html.m-layout body {
   .m-menu__list {
     margin-top:
       clamp(
-        90px,
-        10vh,
-        105px
+        45px,
+        6vh,
+        60px
       );
 
     padding-left:
