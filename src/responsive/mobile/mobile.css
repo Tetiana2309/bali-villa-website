@@ -474,6 +474,7 @@ html.m-layout body {
   pointer-events: none;
 }
 
+
 /* ---------- HERO HEADER ---------- */
 
 .m-head {
@@ -712,11 +713,6 @@ html.m-layout body {
   padding-bottom:
     env(safe-area-inset-bottom);
 
-  /*
-   * Menu starts completely below
-   * the visible viewport.
-   */
-
   clip-path:
     inset(
       100%
@@ -907,12 +903,7 @@ html.m-layout body {
 
   gap: 28px;
 
-  /*
-   * Was 116px.
-   * Menu links are now lower.
-   */
-
-  margin-top: 165px;
+  margin-top: 95px;
 
   padding:
     0 20px;
@@ -2942,13 +2933,6 @@ html.m-layout body {
   .m-wordmark {
     left: 50%;
 
-    /*
-     * 335px on 375px screen.
-     *
-     * On wider phones it grows,
-     * but not infinitely.
-     */
-
     width:
       clamp(
         335px,
@@ -2962,12 +2946,6 @@ html.m-layout body {
         35.2vw,
         158px
       );
-
-    /*
-     * Keep roughly the same
-     * vertical relationship
-     * as the 375 × 808 design.
-     */
 
     bottom:
       45.3%;
@@ -3009,13 +2987,6 @@ html.m-layout body {
 
   .m-wordmark
     span:last-of-type {
-    /*
-     * Original:
-     * 161px of 335px
-     *
-     * ≈ 48.06%
-     */
-
     left:
       48.06% !important;
   }
@@ -3026,20 +2997,8 @@ html.m-layout body {
      ======================================================== */
 
   .m-wordmark i {
-    /*
-     * Original:
-     * 141 / 335
-     * ≈ 42.09%
-     */
-
     left:
       42.09%;
-
-    /*
-     * Original:
-     * 107 / 132
-     * ≈ 81.06%
-     */
 
     top:
       81.06%;
@@ -3080,12 +3039,6 @@ html.m-layout body {
           safe-area-inset-right
         )
       );
-
-    /*
-     * Original:
-     * 158 / 808
-     * ≈ 19.55%
-     */
 
     bottom:
       19.55%;
@@ -3184,18 +3137,11 @@ html.m-layout body {
      ======================================================== */
 
   .m-menu__list {
-    /*
-     * Keep your current 165px
-     * on smaller phones,
-     * but give taller phones
-     * a little more breathing room.
-     */
-
     margin-top:
       clamp(
-        165px,
-        19vh,
-        190px
+        90px,
+        10vh,
+        105px
       );
 
     padding-left:
