@@ -3338,3 +3338,24 @@ html.m-layout body {
       );
   }
 }
+
+
+/* ==========================================================
+   iOS / WebKit ONLY
+   (-webkit-touch-callout exists only on iOS WebKit, so Android and
+   desktop browsers never apply this block)
+   ========================================================== */
+
+@supports (-webkit-touch-callout: none) {
+  /*
+   * 100dvh does not track the area of a position:fixed element in iOS
+   * Safari (it changes with the toolbars), so the menu panel and the
+   * transition overlay stopped short of the screen edge.
+   * top:0 + bottom:0 (inset:0, already set) fill the fixed viewport.
+   */
+
+  .m-menu,
+  .m-transition {
+    height: auto;
+  }
+}

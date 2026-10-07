@@ -8,6 +8,7 @@ import {
   useRef,
 } from 'react'
 
+import { IS_IOS_WEBKIT } from '../hooks/useSlideVideo'
 import { SliderControlContext } from '../hooks/useSliderControl'
 
 interface MobileSliderProps {
@@ -95,6 +96,34 @@ export function MobileSlider({
             )
 
           if (!inner) {
+            return
+          }
+
+          /*
+           * iOS / WebKit only.
+           *
+           * A <video> inside an ancestor whose transform / clip-path is
+           * rewritten on every scroll frame (and a video that is itself
+           * transformed) stops being composited correctly in WebKit.
+           * Slides that contain a video stay static on iOS: no per-frame
+           * transform, clip-path or will-change. Android is unchanged.
+           */
+
+          if (
+            IS_IOS_WEBKIT &&
+            inner.querySelector('video')
+          ) {
+            if (!inner.dataset.iosVideoSlide) {
+              inner.dataset.iosVideoSlide =
+                'true'
+
+              inner.style.clipPath =
+                'none'
+
+              inner.style.willChange =
+                'auto'
+            }
+
             return
           }
 

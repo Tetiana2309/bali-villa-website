@@ -15,6 +15,7 @@ import { MobileMenu } from './components/MobileMenu'
 import { MobilePreloader } from './components/MobilePreloader'
 
 import { MobileScrollContext } from './hooks/useMobileScroll'
+import { IS_IOS_WEBKIT } from './hooks/useSlideVideo'
 import { useMobileViewport } from './hooks/useMobileViewport'
 
 import { MobileContacts } from './sections/MobileContacts'
@@ -146,6 +147,13 @@ export default function MobileApp() {
     useRef<HTMLDivElement>(null)
 
   const transitionActiveRef =
+    useRef(false)
+
+  /*
+   * iOS only: true between the menu link tap and the start of the
+   * section transition, so the scroll lock is not released in between.
+   */
+  const navigationPendingRef =
     useRef(false)
 
   const [menuOpen, setMenuOpen] =
@@ -351,7 +359,9 @@ export default function MobileApp() {
     if (
       isLoading ||
       menuOpen ||
-      transitionActiveRef.current
+      transitionActiveRef.current ||
+      (IS_IOS_WEBKIT &&
+        navigationPendingRef.current)
     ) {
       lenis?.stop()
 
@@ -504,6 +514,28 @@ export default function MobileApp() {
 
         document.documentElement.style.overflow =
           'hidden'
+
+        /*
+         * iOS only: the logo video sits hidden (clip-path + opacity 0)
+         * until now and Safari does not reliably start such an autoplay
+         * video, so start it explicitly. Muted + inline needs no gesture.
+         */
+
+        if (IS_IOS_WEBKIT) {
+          const logoVideo =
+            transition.querySelector<HTMLVideoElement>(
+              'video',
+            )
+
+          if (logoVideo) {
+            logoVideo.muted =
+              true
+
+            void logoVideo
+              .play()
+              ?.catch(() => {})
+          }
+        }
 
         gsap.killTweensOf(
           transition,
@@ -719,6 +751,11 @@ export default function MobileApp() {
       (
         href: string,
       ) => {
+        if (IS_IOS_WEBKIT) {
+          navigationPendingRef.current =
+            true
+        }
+
         setMenuOpen(
           false,
         )
@@ -735,6 +772,25 @@ export default function MobileApp() {
                 navigateWithTransition(
                   href,
                 )
+
+                if (IS_IOS_WEBKIT) {
+                  navigationPendingRef.current =
+                    false
+
+                  /*
+                   * If the transition did not start,
+                   * release the lock held for it.
+                   */
+
+                  if (
+                    !transitionActiveRef.current
+                  ) {
+                    document.documentElement.style.overflow =
+                      ''
+
+                    lenisRef.current?.start()
+                  }
+                }
               },
             )
           },
