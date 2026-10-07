@@ -2844,3 +2844,552 @@ html.m-layout body {
   backface-visibility:
     hidden;
 }
+
+
+/* ==========================================================
+   RESPONSIVE MOBILE
+   376px → 767px
+   ==========================================================
+   Base design = 375px.
+   Nothing below 376px is changed.
+   ========================================================== */
+
+@media (
+  min-width: 376px
+) and (
+  max-width: 767px
+) {
+
+  /* ========================================================
+     HERO HEIGHT
+     ======================================================== */
+
+  .m-hero {
+    width: 100%;
+
+    height:
+      max(
+        808px,
+        100svh
+      );
+
+    min-height:
+      808px;
+  }
+
+  .m-hero__media {
+    width: 100%;
+
+    height: 100%;
+  }
+
+
+  /* ========================================================
+     HERO VIDEO
+     ======================================================== */
+
+  .m-hero__media video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    object-position:
+      center center;
+  }
+
+
+  /* ========================================================
+     HERO HEADER
+     ======================================================== */
+
+  .m-head {
+    top:
+      max(
+        60px,
+        calc(
+          env(
+            safe-area-inset-top
+          ) +
+          26px
+        )
+      );
+
+    left: 0;
+    right: 0;
+
+    padding-left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    padding-right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+  }
+
+
+  /* ========================================================
+     HERO WORDMARK
+     ======================================================== */
+
+  .m-wordmark {
+    left: 50%;
+
+    /*
+     * 335px on 375px screen.
+     *
+     * On wider phones it grows,
+     * but not infinitely.
+     */
+
+    width:
+      clamp(
+        335px,
+        89.333vw,
+        400px
+      );
+
+    height:
+      clamp(
+        132px,
+        35.2vw,
+        158px
+      );
+
+    /*
+     * Keep roughly the same
+     * vertical relationship
+     * as the 375 × 808 design.
+     */
+
+    bottom:
+      45.3%;
+
+    transform:
+      translateX(-50%);
+
+    font-size:
+      clamp(
+        120px,
+        32vw,
+        143px
+      );
+
+    line-height: 1.1;
+
+    letter-spacing:
+      clamp(
+        -1.5px,
+        -0.32vw,
+        -1.2px
+      );
+  }
+
+
+  /* ========================================================
+     VILL
+     ======================================================== */
+
+  .m-wordmark
+    span:first-of-type {
+    left: 0 !important;
+  }
+
+
+  /* ========================================================
+     BALI
+     ======================================================== */
+
+  .m-wordmark
+    span:last-of-type {
+    /*
+     * Original:
+     * 161px of 335px
+     *
+     * ≈ 48.06%
+     */
+
+    left:
+      48.06% !important;
+  }
+
+
+  /* ========================================================
+     HERO DOT
+     ======================================================== */
+
+  .m-wordmark i {
+    /*
+     * Original:
+     * 141 / 335
+     * ≈ 42.09%
+     */
+
+    left:
+      42.09%;
+
+    /*
+     * Original:
+     * 107 / 132
+     * ≈ 81.06%
+     */
+
+    top:
+      81.06%;
+
+    width:
+      clamp(
+        10px,
+        2.667vw,
+        12px
+      );
+
+    height:
+      clamp(
+        10px,
+        2.667vw,
+        12px
+      );
+  }
+
+
+  /* ========================================================
+     HERO CTA
+     ======================================================== */
+
+  .m-hero__ctas {
+    left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+
+    /*
+     * Original:
+     * 158 / 808
+     * ≈ 19.55%
+     */
+
+    bottom:
+      19.55%;
+  }
+
+
+  /* ========================================================
+     HERO DESCRIPTION
+     ======================================================== */
+
+  .m-hero .m-foot {
+    left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+
+    bottom:
+      max(
+        22px,
+        calc(
+          env(
+            safe-area-inset-bottom
+          ) +
+          12px
+        )
+      );
+  }
+
+
+  /* ========================================================
+     MENU
+     ======================================================== */
+
+  .m-menu {
+    width: 100vw;
+
+    height: 100dvh;
+
+    padding-top:
+      max(
+        60px,
+        calc(
+          env(
+            safe-area-inset-top
+          ) +
+          26px
+        )
+      );
+
+    padding-bottom:
+      max(
+        20px,
+        env(
+          safe-area-inset-bottom
+        )
+      );
+  }
+
+
+  /* ========================================================
+     MENU HEADER
+     ======================================================== */
+
+  .m-menu__head {
+    padding-left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    padding-right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+  }
+
+
+  /* ========================================================
+     MENU LIST
+     ======================================================== */
+
+  .m-menu__list {
+    /*
+     * Keep your current 165px
+     * on smaller phones,
+     * but give taller phones
+     * a little more breathing room.
+     */
+
+    margin-top:
+      clamp(
+        165px,
+        19vh,
+        190px
+      );
+
+    padding-left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    padding-right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+  }
+
+
+  /* ========================================================
+     MENU TEXT
+     ======================================================== */
+
+  .m-menu__link {
+    font-size:
+      clamp(
+        48px,
+        12.8vw,
+        56px
+      );
+
+    line-height:
+      0.9;
+  }
+
+
+  /* ========================================================
+     GENERAL SECTION SIDE GUTTERS
+     ======================================================== */
+
+  .m-om__title,
+  .m-om__text,
+  .m-om__slide .m-cta,
+  .m-hww__pag,
+  .m-hww__cta,
+  .m-tst__title,
+  .m-tst__media,
+  .m-tst__text,
+  .m-tst__pag,
+  .m-faq__title,
+  .m-form,
+  .m-con__info,
+  .m-con__socials,
+  .m-con__legal {
+    margin-left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    margin-right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+  }
+
+
+  /* ========================================================
+     HOW WE WORK
+     ======================================================== */
+
+  .m-hww__slide {
+    padding-left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    padding-right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+  }
+
+
+  /* ========================================================
+     GALLERY TITLE
+     ======================================================== */
+
+  .m-gal__title {
+    left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+  }
+
+
+  /* ========================================================
+     GALLERY BODY
+     ======================================================== */
+
+  .m-gal__body {
+    margin-left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    margin-right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+  }
+
+
+  /* ========================================================
+     CONTACTS HEADING
+     ======================================================== */
+
+  .m-con__heading {
+    width:
+      min(
+        303px,
+        calc(
+          100% - 40px
+        )
+      );
+
+    margin-left:
+      max(
+        20px,
+        env(
+          safe-area-inset-left
+        )
+      );
+
+    margin-right:
+      max(
+        20px,
+        env(
+          safe-area-inset-right
+        )
+      );
+  }
+
+
+  /* ========================================================
+     CONTACT VIDEO LOGO
+     ======================================================== */
+
+  .m-con__logo {
+    width:
+      min(
+        335px,
+        calc(
+          100vw - 40px
+        )
+      );
+
+    max-width: none;
+  }
+
+
+  /* ========================================================
+     MOBILE TRANSITION LOGO
+     ======================================================== */
+
+  .m-transition__logo-wrap {
+    width:
+      min(
+        400px,
+        calc(
+          100vw - 40px
+        )
+      );
+  }
+}
