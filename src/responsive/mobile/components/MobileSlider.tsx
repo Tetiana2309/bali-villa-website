@@ -31,7 +31,7 @@ export function MobileSlider({
     useRef<HTMLDivElement>(null)
 
   const frameRef =
-    useRef(0)
+    useRef<number>(0)
 
   const indexRef =
     useRef(index)
@@ -45,9 +45,18 @@ export function MobileSlider({
   const count =
     slides.length
 
+  /*
+   * ==========================================
+   * KEEP LATEST VALUES
+   * ==========================================
+   */
+
   useEffect(() => {
-    indexRef.current = index
-    onChangeRef.current = onIndexChange
+    indexRef.current =
+      index
+
+    onChangeRef.current =
+      onIndexChange
   }, [
     index,
     onIndexChange,
@@ -55,11 +64,25 @@ export function MobileSlider({
 
   /*
    * ==========================================
-   * VISUAL MOTION
+   * UPDATE ACTIVE SLIDE
+   * ==========================================
+   *
+   * IMPORTANT FOR IOS:
+   *
+   * We do NOT transform:
+   *
+   * - video
+   * - img
+   * - slide wrapper
+   * - slider-inner
+   *
+   * Safari can have rendering / playback
+   * problems when video is inside transformed
+   * + clipped elements.
    * ==========================================
    */
 
-  const updateMotion =
+  const updateIndex =
     useCallback(() => {
       const track =
         trackRef.current
@@ -74,211 +97,56 @@ export function MobileSlider({
       const width =
         track.clientWidth
 
-      const scrollLeft =
-        track.scrollLeft
-
-      const slideElements =
-        Array.from(
-          track.querySelectorAll<HTMLElement>(
-            '.m-slide',
+      const next =
+        Math.max(
+          0,
+          Math.min(
+            count - 1,
+            Math.round(
+              track.scrollLeft /
+                width,
+            ),
           ),
         )
 
-      slideElements.forEach(
-        (
-          slide,
-          slideIndex,
-        ) => {
-          const inner =
-            slide.querySelector<HTMLElement>(
-              '[data-slider-inner]',
-            )
+      if (
+        next ===
+        indexRef.current
+      ) {
+        return
+      }
 
-          if (!inner) {
-            return
-          }
+      indexRef.current =
+        next
 
-          /*
-           * 0 = active
-           * 1 = one screen right
-           * -1 = one screen left
-           */
-
-          const distance =
-            (
-              slideIndex *
-                width -
-              scrollLeft
-            ) /
-            width
-
-          const progress =
-            Math.max(
-              -1,
-              Math.min(
-                1,
-                distance,
-              ),
-            )
-
-          const abs =
-            Math.abs(
-              progress,
-            )
-
-          /*
-           * ======================================
-           * MAIN CARD DEPTH
-           * ======================================
-           */
-
-          const scale =
-            1 -
-            abs * 0.055
-
-          /*
-           * Counter movement.
-           *
-           * The physical slide moves with
-           * native scroll.
-           *
-           * The content moves slightly against it,
-           * which creates a cinematic layered feel.
-           */
-
-          const x =
-            progress * -34
-
-          /*
-           * Very small vertical depth.
-           */
-
-          const y =
-            abs * 8
-
-          /*
-           * Incoming card is slightly masked.
-           */
-
-          const mask =
-            abs * 9
-
-          let clipPath =
-            'inset(0% 0% 0% 0%)'
-
-          if (progress > 0) {
-            clipPath =
-              `inset(0% ${mask}% 0% 0%)`
-          }
-
-          if (progress < 0) {
-            clipPath =
-              `inset(0% 0% 0% ${mask}%)`
-          }
-
-          inner.style.transform =
-            `
-              translate3d(
-                ${x}px,
-                ${y}px,
-                0
-              )
-              scale(${scale})
-            `
-
-          inner.style.clipPath =
-            clipPath
-
-          inner.style.transformOrigin =
-            progress > 0
-              ? 'left center'
-              : 'right center'
-
-          inner.style.willChange =
-            'transform, clip-path'
-
-          /*
-           * ======================================
-           * MEDIA LAYER
-           * ======================================
-           */
-
-          const media =
-            inner.querySelector<HTMLElement>(
-              'video, img',
-            )
-
-          if (media) {
-            /*
-             * Media moves independently from
-             * the card.
-             */
-
-            const mediaX =
-              progress * -24
-
-            const mediaScale =
-              1.035 +
-              abs * 0.025
-
-            media.style.transform =
-              `
-                translate3d(
-                  ${mediaX}px,
-                  0,
-                  0
-                )
-                scale(${mediaScale})
-              `
-
-            media.style.transformOrigin =
-              'center center'
-
-            media.style.willChange =
-              'transform'
-          }
-
-          /*
-           * ======================================
-           * LARGE TITLES
-           * ======================================
-           */
-
-          const titles =
-            inner.querySelectorAll<HTMLElement>(
-              '.m-big, .m-gal__title',
-            )
-
-          titles.forEach(
-            (
-              title,
-            ) => {
-              const titleX =
-                progress * -18
-
-              const titleY =
-                abs * 5
-
-              title.style.transform =
-                `
-                  translate3d(
-                    ${titleX}px,
-                    ${titleY}px,
-                    0
-                  )
-                `
-
-              title.style.willChange =
-                'transform'
-            },
-          )
-        },
+      onChangeRef.current(
+        next,
       )
-    }, [])
+    }, [count])
 
   /*
    * ==========================================
-   * GO TO
+   * SCROLL
+   * ==========================================
+   */
+
+  const handleScroll =
+    useCallback(() => {
+      cancelAnimationFrame(
+        frameRef.current,
+      )
+
+      frameRef.current =
+        requestAnimationFrame(
+          () => {
+            updateIndex()
+          },
+        )
+    }, [updateIndex])
+
+  /*
+   * ==========================================
+   * GO TO SLIDE
    * ==========================================
    */
 
@@ -324,68 +192,6 @@ export function MobileSlider({
 
   /*
    * ==========================================
-   * SCROLL
-   * ==========================================
-   */
-
-  const handleScroll =
-    () => {
-      cancelAnimationFrame(
-        frameRef.current,
-      )
-
-      frameRef.current =
-        requestAnimationFrame(
-          () => {
-            const track =
-              trackRef.current
-
-            if (
-              !track ||
-              !track.clientWidth
-            ) {
-              return
-            }
-
-            /*
-             * Awwwards-style visual motion.
-             */
-
-            updateMotion()
-
-            /*
-             * Existing index logic.
-             */
-
-            const next =
-              Math.max(
-                0,
-                Math.min(
-                  count - 1,
-                  Math.round(
-                    track.scrollLeft /
-                      track.clientWidth,
-                  ),
-                ),
-              )
-
-            if (
-              next !==
-              indexRef.current
-            ) {
-              indexRef.current =
-                next
-
-              onChangeRef.current(
-                next,
-              )
-            }
-          },
-        )
-    }
-
-  /*
-   * ==========================================
    * KEYBOARD
    * ==========================================
    */
@@ -405,6 +211,8 @@ export function MobileSlider({
           indexRef.current +
             1,
         )
+
+        return
       }
 
       if (
@@ -422,7 +230,14 @@ export function MobileSlider({
 
   /*
    * ==========================================
-   * INITIAL POSITION + RESIZE
+   * REALIGN
+   * ==========================================
+   *
+   * Keeps the active slide aligned after:
+   *
+   * - initial mount
+   * - viewport resize
+   * - Safari orientation change
    * ==========================================
    */
 
@@ -432,15 +247,16 @@ export function MobileSlider({
         const track =
           trackRef.current
 
-        if (!track) {
+        if (
+          !track ||
+          !track.clientWidth
+        ) {
           return
         }
 
         track.scrollLeft =
           indexRef.current *
           track.clientWidth
-
-        updateMotion()
       }
 
     const initialFrame =
@@ -453,9 +269,18 @@ export function MobileSlider({
       realign,
     )
 
+    window.addEventListener(
+      'orientationchange',
+      realign,
+    )
+
     return () => {
       cancelAnimationFrame(
         initialFrame,
+      )
+
+      cancelAnimationFrame(
+        frameRef.current,
       )
 
       window.removeEventListener(
@@ -463,15 +288,65 @@ export function MobileSlider({
         realign,
       )
 
-      cancelAnimationFrame(
-        frameRef.current,
+      window.removeEventListener(
+        'orientationchange',
+        realign,
       )
     }
-  }, [updateMotion])
+  }, [])
 
   /*
    * ==========================================
-   * CONTROL
+   * EXTERNAL INDEX CHANGE
+   * ==========================================
+   *
+   * If Pagination changes index from outside,
+   * keep the physical slider synchronized.
+   * ==========================================
+   */
+
+  useEffect(() => {
+    const track =
+      trackRef.current
+
+    if (
+      !track ||
+      !track.clientWidth
+    ) {
+      return
+    }
+
+    const expectedLeft =
+      index *
+      track.clientWidth
+
+    const difference =
+      Math.abs(
+        track.scrollLeft -
+          expectedLeft,
+      )
+
+    /*
+     * Ignore tiny Safari sub-pixel
+     * differences.
+     */
+
+    if (difference < 2) {
+      return
+    }
+
+    track.scrollTo({
+      left:
+        expectedLeft,
+
+      behavior:
+        'smooth',
+    })
+  }, [index])
+
+  /*
+   * ==========================================
+   * SLIDER CONTROL CONTEXT
    * ==========================================
    */
 
@@ -482,6 +357,12 @@ export function MobileSlider({
       }),
       [goTo],
     )
+
+  /*
+   * ==========================================
+   * RENDER
+   * ==========================================
+   */
 
   return (
     <SliderControlContext.Provider
@@ -500,51 +381,93 @@ export function MobileSlider({
         onKeyDown={
           handleKeyDown
         }
+        style={{
+          WebkitOverflowScrolling:
+            'touch',
+
+          overscrollBehaviorX:
+            'contain',
+        }}
       >
         {slides.map(
           (
             slide,
             slideIndex,
-          ) => (
-            <div
-              key={
-                slideIndex
-              }
-              className="m-slide"
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${slideIndex + 1} of ${count}`}
-              inert={
-                slideIndex !==
-                index
-              }
-              style={{
-                overflow:
-                  'hidden',
-              }}
-            >
-              <div
-                data-slider-inner
-                style={{
-                  width:
-                    '100%',
+          ) => {
+            const isActive =
+              slideIndex ===
+              index
 
-                  minWidth: 0,
+            return (
+              <div
+                key={
+                  slideIndex
+                }
+                className="m-slide"
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${slideIndex + 1} of ${count}`}
+                inert={
+                  !isActive
+                }
+                style={{
+                  overflow:
+                    'hidden',
+
+                  /*
+                   * Do not use transform
+                   * or clip-path here.
+                   *
+                   * Important for iOS
+                   * video playback.
+                   */
 
                   transform:
-                    'translate3d(0,0,0)',
+                    'none',
 
                   clipPath:
-                    'inset(0% 0% 0% 0%)',
+                    'none',
 
-                  backfaceVisibility:
-                    'hidden',
+                  WebkitClipPath:
+                    'none',
                 }}
               >
-                {slide}
+                <div
+                  data-slider-inner
+                  style={{
+                    width:
+                      '100%',
+
+                    minWidth:
+                      0,
+
+                    /*
+                     * Safari-safe:
+                     * video parent stays
+                     * completely static.
+                     */
+
+                    transform:
+                      'none',
+
+                    clipPath:
+                      'none',
+
+                    WebkitClipPath:
+                      'none',
+
+                    backfaceVisibility:
+                      'visible',
+
+                    WebkitBackfaceVisibility:
+                      'visible',
+                  }}
+                >
+                  {slide}
+                </div>
               </div>
-            </div>
-          ),
+            )
+          },
         )}
       </div>
 

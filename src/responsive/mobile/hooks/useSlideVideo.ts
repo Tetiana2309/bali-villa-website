@@ -1,4 +1,7 @@
-import { type RefObject, useEffect } from 'react'
+import {
+  type RefObject,
+  useEffect,
+} from 'react'
 
 interface NetworkInformationLike {
   saveData?: boolean
@@ -8,18 +11,20 @@ interface NetworkInformationLike {
  * ==========================================
  * AUTOPLAY PERMISSION
  * ==========================================
- *
- * Respect reduced motion and data saver.
  */
 
 export function canAutoplayVideo(): boolean {
-  if (typeof window === 'undefined') {
+  if (
+    typeof window === 'undefined' ||
+    typeof navigator === 'undefined'
+  ) {
     return false
   }
 
-  const reducedMotion = window.matchMedia(
-    '(prefers-reduced-motion: reduce)',
-  ).matches
+  const reducedMotion =
+    window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches
 
   if (reducedMotion) {
     return false
@@ -39,92 +44,137 @@ export function canAutoplayVideo(): boolean {
  * SLIDE VIDEO PLAYBACK
  * ==========================================
  *
- * iPhone / Safari compatibility:
+ * iPhone / Safari safe:
  *
- * - Keep the video src attached
- * - Force muted inline playback
- * - Play only the active visible slide
- * - Pause inactive slides
- * - Retry playback when video is ready
- * - Never remove src during playback lifecycle
- * - Clean up listeners on slide changes
+ * - src always stays attached
+ * - muted + playsInline are forced
+ * - only active slide plays
+ * - inactive slide pauses
+ * - retries after loadeddata / canplay
+ * - retries after tab becomes visible again
+ * - handles Safari suspend / stalled cases
+ * - never removes src
+ * - no forced video unload
+ * ==========================================
  */
 
 export function useSlideVideo(
-  ref: RefObject<HTMLVideoElement | null>,
+  ref:
+    RefObject<HTMLVideoElement | null>,
   src: string,
   play: boolean,
 ) {
   useEffect(() => {
-    const video = ref.current
+    const video =
+      ref.current
 
     if (!video) {
       return
     }
 
     let cancelled = false
+    let playPending = false
 
     /*
      * ========================================
-     * VIDEO CONFIGURATION
+     * BASE CONFIGURATION
      * ========================================
      */
 
     video.muted = true
     video.defaultMuted = true
+
     video.loop = true
     video.playsInline = true
 
-    video.setAttribute('muted', '')
-    video.setAttribute('playsinline', '')
-    video.setAttribute('webkit-playsinline', '')
+    video.autoplay = false
+
+    video.setAttribute(
+      'muted',
+      '',
+    )
+
+    video.setAttribute(
+      'playsinline',
+      '',
+    )
+
+    video.setAttribute(
+      'webkit-playsinline',
+      '',
+    )
 
     /*
      * ========================================
      * SOURCE
      * ========================================
-     *
-     * LazyVideo already provides src in JSX.
-     * Only update it if it actually changes.
      */
 
-    if (video.getAttribute('src') !== src) {
+    if (
+      video.getAttribute(
+        'src',
+      ) !== src
+    ) {
       video.src = src
     }
 
     /*
      * ========================================
-     * PLAYBACK
+     * PLAY HELPER
      * ========================================
      */
 
-    const attemptPlay = () => {
-      if (cancelled || !play) {
-        return
-      }
+    const attemptPlay =
+      async () => {
+        if (
+          cancelled ||
+          !play ||
+          playPending
+        ) {
+          return
+        }
 
-      if (!video.isConnected) {
-        return
-      }
+        if (
+          !video.isConnected
+        ) {
+          return
+        }
 
-      if (!video.paused) {
-        return
-      }
+        if (
+          document.visibilityState ===
+          'hidden'
+        ) {
+          return
+        }
 
-      video.muted = true
-      video.playsInline = true
+        if (
+          !video.paused &&
+          !video.ended
+        ) {
+          return
+        }
 
-      const promise = video.play()
+        playPending = true
 
-      if (promise) {
-        void promise.catch(() => {
+        video.muted = true
+        video.defaultMuted = true
+        video.playsInline = true
+
+        try {
+          await video.play()
+        } catch {
           /*
-           * Safari may reject autoplay.
-           * Keep the poster as a fallback.
+           * Safari can reject play()
+           * while the video is still
+           * preparing.
+           *
+           * loadeddata / canplay will
+           * retry later.
            */
-        })
+        } finally {
+          playPending = false
+        }
       }
-    }
 
     /*
      * ========================================
@@ -142,53 +192,207 @@ export function useSlideVideo(
 
     /*
      * ========================================
-     * ACTIVE SLIDE
+     * VIDEO READY EVENTS
      * ========================================
-     *
-     * Try immediately, then retry when
-     * Safari reports that playback is ready.
+     */
+
+    const handleLoadedData =
+      () => {
+        void attemptPlay()
+      }
+
+    const handleCanPlay =
+      () => {
+        void attemptPlay()
+      }
+
+    const handlePlaying =
+      () => {
+        playPending = false
+      }
+
+    /*
+     * ========================================
+     * SAFARI RECOVERY
+     * ========================================
+     */
+
+    const handleStalled =
+      () => {
+        if (
+          cancelled ||
+          !play
+        ) {
+          return
+        }
+
+        if (
+          video.readyState >= 2
+        ) {
+          void attemptPlay()
+        }
+      }
+
+    const handleSuspend =
+      () => {
+        if (
+          cancelled ||
+          !play
+        ) {
+          return
+        }
+
+        if (
+          video.readyState >= 2
+        ) {
+          void attemptPlay()
+        }
+      }
+
+    const handlePause =
+      () => {
+        if (
+          cancelled ||
+          !play
+        ) {
+          return
+        }
+
+        /*
+         * Safari may pause video when
+         * compositing layers or viewport
+         * state changes.
+         *
+         * Retry on next frame.
+         */
+
+        requestAnimationFrame(
+          () => {
+            void attemptPlay()
+          },
+        )
+      }
+
+    /*
+     * ========================================
+     * PAGE VISIBILITY
+     * ========================================
+     */
+
+    const handleVisibilityChange =
+      () => {
+        if (
+          document.visibilityState ===
+          'hidden'
+        ) {
+          video.pause()
+          return
+        }
+
+        if (play) {
+          requestAnimationFrame(
+            () => {
+              void attemptPlay()
+            },
+          )
+        }
+      }
+
+    /*
+     * ========================================
+     * WINDOW FOCUS
+     * ========================================
+     */
+
+    const handleFocus =
+      () => {
+        if (!play) {
+          return
+        }
+
+        requestAnimationFrame(
+          () => {
+            void attemptPlay()
+          },
+        )
+      }
+
+    /*
+     * ========================================
+     * EVENT LISTENERS
+     * ========================================
      */
 
     video.addEventListener(
       'loadeddata',
-      attemptPlay,
+      handleLoadedData,
     )
 
     video.addEventListener(
       'canplay',
-      attemptPlay,
+      handleCanPlay,
     )
 
     video.addEventListener(
-      'canplaythrough',
-      attemptPlay,
+      'playing',
+      handlePlaying,
     )
-
-    /*
-     * Retry if the video unexpectedly pauses
-     * while its slide is still active.
-     */
-
-    const handleWaiting = () => {
-      if (cancelled) {
-        return
-      }
-
-      if (video.readyState >= 2) {
-        attemptPlay()
-      }
-    }
 
     video.addEventListener(
       'stalled',
-      handleWaiting,
+      handleStalled,
+    )
+
+    video.addEventListener(
+      'suspend',
+      handleSuspend,
+    )
+
+    video.addEventListener(
+      'pause',
+      handlePause,
+    )
+
+    document.addEventListener(
+      'visibilitychange',
+      handleVisibilityChange,
+    )
+
+    window.addEventListener(
+      'focus',
+      handleFocus,
     )
 
     /*
-     * Start playback.
+     * ========================================
+     * INITIAL START
+     * ========================================
      */
 
-    attemptPlay()
+    if (
+      video.readyState >= 2
+    ) {
+      void attemptPlay()
+    } else {
+      /*
+       * Important for Safari:
+       * explicitly ask browser to
+       * prepare the video.
+       */
+
+      video.load()
+    }
+
+    /*
+     * Try again on the next frame.
+     */
+
+    const startFrame =
+      requestAnimationFrame(
+        () => {
+          void attemptPlay()
+        },
+      )
 
     /*
      * ========================================
@@ -199,41 +403,74 @@ export function useSlideVideo(
     return () => {
       cancelled = true
 
+      cancelAnimationFrame(
+        startFrame,
+      )
+
       video.removeEventListener(
         'loadeddata',
-        attemptPlay,
+        handleLoadedData,
       )
 
       video.removeEventListener(
         'canplay',
-        attemptPlay,
+        handleCanPlay,
       )
 
       video.removeEventListener(
-        'canplaythrough',
-        attemptPlay,
+        'playing',
+        handlePlaying,
       )
 
       video.removeEventListener(
         'stalled',
-        handleWaiting,
+        handleStalled,
+      )
+
+      video.removeEventListener(
+        'suspend',
+        handleSuspend,
+      )
+
+      video.removeEventListener(
+        'pause',
+        handlePause,
+      )
+
+      document.removeEventListener(
+        'visibilitychange',
+        handleVisibilityChange,
+      )
+
+      window.removeEventListener(
+        'focus',
+        handleFocus,
       )
 
       video.pause()
     }
-  }, [ref, src, play])
+  }, [
+    ref,
+    src,
+    play,
+  ])
 
   /*
    * ==========================================
-   * UNMOUNT CLEANUP
+   * COMPONENT UNMOUNT
    * ==========================================
    */
 
   useEffect(() => {
-    const video = ref.current
+    const video =
+      ref.current
 
     return () => {
-      video?.pause()
+      if (!video) {
+        return
+      }
+
+      video.pause()
     }
   }, [ref])
 }
